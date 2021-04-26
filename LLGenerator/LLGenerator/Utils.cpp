@@ -38,13 +38,11 @@ void FactorizeRule(Rules& rules)
 
 void AddNonteminal(std::vector<std::string>& arr, const std::string& nonterminal)
 {
-	auto it = std::find_if(arr.begin(), arr.end(), [&nonterminal](const std::string& str) {
-		if (nonterminal != str)
-		{
-			return true;
-		}
+	std::string str;
+	auto it = std::find_if(arr.begin(), arr.end(), [&](std::string elem) {
+		return nonterminal == elem;
 	});
-	if (it != arr.end())
+	if (it == arr.end())
 	{
 		arr.push_back(nonterminal);
 	}
@@ -64,7 +62,7 @@ Grammar CreateGrammar(const std::string grammarStr)
 		std::string rightPart;
 		Rules rules;
 		ruleLine >> rules.left;
-		
+		AddNonteminal(nonterminals, rules.left);
 		ruleLine >> separator;
 		std::getline(ruleLine, rightPart);
 		rules.right = GetRules(rightPart);
