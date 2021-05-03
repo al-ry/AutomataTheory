@@ -230,6 +230,22 @@ void RemoveRecursion(Grammar& grammar, Grammar& outputGrammar, std::vector<Rules
 	}
 }
 
+
+void PrintGrammar(Grammar& const grammar)
+{
+	for (auto rules : grammar)
+	{
+		std::cout << rules.left << " -> ";
+
+		for (auto rule : rules.right)
+		{
+			std::cout << rule << " ";
+		}
+
+		std::cout << "\n";
+	}
+}
+
 void FactorizeGrammar(Grammar& grammar, const std::vector<std::string>& nonterminals)
 {
 	std::vector<std::string> tmp;
@@ -255,6 +271,9 @@ void FactorizeGrammar(Grammar& grammar, const std::vector<std::string>& nontermi
 			}
 		}
 		Factorize(grammar, similiarRules);
+
+		std::cout << "\nGrammar after factorize\n";
+		PrintGrammar(grammar);
 		Grammar out;
 
 		RemoveRecursion(grammar, out, similiarRules);
@@ -263,6 +282,10 @@ void FactorizeGrammar(Grammar& grammar, const std::vector<std::string>& nontermi
 		{
 			grammar.push_back(*it);
 		}
+
+
+		std::cout << "\nGrammar after recursion\n";
+		PrintGrammar(grammar);
 	}
 }
 
@@ -282,6 +305,9 @@ void FormGuideSet(Grammar& grammar)
 {
 
 }
+
+
+
 
 Grammar CreateGrammar(const std::string grammarStr)
 {
@@ -308,8 +334,21 @@ Grammar CreateGrammar(const std::string grammarStr)
 			grammar.push_back(rule);
 		}
 	}
+
 	FactorizeGrammar(grammar, nonterminals);
-	FormGuideSet(grammar);
+
+
+	std::sort(grammar.begin(), grammar.end(), [](Rules leftRules, Rules rightRules) {
+		return leftRules.left < rightRules.left;
+	});
+
+
+	std::cout << "\nResult\n";
+	PrintGrammar(grammar);
+
+	//FormGuideSet(grammar);
+
+
 	return grammar;
 }
 
