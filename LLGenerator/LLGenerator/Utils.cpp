@@ -3,6 +3,7 @@
 #include <iostream>
 #include <sstream>
 #include <algorithm>
+#include <utility>
 
 
 std::vector<Rules> GetRules(const std::string& rules)
@@ -301,13 +302,96 @@ void AddNonteminal(std::vector<std::string>& arr, const std::string& nonterminal
 	}
 }
 
-void FormGuideSet(Grammar& grammar)
-{
 
+
+std::vector<std::string> GetTerminals(Grammar &const grammar) 
+{
+	std::vector<std::string> terminals;
+
+	for (auto rules: grammar)
+	{
+		for (auto it : rules.right)
+		{
+			if (it.front() != '<' &&
+				std::find_if(terminals.begin(), terminals.end(), [&](std::string &terminal){ return terminal == it;}) == terminals.end())
+			{
+				terminals.push_back(it);
+			}
+		}
+	}
+
+	return terminals;
+}
+
+void CreateFirstRelation(std::vector<HasTransitionPair>& const terminalsAndNonterminals, 
+	std::vector<Transition>& transitions, Grammar const& grammar)
+{
+	for (auto& rule: grammar)
+	{
+		size_t nonterminalTransitionIndex = std::distance(transitions.begin(), 
+			std::find_if(transitions.begin(), transitions.end(), [&](Transition& transition) { return transition.first == rule.left; }));
+
+		size_t destinationIndex = std::distance(terminalsAndNonterminals.begin(),
+			std::find_if(terminalsAndNonterminals.begin(), terminalsAndNonterminals.end(), 
+				[&](HasTransitionPair& const hasTransitionPair) { return hasTransitionPair.first == rule.right.front(); }));
+
+		if (nonterminalTransitionIndex < transitions.size() && destinationIndex < terminalsAndNonterminals.size())
+		{
+			if (rule.right.front() == EMPTY_RULE)
+			{
+				//SearchStartingTerminalsEmptyRules(outputDatas, outputData.nonterminal, outputData.nonterminal, transitions, characters);
+			}
+			else
+			{
+				transitions[nonterminalTransitionIndex].second[destinationIndex].second = true;
+			}
+		}
+	}
 }
 
 
+void CreateFirstPlusRelation(std::vector<Transition>& transitions) 
+{
+	for (auto &transition : transitions)
+	{
+		for (size_t i = 0; i < transitions.size(); i++)
+		{
+			if (transition.second[i].second)
+			{
+				size_t foundNonterminalIndex = std::distance(transitions.begin(),
+					std::find_if(transitions.begin(), transitions.end(), [&](Transition& transition) { return transition.first == transition.second[i].first; }));
 
+				for (size_t j = 0; j < transitions[foundNonterminalIndex].second.size(); j++)
+				{
+					if (transitions[foundNonterminalIndex].second[j].second)
+					{
+						transition.second[j].second = true;
+					}
+				}
+			}
+		}
+	}
+}
+
+void FormGuideSet(Grammar& grammar, std::vector<std::string>& nonterminals)
+{
+	std::vector<std::string> terminals = GetTerminals(grammar);
+	std::vector<HasTransitionPair> terminalsAndNonterminals;
+
+	std::vector<Transition> transitions;
+
+	std::for_each(nonterminals.begin(), nonterminals.end(), [&](std::string nonterminal) {terminalsAndNonterminals.push_back({ nonterminal, false }); });
+	std::for_each(terminals.begin(), terminals.end(), [&](std::string terminal) {terminalsAndNonterminals.push_back({ terminal, false }); });
+
+
+	std::for_each(nonterminals.begin(), nonterminals.end(),
+		[&](std::string const& nontreminal) { transitions.push_back(std::make_pair(nontreminal, terminalsAndNonterminals)); });
+
+	CreateFirstRelation(terminalsAndNonterminals, transitions, grammar);
+	CreateFirstPlusRelation(transitions);
+
+
+}
 
 Grammar CreateGrammar(const std::string grammarStr)
 {
@@ -346,7 +430,7 @@ Grammar CreateGrammar(const std::string grammarStr)
 	std::cout << "\nResult\n";
 	PrintGrammar(grammar);
 
-	//FormGuideSet(grammar);
+	FormGuideSet(grammar, nonterminals);
 
 
 	return grammar;

@@ -5,7 +5,11 @@ int main()
 {
 
 	Grammar gr;
-	std::string gram = R"(<S> -> <S> a | ( <S> ) | b)";
+	//std::string gram = R"(<S> -> <S> a | ( <S> ) | b)";
+	std::string gram = R"(<S> -> <A> a 
+<S> -> b
+<A> -> c <A> <S>
+<A> -> e)";
 	CreateGrammar(gram);
 	//CreateGrammar("<A> -> l\n<A> -> <A> a c r\n<A> -> <A> a q\n<B> -> <B> o\n<B> -> <B> c\n<B> -> <O> o\n<B> -> y");
 	//CreateGrammar("<A> -> l\n<A> -> <A> a\n<A> -> <B> z\n <A> -> <A> a b\n <A> -> <A> a c r\n<A> -> <A> a q\n<A> -> <B> b\n <A> -> <B> f\n<A> -> <Z> a\n<A> -> <Z> t\n<A> -> <T> t");

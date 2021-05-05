@@ -17,7 +17,10 @@ struct Rules
 	std::vector<std::string> right;
 	std::vector<std::string> guideSet;
 };
+
 typedef std::vector<Rules> Grammar;
+typedef std::pair<std::string, bool> HasTransitionPair;
+typedef	std::pair<std::string, std::vector<HasTransitionPair>> Transition;
 
 
 
