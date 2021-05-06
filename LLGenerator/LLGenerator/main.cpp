@@ -6,10 +6,26 @@ int main()
 
 	Grammar gr;
 	//std::string gram = R"(<S> -> <S> a | ( <S> ) | b)";
-	std::string gram = R"(<S> -> id = <E>
-<S> -> while <E> do <S>
-<E> -> <E> + <E>
-<E> -> id)";
+
+
+//	std::string gram = R"(<S> -> id = <E>
+//<S> -> while <E> do <S>
+//<E> -> <E> + <E>
+//<E> -> id)";
+
+//	std::string gram = R"(<S> -> <E>
+//<E> -> ( )
+//<E> -> ( <E> = <E> <A> )
+//<E> -> <B>
+//<A> -> e
+//<A> -> + <E>
+//<B> -> a
+//<B> -> b)";
+
+	std::string gram = R"(<A> -> + <E> <A>
+<A> -> e
+<A> -> k
+<E> -> id <A>)";
 
 //	std::string gram = R"(<S> -> <A> a 
 //<S> -> b
@@ -39,7 +55,7 @@ int main()
 //<A> -> a <A> b
 //<A> -> c)";
 
-
+//
 //	std::string gram = R"(<U> -> <A> <B> <C>
 //<A> -> a <A> 
 //<A> -> e
