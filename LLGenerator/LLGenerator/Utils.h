@@ -6,7 +6,7 @@
 
 const std::string EMPTY_RULE = "e";
 const std::string RULE_SEPARATOR = "|";
-const std::string END_SEQUENCE = "_|_";
+const std::string END_SEQUENCE = "$";
 const std::string RULE_DEFINITION_SEPARATOR = "->";
 const std::string GUIDE_SET_SEPARATOR = "/";
 

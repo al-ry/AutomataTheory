@@ -30,7 +30,7 @@ void DeleteNonFactorizedRules(Grammar& grammar, const Grammar& similiarRules)
 {
 	Grammar tmpGrammar;
 	Grammar copy = grammar;
-	//std::copy(grammar.begin(), grammar.end(), copyGrammar);
+
 	for (auto smrIt = similiarRules.begin(); smrIt != similiarRules.end(); smrIt++)
 	{
 		for (auto grmIt = grammar.begin(); grmIt != grammar.end();)
@@ -74,7 +74,7 @@ void AddNewRulesToGrammar(Grammar& sourceGrammar, std::vector<std::string>& simP
 	}
 }
 
-void Factorize(Grammar& grammar, Grammar& similiarRules)
+bool Factorize(Grammar& grammar, Grammar& similiarRules)
 {
 	//std::vector<std::string> similiarPart;
 	Grammar rulesWithSimPart;
@@ -93,6 +93,11 @@ void Factorize(Grammar& grammar, Grammar& similiarRules)
 				}
 			}
 		}
+	}
+
+	if (rulesWithSimPart.size() == 0)
+	{
+		return false;
 	}
 
 	DeleteNonFactorizedRules(grammar, rulesWithSimPart);
@@ -135,6 +140,7 @@ void Factorize(Grammar& grammar, Grammar& similiarRules)
 			return rule1.right.size() < rule2.right.size();
 			});
 		auto first = grmIt->begin()->right;
+
 		std::vector<std::string> similiarPart;
 		std::vector<std::vector<std::string>> nonsimiliarPart;
 		for (size_t i = 0; i < first.size(); i++)
@@ -145,6 +151,10 @@ void Factorize(Grammar& grammar, Grammar& similiarRules)
 			if (isEqual)
 			{
 				similiarPart.push_back(first[i]);
+			}
+			else
+			{
+				break;
 			}
 		}
 		for (auto it = grmIt->begin(); it != grmIt->end(); it++)
@@ -163,6 +173,7 @@ void Factorize(Grammar& grammar, Grammar& similiarRules)
 				nonsimiliarPart.push_back(tmpSymbols);
 			}
 		}
+
 		AddNewRulesToGrammar(grammar, similiarPart, nonsimiliarPart, similiarRules[0].left);
 		std::string sourceNonterminal = similiarRules[0].left;
 		similiarRules.clear();
@@ -174,15 +185,18 @@ void Factorize(Grammar& grammar, Grammar& similiarRules)
 			}
 		}
 	}
+
+	return true;
 }
 
 
-void RemoveRecursion(Grammar& grammar, Grammar& outputGrammar, std::vector<Rules>& similiarRules)
+bool RemoveRecursion(Grammar& grammar, Grammar& outputGrammar, std::vector<Rules>& similiarRules)
 {
 	bool hasEmptyRule = std::find_if(similiarRules.begin(), similiarRules.end(), [&](const Rules& rule) {
 		return rule.right.front() == "e"; }) != similiarRules.end();
 
 	bool hasRecursion = false;
+
 	for (size_t i = 0; i < similiarRules.size(); i++)
 	{
 		if (similiarRules[i].left == similiarRules[i].right[0])
@@ -224,10 +238,13 @@ void RemoveRecursion(Grammar& grammar, Grammar& outputGrammar, std::vector<Rules
 			}
 		}
 		outputGrammar.push_back({ randomedNonTerminal, std::vector<std::string> {"e"} });
+
+		return true;
 	}
 	else
 	{
 		std::copy(similiarRules.begin(), similiarRules.end(), std::back_inserter(outputGrammar));
+		return false;
 	}
 }
 
@@ -242,6 +259,14 @@ void PrintGrammar(Grammar& const grammar)
 		{
 			std::cout << rule << " ";
 		}
+
+		std::cout << " { ";
+		for (auto guideSymbol : rules.guideSet)
+		{
+			std::cout << guideSymbol << " ";
+		}
+
+		std::cout << "}\n";
 
 		std::cout << "\n";
 	}
@@ -271,18 +296,24 @@ void FactorizeGrammar(Grammar& grammar, const std::vector<std::string>& nontermi
 				similiarRules.push_back(*it);
 			}
 		}
+
 		Factorize(grammar, similiarRules);
 
 		std::cout << "\nGrammar after factorize\n";
 		PrintGrammar(grammar);
 		Grammar out;
 
-		RemoveRecursion(grammar, out, similiarRules);
-		DeleteNonFactorizedRules(grammar, similiarRules);
-		for (auto it = out.begin(); it != out.end(); it++)
+		if (RemoveRecursion(grammar, out, similiarRules))
 		{
-			grammar.push_back(*it);
-		}
+			DeleteNonFactorizedRules(grammar, similiarRules);
+
+			for (auto it = out.begin(); it != out.end(); it++)
+			{
+				grammar.push_back(*it);
+			}
+		};
+
+
 
 
 		std::cout << "\nGrammar after recursion\n";
@@ -323,6 +354,49 @@ std::vector<std::string> GetTerminals(Grammar &const grammar)
 	return terminals;
 }
 
+void FindTerminalsForEmptyRule(Grammar const& grammar, std::string parentNonterminal, std::string nonterminal,
+	std::vector<Transition>& transitions, std::vector<HasTransitionPair>& const terminalsAndNonterminals)
+{
+	for (auto& rule : grammar)
+	{
+		auto foundInOtherRule = std::find_if(rule.right.begin(), rule.right.end(), [&](std::string const& rightSideSymbol) { return rightSideSymbol == nonterminal; });
+
+		if (foundInOtherRule != rule.right.end())
+		{
+			size_t foundNonterminalIndex = std::distance(rule.right.begin(), foundInOtherRule);
+
+			std::string nextSymbol = foundNonterminalIndex <= rule.right.size() - 1 ? (foundNonterminalIndex < rule.right.size() - 1 ?
+				rule.right[foundNonterminalIndex + 1] : rule.right.back()) : EMPTY_RULE;
+
+			size_t parentIndex = std::distance(transitions.begin(),
+				std::find_if(transitions.begin(), transitions.end(), [&](Transition& transition) { return transition.first == parentNonterminal; }));
+
+			size_t transitionIndex = std::distance(terminalsAndNonterminals.begin(),
+				std::find_if(terminalsAndNonterminals.begin(), terminalsAndNonterminals.end(),
+					[&](HasTransitionPair& const hasTransitionPair) { return hasTransitionPair.first == nextSymbol; }));
+
+			if (parentIndex < transitions.size() && transitionIndex < terminalsAndNonterminals.size() && nextSymbol != parentNonterminal)
+			{
+				transitions[parentIndex].second[transitionIndex].second = true;
+			}
+
+
+			if (nonterminal == parentNonterminal && rule.left != nonterminal)
+			{
+				for (auto& nextRule : grammar)
+				{
+					auto it2 = std::find_if(nextRule.right.begin(), nextRule.right.end(), [&](const std::string& str) { return str == rule.left; });
+
+					if (it2 != nextRule.right.end())
+					{
+						FindTerminalsForEmptyRule(grammar, parentNonterminal, (*it2), transitions, terminalsAndNonterminals);
+					}
+				}
+			}
+		}
+	}
+}
+
 void CreateFirstRelation(std::vector<HasTransitionPair>& const terminalsAndNonterminals, 
 	std::vector<Transition>& transitions, Grammar const& grammar)
 {
@@ -339,7 +413,7 @@ void CreateFirstRelation(std::vector<HasTransitionPair>& const terminalsAndNonte
 		{
 			if (rule.right.front() == EMPTY_RULE)
 			{
-				//SearchStartingTerminalsEmptyRules(outputDatas, outputData.nonterminal, outputData.nonterminal, transitions, characters);
+				FindTerminalsForEmptyRule(grammar, rule.left, rule.left, transitions, terminalsAndNonterminals);
 			}
 			else
 			{
@@ -352,11 +426,11 @@ void CreateFirstRelation(std::vector<HasTransitionPair>& const terminalsAndNonte
 
 void CreateFirstPlusRelation(std::vector<Transition>& transitions) 
 {
-	for (auto &transition : transitions)
+	for (auto it = transitions.rbegin(); it != transitions.rend(); ++it)
 	{
 		for (size_t i = 0; i < transitions.size(); i++)
 		{
-			if (transition.second[i].second)
+			if ((*it).second[i].second)
 			{
 				size_t foundNonterminalIndex = std::distance(transitions.begin(),
 					std::find_if(transitions.begin(), transitions.end(), [&](Transition& transition) { return transition.first == transition.second[i].first; }));
@@ -365,12 +439,36 @@ void CreateFirstPlusRelation(std::vector<Transition>& transitions)
 				{
 					if (transitions[foundNonterminalIndex].second[j].second)
 					{
-						transition.second[j].second = true;
+						(*it).second[j].second = true;
 					}
 				}
 			}
 		}
 	}
+}
+
+bool IsNonterminal(std::string const& str)
+{
+	return !str.empty() && str.front() == '<' && str.back() == '>';
+}
+
+
+std::vector<std::string> GetAllTerminalsOf(std::string& nonterminal, std::vector<Transition> transitions)
+{
+	std::vector<std::string> terminals;
+
+	size_t nonterminalTransitionIndex = std::distance(transitions.begin(),
+		std::find_if(transitions.begin(), transitions.end(), [&](Transition& transition) { return transition.first == nonterminal; }));
+
+	for (size_t i = 0; i < transitions[nonterminalTransitionIndex].second.size(); i++)
+	{
+		if (transitions[nonterminalTransitionIndex].second[i].second && !IsNonterminal(transitions[nonterminalTransitionIndex].second[i].first))
+		{
+			terminals.push_back(transitions[nonterminalTransitionIndex].second[i].first);
+		}
+	}
+
+	return terminals;
 }
 
 void FormGuideSet(Grammar& grammar, std::vector<std::string>& nonterminals)
@@ -390,7 +488,101 @@ void FormGuideSet(Grammar& grammar, std::vector<std::string>& nonterminals)
 	CreateFirstRelation(terminalsAndNonterminals, transitions, grammar);
 	CreateFirstPlusRelation(transitions);
 
+	for (auto &rule : grammar)
+	{
+		size_t nonterminalTransitionIndex = std::distance(transitions.begin(),
+			std::find_if(transitions.begin(), transitions.end(), [&](Transition& transition) { return transition.first == rule.left; }));
 
+		auto similarNonterminalWithEmptyRule = std::find_if(grammar.begin(), grammar.end(), [&](const Rules& similarRule) { return rule.left == similarRule.left && similarRule.right.front() == EMPTY_RULE; });
+
+		if (nonterminalTransitionIndex < transitions.size())
+		{
+			std::vector<std::string> guideSet;
+			std::string firstRuleSymbol = rule.right.front();
+
+			if (IsNonterminal(firstRuleSymbol))
+			{
+				rule.guideSet = GetAllTerminalsOf(firstRuleSymbol, transitions);
+
+				if (similarNonterminalWithEmptyRule != grammar.end())
+				{
+					for (size_t i = 0; i < transitions[nonterminalTransitionIndex].second.size(); i++)
+					{
+						auto foundSimilarSymbol = std::find(rule.guideSet.begin(), rule.guideSet.end(), transitions[nonterminalTransitionIndex].second[i].first);
+
+						if (foundSimilarSymbol != rule.guideSet.end())
+						{
+							transitions[nonterminalTransitionIndex].second[i].first = "";
+						}
+					}
+				}
+			}
+			else
+			{
+				for (size_t i = nonterminals.size(); i < transitions[nonterminalTransitionIndex].second.size(); i++)
+				{
+					if (transitions[nonterminalTransitionIndex].second[i].second)
+					{
+						std::string transitionSymbol = transitions[nonterminalTransitionIndex].second[i].first;
+						if (!transitionSymbol.empty() && (firstRuleSymbol == transitionSymbol || firstRuleSymbol == EMPTY_RULE))
+						{
+							guideSet.push_back(transitionSymbol);
+							transitions[nonterminalTransitionIndex].second[i].first = "";
+						}
+
+
+					}
+				}
+
+				rule.guideSet = guideSet;
+			}
+		}
+	}
+}
+
+void AddNonterminals(std::vector<std::string>& nontemrinals, Grammar& const grammar)
+{
+	for (auto const& rule : grammar)
+	{
+		if (IsNonterminal(rule.left) && std::find(nontemrinals.begin(), nontemrinals.end(), rule.left) == nontemrinals.end())
+		{
+			nontemrinals.push_back(rule.left);
+		}
+	}
+}
+
+
+void AddEndSequenceToAxiom(Grammar& grammar, std::string const& axiom)
+{
+	for (auto& rule : grammar)
+	{
+		if (rule.left == axiom)
+		{
+			rule.right.push_back(END_SEQUENCE);
+		}
+	}
+}
+
+Grammar GetSortedGrammar(Grammar& const grammar)
+{
+	Grammar startsFromNonterminalsGrammar;
+	Grammar startsFromTerminalsGrammar;
+
+	for (auto& rule : grammar)
+	{
+		if (IsNonterminal(rule.right.front()))
+		{
+			startsFromNonterminalsGrammar.push_back(rule);
+		}
+		else
+		{
+			startsFromTerminalsGrammar.push_back(rule);
+		}
+	}
+
+	std::copy(startsFromTerminalsGrammar.begin(), startsFromTerminalsGrammar.end(), std::back_inserter(startsFromNonterminalsGrammar));
+
+	return startsFromNonterminalsGrammar;
 }
 
 Grammar CreateGrammar(const std::string grammarStr)
@@ -419,22 +611,29 @@ Grammar CreateGrammar(const std::string grammarStr)
 		}
 	}
 
+	std::string axiom = grammar.front().left;
+
 	FactorizeGrammar(grammar, nonterminals);
+	AddNonterminals(nonterminals, grammar);
 
+	AddEndSequenceToAxiom(grammar, axiom);
 
-	std::sort(grammar.begin(), grammar.end(), [](Rules leftRules, Rules rightRules) {
-		return leftRules.left < rightRules.left;
-	});
+	//std::sort(grammar.begin(), grammar.end(), [](Rules leftRules, Rules rightRules) {
+		//return leftRules.left < rightRules.left;
+	//});
 
 
 	std::cout << "\nResult\n";
-	PrintGrammar(grammar);
+
+	grammar = GetSortedGrammar(grammar);
 
 	FormGuideSet(grammar, nonterminals);
-
+	PrintGrammar(grammar);
 
 	return grammar;
 }
+
+
 
 
 std::string ReadGrammarFromFile(const std::string inputFile)
