@@ -313,9 +313,6 @@ void FactorizeGrammar(Grammar& grammar, const std::vector<std::string>& nontermi
 			}
 		};
 
-
-
-
 		std::cout << "\nGrammar after recursion\n";
 		PrintGrammar(grammar);
 	}
@@ -332,8 +329,6 @@ void AddNonteminal(std::vector<std::string>& arr, const std::string& nonterminal
 		arr.push_back(nonterminal);
 	}
 }
-
-
 
 std::vector<std::string> GetTerminals(Grammar &const grammar) 
 {
@@ -377,6 +372,7 @@ bool IsSameRules(Rules const& firstRule, Rules const& secondRule)
 void FindTerminalsForEmptyRule(Grammar const& grammar, Rules parentRule, Rules rule,
 	std::vector<Transition>& transitions, std::vector<HasTransitionPair>& const terminalsAndNonterminals)
 {
+	//may be bug with adding same symbol several times
 	for (auto& foundRule : grammar)
 	{
 		auto foundInOtherRule = std::find_if(foundRule.right.begin(), foundRule.right.end(), [&](std::string const& rightSideSymbol) { return rightSideSymbol == rule.left; });
@@ -387,7 +383,7 @@ void FindTerminalsForEmptyRule(Grammar const& grammar, Rules parentRule, Rules r
 
 			if (foundNonterminalIndex == foundRule.right.size() - 1)
 			{
-				if (!IsSameRules(rule, foundRule))
+				if (!IsSameRules(rule, foundRule) && foundRule.left != parentRule.left)
 				{
 					FindTerminalsForEmptyRule(grammar, parentRule, foundRule, transitions, terminalsAndNonterminals);
 				}
@@ -632,6 +628,34 @@ Grammar GetSortedGrammar(Grammar& const grammar)
 	return startsFromNonterminalsGrammar;
 }
 
+void SortGrammarByLeftNonterminal(Grammar &grammar, std::string const& axiom)
+{
+	std::sort(grammar.begin(), grammar.end(), [](Rules const& leftRule, Rules const& rightRule) {return leftRule.left > rightRule.left; });
+
+	Grammar newGrammar;
+	Grammar nonAxiomRules;
+
+	for (auto &rule : grammar)
+	{
+		if (rule.left != axiom)
+		{
+			nonAxiomRules.push_back(rule);
+		}
+		else
+		{
+			newGrammar.push_back(rule);
+		}
+	}
+
+	for (auto &rule : nonAxiomRules)
+	{
+		newGrammar.push_back(rule);
+	}
+
+	grammar = newGrammar;
+
+}
+
 Grammar CreateGrammar(const std::string grammarStr)
 {
 	Grammar grammar;
@@ -665,16 +689,17 @@ Grammar CreateGrammar(const std::string grammarStr)
 
 	AddEndSequenceToAxiom(grammar, axiom);
 
-	//std::sort(grammar.begin(), grammar.end(), [](Rules leftRules, Rules rightRules) {
-		//return leftRules.left < rightRules.left;
-	//});
-
-
-	std::cout << "\nResult\n";
 
 	grammar = GetSortedGrammar(grammar);
+	PrintGrammar(grammar);
 
 	FormGuideSet(grammar, nonterminals);
+	PrintGrammar(grammar);
+
+
+	SortGrammarByLeftNonterminal(grammar, axiom);
+
+	std::cout << "\nResult\n";
 	PrintGrammar(grammar);
 
 	return grammar;

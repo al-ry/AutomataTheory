@@ -1,4 +1,24 @@
 #include "Utils.h"
+#include "Generator.h"
+#include <fstream>
+
+void PrintTable(Table table, std::ostream& out)
+{
+	out << "Number" << TAB << "Symbol" << TAB << "GS" << TAB << "Shift" << TAB << "Error" << TAB << "Pointer" << TAB << "Stack" << TAB << "End" << TAB<< std::endl;
+	std::ostream_iterator<std::string> output_iterator(out, " ");
+
+
+	for (size_t i = 0; i < table.size(); ++i)
+	{
+		size_t counter = i;
+
+		out << counter <<  TAB << table[i].symbol << TAB;
+		std::copy(table[i].guideSet.begin(), table[i].guideSet.end(), output_iterator);
+		out << TAB << table[i].shift << TAB << table[i].error << TAB << (table[i].pointer.has_value() ? std::to_string(table[i].pointer.value()) : "null") << TAB << table[i].isInStack << TAB << table[i].end << TAB;
+		out << std::endl;
+	}
+};
+
 
 
 int main()
@@ -13,19 +33,40 @@ int main()
 //<E> -> <E> + <E>
 //<E> -> id)";
 
-//	std::string gram = R"(<S> -> <E>
-//<E> -> ( )
-//<E> -> ( <E> = <E> <A> )
-//<E> -> <B>
-//<A> -> e
-//<A> -> + <E>
-//<B> -> a
-//<B> -> b)";
-
-	std::string gram = R"(<A> -> + <E> <A>
+	std::string gram = R"(<S> -> <E>
+<E> -> ( )
+<E> -> ( <E> = <E> <A> )
+<E> -> <B>
 <A> -> e
-<A> -> k
-<E> -> id <A>)";
+<A> -> + <E>
+<B> -> a
+<B> -> b)";
+
+//	std::string gram = R"(<A> -> + <E> <A>
+//<A> -> e
+//<A> -> k
+//<A> -> b
+//<A> -> f
+//<E> -> id <A>)";
+
+//	std::string gram = R"(<S> -> type <F>
+//<F> -> <I> = <T>
+//<F> -> <I> = <T> ; <F>
+//<T> -> int
+//<T> -> record <G> end
+//<G> -> <I> : <T>
+//<G> -> <I> : <T> ; <G>
+//<I> -> a
+//<I> -> b
+//<I> -> c)";
+
+//	std::string gram = R"(<P> -> <S>
+//<S> -> <S>  a
+//<S> -> ( <S> )
+//<S> -> b)";
+
+
+
 
 //	std::string gram = R"(<S> -> <A> a 
 //<S> -> b
@@ -64,7 +105,15 @@ int main()
 //<C> -> c <C>
 //<C> -> e)";
 
-	CreateGrammar(gram);
+	auto grammar = CreateGrammar(gram);
+
+	auto table = GenerateTable(grammar);
+
+	std::string name = "output.txt";
+
+	std::ofstream file(name);
+
+	PrintTable(table, file);
 
 
 
