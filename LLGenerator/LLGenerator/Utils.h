@@ -42,8 +42,12 @@ typedef std::vector<TableRow> Table;
 
 void AddRule(Grammar& grammar, const std::string& left, const Rules& right);
 
-Grammar CreateGrammar(const std::string grammarStr);
+Grammar CreateGrammar(std::istream& input);
 
 std::string ReadGrammarFromFile(const std::string inputFile);
 bool IsNonterminal(std::string const& str);
+
+void PrintGrammar(Grammar& const grammar, std::ostream& output);
+
+void PrintTable(Table table, std::ostream& out);
 

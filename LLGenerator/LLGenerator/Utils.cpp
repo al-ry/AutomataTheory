@@ -4,6 +4,8 @@
 #include <sstream>
 #include <algorithm>
 #include <utility>
+#include <iterator>
+
 
 
 std::vector<Rules> GetRules(const std::string& rules)
@@ -249,28 +251,46 @@ bool RemoveRecursion(Grammar& grammar, Grammar& outputGrammar, std::vector<Rules
 }
 
 
-void PrintGrammar(Grammar& const grammar)
+void PrintGrammar(Grammar& const grammar, std::ostream& output)
 {
 	for (auto rules : grammar)
 	{
-		std::cout << rules.left << " -> ";
+		output << rules.left << " -> ";
 
 		for (auto rule : rules.right)
 		{
-			std::cout << rule << " ";
+			output << rule << " ";
 		}
 
-		std::cout << " { ";
+		output << " { ";
 		for (auto guideSymbol : rules.guideSet)
 		{
-			std::cout << guideSymbol << " ";
+			output << guideSymbol << " ";
 		}
 
-		std::cout << "}\n";
+		output << "}\n";
 
-		std::cout << "\n";
+		output << "\n";
 	}
 }
+
+
+void PrintTable(Table table, std::ostream& out)
+{
+	out << "Number" << TAB << "Symbol" << TAB << "GS" << TAB << "Shift" << TAB << "Error" << TAB << "Pointer" << TAB << "Stack" << TAB << "End" << TAB << std::endl;
+	std::ostream_iterator<std::string> output_iterator(out, " ");
+
+
+	for (size_t i = 0; i < table.size(); ++i)
+	{
+		size_t counter = i;
+
+		out << counter << TAB << table[i].symbol << TAB;
+		std::copy(table[i].guideSet.begin(), table[i].guideSet.end(), output_iterator);
+		out << TAB << table[i].shift << TAB << table[i].error << TAB << (table[i].pointer.has_value() ? std::to_string(table[i].pointer.value()) : "null") << TAB << table[i].isInStack << TAB << table[i].end << TAB;
+		out << "\n";
+	}
+};
 
 void FactorizeGrammar(Grammar& grammar, const std::vector<std::string>& nonterminals)
 {
@@ -300,7 +320,7 @@ void FactorizeGrammar(Grammar& grammar, const std::vector<std::string>& nontermi
 		Factorize(grammar, similiarRules);
 
 		std::cout << "\nGrammar after factorize\n";
-		PrintGrammar(grammar);
+		PrintGrammar(grammar, std::cout);
 		Grammar out;
 
 		if (RemoveRecursion(grammar, out, similiarRules))
@@ -314,7 +334,7 @@ void FactorizeGrammar(Grammar& grammar, const std::vector<std::string>& nontermi
 		};
 
 		std::cout << "\nGrammar after recursion\n";
-		PrintGrammar(grammar);
+		PrintGrammar(grammar, std::cout);
 	}
 }
 
@@ -372,7 +392,6 @@ bool IsSameRules(Rules const& firstRule, Rules const& secondRule)
 void FindTerminalsForEmptyRule(Grammar const& grammar, Rules parentRule, Rules rule,
 	std::vector<Transition>& transitions, std::vector<HasTransitionPair>& const terminalsAndNonterminals)
 {
-	//may be bug with adding same symbol several times
 	for (auto& foundRule : grammar)
 	{
 		auto foundInOtherRule = std::find_if(foundRule.right.begin(), foundRule.right.end(), [&](std::string const& rightSideSymbol) { return rightSideSymbol == rule.left; });
@@ -656,14 +675,13 @@ void SortGrammarByLeftNonterminal(Grammar &grammar, std::string const& axiom)
 
 }
 
-Grammar CreateGrammar(const std::string grammarStr)
+Grammar CreateGrammar(/*const std::string grammarStr*/ std::istream & input)
 {
 	Grammar grammar;
-
 	std::vector<std::string> nonterminals;
-	std::stringstream ss(grammarStr);
+	//std::stringstream ss(grammarStr);
 	std::string line;
-	while (std::getline(ss, line))
+	while (std::getline(input, line))
 	{
 		std::stringstream ruleLine(line);
 		std::string tmp;
@@ -691,16 +709,16 @@ Grammar CreateGrammar(const std::string grammarStr)
 
 
 	grammar = GetSortedGrammar(grammar);
-	PrintGrammar(grammar);
+	PrintGrammar(grammar, std::cout);
 
 	FormGuideSet(grammar, nonterminals);
-	PrintGrammar(grammar);
+	PrintGrammar(grammar, std::cout);
 
 
 	SortGrammarByLeftNonterminal(grammar, axiom);
 
 	std::cout << "\nResult\n";
-	PrintGrammar(grammar);
+	PrintGrammar(grammar, std::cout);
 
 	return grammar;
 }

@@ -1,0 +1,10 @@
+<S> -> id = <E> $  { id }
+
+<S> -> while <E> do <S> $  { while }
+
+<R0> -> + <E> <R0>  { + }
+
+<R0> -> e  { $ do + }
+
+<E> -> id <R0>  { id }
+
