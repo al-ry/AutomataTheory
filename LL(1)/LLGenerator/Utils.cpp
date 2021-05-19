@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <utility>
 #include <iterator>
-
+#include <set>
 
 
 std::vector<Rules> GetRules(const std::string& rules)
@@ -38,7 +38,7 @@ void DeleteNonFactorizedRules(Grammar& grammar, const Grammar& similiarRules)
 		for (auto grmIt = grammar.begin(); grmIt != grammar.end();)
 		{
 			auto end = grammar.end();
-			if (grmIt->right == smrIt->right)
+			if (grmIt->right == smrIt->right && grmIt->left == smrIt->left)
 			{	
 				grmIt = grammar.erase(grmIt);
 			}
@@ -67,6 +67,7 @@ void AddNewRulesToGrammar(Grammar& sourceGrammar, std::vector<std::string>& simP
 	rule.left = leftSym;
 	rule.right = simPart;
 	sourceGrammar.push_back(rule);
+
 	for (auto it = nonsimPart.begin(); it != nonsimPart.end(); it++)
 	{
 		Rules rule;
@@ -206,7 +207,7 @@ bool RemoveRecursion(Grammar& grammar, Grammar& outputGrammar, std::vector<Rules
 			hasRecursion = true;
 		}
 	}
-
+	
 	if (hasRecursion)
 	{
 		std::string randomedNonTerminal = "<R" + GenerateRandomNonTerminal() + ">";
@@ -228,7 +229,7 @@ bool RemoveRecursion(Grammar& grammar, Grammar& outputGrammar, std::vector<Rules
 				ruleWithoutRecursion.left = randomedNonTerminal;
 				ruleWithoutRecursion.right = std::vector<std::string>(rule.right.begin() + 1, rule.right.end());
 			}
-			else if (!hasEmptyRule)
+			else if (rule.right[0] != EMPTY_RULE)
 			{
 				ruleWithoutRecursion.left = rule.left;
 				ruleWithoutRecursion.right = rule.right;
@@ -389,8 +390,8 @@ bool IsSameRules(Rules const& firstRule, Rules const& secondRule)
 }
 
 
-void FindTerminalsForEmptyRule(Grammar const& grammar, Rules parentRule, Rules rule,
-	std::vector<Transition>& transitions, std::vector<HasTransitionPair>& const terminalsAndNonterminals)
+void FindTerminalsForEmptyRule(Grammar const& grammar, Rules parentRule, Rules rule, std::optional<Rules> prevRule,
+	std::vector<Transition>& transitions, std::vector<HasTransitionPair>& const terminalsAndNonterminals, std::vector<Rules> & passedRules)
 {
 	for (auto& foundRule : grammar)
 	{
@@ -402,9 +403,13 @@ void FindTerminalsForEmptyRule(Grammar const& grammar, Rules parentRule, Rules r
 
 			if (foundNonterminalIndex == foundRule.right.size() - 1)
 			{
-				if (!IsSameRules(rule, foundRule) && foundRule.left != parentRule.left)
+				auto isPassed = std::find_if(passedRules.begin(), passedRules.end(), [&](Rules const& anyRule) {
+					return anyRule.left == foundRule.left && anyRule.right == foundRule.right; });
+
+				if (!IsSameRules(rule, foundRule) && foundRule.left != parentRule.left && isPassed == passedRules.end())
 				{
-					FindTerminalsForEmptyRule(grammar, parentRule, foundRule, transitions, terminalsAndNonterminals);
+					passedRules.push_back(foundRule);
+					FindTerminalsForEmptyRule(grammar, parentRule, foundRule, rule, transitions, terminalsAndNonterminals, passedRules);
 				}
 			}
 			else
@@ -467,7 +472,8 @@ void CreateFirstRelation(std::vector<HasTransitionPair>& const terminalsAndNonte
 		{
 			if (rule.right.front() == EMPTY_RULE)
 			{
-				FindTerminalsForEmptyRule(grammar, rule, rule, transitions, terminalsAndNonterminals);
+				std::vector<Rules> passedRules;
+				FindTerminalsForEmptyRule(grammar, rule, rule, std::nullopt, transitions, terminalsAndNonterminals, passedRules);
 			}
 			else
 			{
@@ -703,28 +709,29 @@ Grammar CreateGrammar(/*const std::string grammarStr*/ std::istream & input)
 	std::string axiom = grammar.front().left;
 
 	FactorizeGrammar(grammar, nonterminals);
+
 	AddNonterminals(nonterminals, grammar);
 
 	AddEndSequenceToAxiom(grammar, axiom);
 
 
 	grammar = GetSortedGrammar(grammar);
-	PrintGrammar(grammar, std::cout);
+	std::cout << "Formed grammar\n";
+	//PrintGrammar(grammar, std::cout);
 
 	FormGuideSet(grammar, nonterminals);
-	PrintGrammar(grammar, std::cout);
+
+	
+	//PrintGrammar(grammar, std::cout);
 
 
 	SortGrammarByLeftNonterminal(grammar, axiom);
 
-	std::cout << "\nResult\n";
-	PrintGrammar(grammar, std::cout);
+	//std::cout << "\nResult\n";
+	//PrintGrammar(grammar, std::cout);
 
 	return grammar;
 }
-
-
-
 
 std::string ReadGrammarFromFile(const std::string inputFile)
 {
