@@ -1,0 +1,7 @@
+<S> -> if <A> then <S>
+<S> -> is <A> then <S> else <S>
+<S> -> <B>
+<A> -> <A> + <A> 
+<A> -> id
+<B> -> id = <A> 
+<B> -> e

@@ -4,7 +4,18 @@
 #include "../LLGenerator/Generator.h"
 #include "Analyzerh.h"
 
+std::vector<std::string> GetInputSequence(std::istream& input)
+{
+	std::vector<std::string> sequence;
+	std::string line;
 
+	while (input >> line)
+	{
+		sequence.push_back(line);
+	}
+
+	return sequence;
+}
 
 int main(int argc, char** argv)
 {
@@ -14,9 +25,10 @@ int main(int argc, char** argv)
 		return 1;
 	}
 
+	std::cout << "\n";
 	std::ifstream input("in\\" + std::string(argv[1]));
-
-	std::string inputSequence = argv[2];
+	std::ifstream sequenceFile("in\\" + std::string(argv[2]));
+	std::vector<std::string> sequence = GetInputSequence(sequenceFile);
 
 
 	auto grammar = CreateGrammar(input);
@@ -25,8 +37,7 @@ int main(int argc, char** argv)
 	PrintGrammar(grammar, std::cout);
 	PrintTable(table, std::cout);
 
-	AnalyzeTable(table, {"while", "id", "+", "id", "do", "id",  "=", "id", "$"} );
-
+	AnalyzeTable(table, sequence);
 
 	return 0;
 }

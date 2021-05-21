@@ -1,0 +1,1 @@
+while id + id do id = id do $

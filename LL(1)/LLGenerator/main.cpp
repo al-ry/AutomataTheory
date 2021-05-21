@@ -20,6 +20,7 @@ int main(int argc, char** argv)
 
 	auto grammar = CreateGrammar(input);
 	PrintGrammar(grammar, outputGuideSet);
+	PrintGrammar(grammar, std::cout);
 
 	auto table = GenerateTable(grammar);
 	PrintTable(table, outputTable);
