@@ -50,4 +50,5 @@ bool IsNonterminal(std::string const& str);
 void PrintGrammar(Grammar& const grammar, std::ostream& output);
 
 void PrintTable(Table table, std::ostream& out);
+bool IsLLGrammar(Grammar const& grammar);
 

@@ -7,6 +7,35 @@
 #include <iterator>
 #include <set>
 
+bool IsLLGrammar(Grammar const& grammar)
+{
+	for (auto & rule : grammar)
+	{
+		for (auto currentRule : grammar)
+		{
+			if (rule.left == currentRule.left && rule.right == currentRule.right)
+			{
+				continue;
+			}
+
+			if (rule.left == currentRule.left)
+			{
+				for (auto & item : rule.right)
+				{
+					auto foundSameItem = std::find_if(currentRule.right.begin(), currentRule.right.end(), [&](std::string const& foundSymbol) 
+						{ return foundSymbol == item; });
+
+					if (foundSameItem != currentRule.right.end())
+					{
+						return false;
+					}
+				}
+			}
+		}
+	}
+
+	return true;
+}
 
 std::vector<Rules> GetRules(const std::string& rules)
 {
@@ -681,11 +710,37 @@ void SortGrammarByLeftNonterminal(Grammar &grammar, std::string const& axiom)
 
 }
 
-Grammar CreateGrammar(/*const std::string grammarStr*/ std::istream & input)
+
+bool IsAxiomInRightSide(std::string const& axiom, Grammar grammar) {
+	for (auto rule : grammar)
+	{
+		auto axiomIterator = std::find_if(rule.right.begin(), rule.right.end(), [&](std::string & currentSymbol) {return currentSymbol == axiom;});
+		if (axiomIterator != rule.right.end())
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+std::string CreateNewAxiom(std::string const& axiom, Grammar & grammar)
+{
+	Rules newAxiom;
+	newAxiom.left = "<Y" + GenerateRandomNonTerminal() + ">";
+	newAxiom.right.push_back(axiom);
+	grammar.insert(grammar.begin(), 1, newAxiom);
+
+	return newAxiom.left;
+}
+
+
+
+
+Grammar CreateGrammar(std::istream & input)
 {
 	Grammar grammar;
 	std::vector<std::string> nonterminals;
-	//std::stringstream ss(grammarStr);
 	std::string line;
 	while (std::getline(input, line))
 	{
@@ -710,25 +765,18 @@ Grammar CreateGrammar(/*const std::string grammarStr*/ std::istream & input)
 
 	FactorizeGrammar(grammar, nonterminals);
 
-	AddNonterminals(nonterminals, grammar);
+	if (IsAxiomInRightSide(axiom, grammar))
+	{
+		axiom = CreateNewAxiom(axiom, grammar);
+	}
 
 	AddEndSequenceToAxiom(grammar, axiom);
 
-
+	AddNonterminals(nonterminals, grammar);
 	grammar = GetSortedGrammar(grammar);
-	std::cout << "Formed grammar\n";
-	//PrintGrammar(grammar, std::cout);
-
 	FormGuideSet(grammar, nonterminals);
 
-	
-	//PrintGrammar(grammar, std::cout);
-
-
 	SortGrammarByLeftNonterminal(grammar, axiom);
-
-	//std::cout << "\nResult\n";
-	//PrintGrammar(grammar, std::cout);
 
 	return grammar;
 }

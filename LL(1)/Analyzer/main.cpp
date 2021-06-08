@@ -32,9 +32,16 @@ int main(int argc, char** argv)
 
 
 	auto grammar = CreateGrammar(input);
-	auto table = GenerateTable(grammar);
-
+	std::cout << "Result grammar\n";
 	PrintGrammar(grammar, std::cout);
+
+	if (!IsLLGrammar(grammar))
+	{
+		std::cout << "Invalid input. Grammar has rules with intersecting guide sets\n";
+		return 1;
+	}
+
+	auto table = GenerateTable(grammar);
 	PrintTable(table, std::cout);
 
 	AnalyzeTable(table, sequence);
