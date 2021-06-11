@@ -2,13 +2,16 @@
 #include <sstream>
 #include <iostream>
 #include <algorithm>
+#include <set>
+#include <unordered_set>
+#include <iomanip>
 
-std::vector<Rules> GetRules(const std::string& rules)
+std::vector<Rule> GetRules(const std::string& rules)
 {
 	std::stringstream ss(rules);
 	std::string ruleStr;
-	std::vector<Rules> rulesArr;
-	Rules rule;
+	std::vector<Rule> rulesArr;
+	Rule rule;
 	while (ss >> ruleStr)
 	{
 		if (ruleStr == RULE_SEPARATOR)
@@ -28,6 +31,18 @@ bool IsNonterminal(std::string const& str)
 	return !str.empty() && str.front() == '<' && str.back() == '>';
 }
 
+bool operator<(const Rule& lhs, const Rule& rhs) noexcept
+{
+	return lhs.left < rhs.left;
+}
+
+bool operator<(const Shift& lhs, const Shift& rhs) noexcept
+{
+	return lhs.ruleIndex < rhs.ruleIndex && lhs.indexInRule < rhs.ruleIndex;
+}
+
+
+
 void PrintGrammar(Grammar& const grammar, std::ostream& output)
 {
 	for (auto rules : grammar)
@@ -39,13 +54,6 @@ void PrintGrammar(Grammar& const grammar, std::ostream& output)
 			output << rule << " ";
 		}
 
-		output << " { ";
-		for (auto guideSymbol : rules.guideSet)
-		{
-			output << guideSymbol << " ";
-		}
-
-		output << "}\n";
 
 		output << "\n";
 	}
@@ -119,7 +127,7 @@ Grammar GetSortedGrammar(Grammar& const grammar)
 
 void SortGrammarByLeftNonterminal(Grammar& grammar, std::string const& axiom)
 {
-	std::sort(grammar.begin(), grammar.end(), [](Rules const& leftRule, Rules const& rightRule) {return leftRule.left > rightRule.left; });
+	std::sort(grammar.begin(), grammar.end(), [](Rule const& leftRule, Rule const& rightRule) {return leftRule.left > rightRule.left; });
 
 	Grammar newGrammar;
 	Grammar nonAxiomRules;
@@ -145,6 +153,371 @@ void SortGrammarByLeftNonterminal(Grammar& grammar, std::string const& axiom)
 
 }
 
+bool IsAxiomInRightSide(std::string const& axiom, Grammar grammar) {
+	for (auto rule : grammar)
+	{
+		auto axiomIterator = std::find_if(rule.right.begin(), rule.right.end(), [&](std::string& currentSymbol) {return currentSymbol == axiom; });
+		if (axiomIterator != rule.right.end())
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+std::string GenerateRandomNonTerminal()
+{
+	static int counter = 0;
+	std::string res = std::to_string(counter);
+	counter++;
+	return res;
+}
+
+
+std::string CreateNewAxiom(std::string const& axiom, Grammar& grammar)
+{
+	Rule newAxiom;
+	newAxiom.left = "<Y" + GenerateRandomNonTerminal() + ">";
+	newAxiom.right.push_back(axiom);
+	grammar.insert(grammar.begin(), 1, newAxiom);
+
+	return newAxiom.left;
+}
+
+std::vector<std::string> GetTerminals(const Grammar& grammar)
+{
+	std::vector<std::string> terminals;
+
+	for (auto rules = grammar.rbegin(); rules != grammar.rend(); rules++)
+	{
+		for (auto it : rules->right)
+		{
+			if (it.front() != '<' &&
+				std::find_if(terminals.begin(), terminals.end(), [&](std::string& terminal) { return terminal == it; }) == terminals.end())
+			{
+				terminals.push_back(it);
+			}
+		}
+	}
+
+	return terminals;
+}
+
+std::vector<std::string> GetNonterminals(const Grammar&grammar)
+{
+	std::vector<std::string> nonterminals;
+	for (auto const& rule : grammar)
+	{
+		if (IsNonterminal(rule.left) && std::find(nonterminals.begin(), nonterminals.end(), rule.left) == nonterminals.end())
+		{
+			nonterminals.push_back(rule.left);
+		}
+	}
+	return nonterminals;
+}
+
+
+std::vector<std::string> GetTerminalsAndNonterminals(const Grammar& grammar)
+{
+	auto terminals = GetTerminals(grammar);
+	auto nonterminals = GetNonterminals(grammar);
+
+	std::vector<std::string> inputSymbols;
+	std::copy(nonterminals.begin(), nonterminals.end(), std::back_inserter(inputSymbols));
+	std::copy(terminals.begin(), terminals.end(), std::back_inserter(inputSymbols));
+	
+	return inputSymbols;
+}
+
+
+
+std::vector<Shift> GetFirst(const Grammar& grammar, const Rule& rule, const std::set<Rule>& processedRules = {})
+{
+	std::vector<Shift> result;
+	std::string firstRight = rule.right[0];
+	size_t rulePos = std::distance(grammar.cbegin(), std::find(grammar.cbegin(), grammar.cend(), rule));
+
+	if (IsNonterminal(rule.right[0]))
+	{
+		for (const auto& currentRule: grammar)
+		{
+			if (currentRule.left == firstRight)
+			{
+				if (currentRule != rule)
+				{
+					auto tmpRules = processedRules;
+					tmpRules.insert(rule);
+
+					auto first = GetFirst(grammar, currentRule, tmpRules);
+
+					std::copy(first.begin(), first.end(), std::back_inserter(result));
+				}
+				result.push_back({ rulePos, 0, currentRule.left });
+			}
+		}
+	}
+	else
+	{
+		result.push_back({ rulePos, 0, firstRight });
+	}
+	return result;
+}
+
+std::vector<Shift> GetFirstByNonterminal(const Grammar& grammar, const std::string& nonterminal)
+{
+	std::vector<Shift> shift;
+	if (IsNonterminal(nonterminal))
+	{
+		for (auto& rule : grammar)
+		{
+			if (rule.left != nonterminal)
+			{
+				continue;
+			}
+			auto first = GetFirst(grammar, rule);
+			std::set<Shift> res(first.begin(), first.end());
+			std::copy(res.begin(), res.end(), std::back_inserter(shift));
+		}
+	}
+	std::set<Shift> res(shift.begin(), shift.end());
+	shift.assign(res.begin(), res.end());
+	return shift;
+}
+
+void AssignRowValue(std::vector<std::optional<TableValue>>& values, const Row& row, const std::vector<Shift>& firsts)
+{
+	for (size_t i = 0; i < row.symbols.size(); i++)
+	{
+		std::vector<Shift> tmp;
+		for (size_t j = 0; j < firsts.size(); j++)
+		{
+			if (row.symbols[i] == firsts[j].name)
+			{
+				tmp.push_back(firsts[j]);
+			}
+		}
+		if (tmp.size() > 0)
+		{
+			values[i] = tmp;
+		}
+	}
+}
+
+Row CreateFirstRow(const Grammar& grammar, const std::vector<std::string>& inputSymbols)
+{
+	Row firstRow;
+	Shift shift = { 0, 0, grammar[0].left };
+	firstRow.state.push_back(shift);
+	firstRow.symbols = inputSymbols;
+	std::vector<std::optional<TableValue>> result;
+	result.resize(firstRow.symbols.size());
+	std::vector<Shift> firstsVec;
+	firstsVec.push_back({ 0,0, grammar[0].right[0] });
+
+
+
+	auto firsts = GetFirstByNonterminal(grammar, grammar[0].right[0]);
+	std::copy(firsts.begin(), firsts.end(), std::back_inserter(firstsVec));
+
+	result[0].emplace(true);
+	AssignRowValue(result, firstRow, firstsVec);
+	firstRow.val = result;
+	//firstRow.val[0] = result;
+	return firstRow;
+}
+
+
+std::vector<std::vector<Shift>> CreateNewTransitions(const std::vector<std::optional<TableValue>>& values, std::vector<std::vector<Shift>>& transitions)
+{
+	std::vector<std::vector<Shift>> newTransitions;
+	for (auto& value : values)
+	{
+		if (value.has_value() &&
+			std::visit([&](auto&& arg)
+				{
+					using T = std::decay_t<decltype(arg)>;
+					if constexpr (std::is_same_v<T, std::vector<Shift>>)
+					{
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+				}, *value))
+		{
+			auto shift = std::get<std::vector<Shift>>(*value);
+			if (std::find(transitions.begin(), transitions.end(), shift) == transitions.end())
+			{
+				transitions.push_back(shift);
+				newTransitions.push_back(shift);
+			}
+		}
+	}
+	return newTransitions;
+}
+
+bool IsEndRule(const std::string& symbol)
+{
+	return symbol == END_SEQUENCE;
+}
+
+std::vector<std::string> GetFollow(const Grammar& grammar, const std::string& nonterminal, std::set<std::string> follow = {})
+{
+	std::vector<std::string> result;
+
+	for (const auto& [left, right] : grammar)
+	{
+		auto it = std::find_if(right.begin(), right.end(), [&](const std::string& symbol) {
+			return symbol == nonterminal;
+			});
+		if (it != right.end())
+		{
+			for (auto symbolIt = it; symbolIt != right.end();)
+			{
+				if (*symbolIt != right.back())
+				{
+					auto next = ++symbolIt;
+					if (!IsNonterminal(*next))
+					{
+						result.push_back(*next);
+					}
+					else
+					{
+						auto first = GetFirstByNonterminal(grammar, *next);
+						result.push_back(*next);
+						for (auto& item: first)
+						{
+							result.push_back(item.name);
+						}
+					}
+					next = std::find_if(next, right.end(), [&](const std::string& symbol) {
+						return symbol == nonterminal;
+						});
+					symbolIt = next;
+				}
+				else
+				{
+					if (!follow.count(left))
+					{
+						auto tmpFollow(follow);
+						tmpFollow.insert(left);
+						const auto tmp = GetFollow(grammar, left, tmpFollow);
+						std::copy(tmp.cbegin(), tmp.cend(), std::back_inserter(result));
+					}
+					symbolIt++;
+				}
+			}
+		}
+	}
+
+	return result;
+}
+
+void AssignReductionToTable(std::vector<std::optional<TableValue>> &result, const Rule& rule, size_t ruleIndex, const std::vector<std::string>&reductionSymbols, const std::vector<std::string>rowSymbols)
+{
+	for (size_t i = 0; i < rowSymbols.size(); i++)
+	{
+		Reduction red;
+		for (size_t j = 0; j < reductionSymbols.size(); j++)
+		{
+			if (rowSymbols[i] == reductionSymbols[j])
+			{
+				red.rule = &rule;
+				red.index = ruleIndex;
+				result[i].emplace(red);
+			}
+		}
+	}
+}
+
+std::vector<std::optional<TableValue>> CreateNextTableValues(const Grammar& grammar, const Row& row, const std::vector<std::vector<Shift>>& shifts, const std::vector<Shift>& currentShift)
+{
+	std::vector<std::optional<TableValue>> result;
+	result.resize(row.symbols.size());
+	for (auto& shift : currentShift)
+	{
+		if (shift.indexInRule + 1 == grammar[shift.ruleIndex].right.size())
+		{
+			Reduction red;
+			red.rule = &grammar[shift.ruleIndex];
+			auto symbols = GetFollow(grammar, grammar[shift.ruleIndex].left);
+			AssignReductionToTable(result, grammar[shift.ruleIndex], shift.ruleIndex, symbols, row.symbols);
+		}
+		else if (shift.indexInRule + 2 == grammar[shift.ruleIndex].right.size() && IsEndRule(grammar[shift.ruleIndex].right.back()))
+		{
+			Reduction red;
+			red.rule = &grammar[shift.ruleIndex];
+			red.index = shift.ruleIndex;
+			result[row.symbols.size() - 1] = red;
+		}
+		else
+		{
+			auto symbol = grammar[shift.ruleIndex].right[shift.indexInRule + 1];
+			if (IsNonterminal(symbol))
+			{
+				auto res = GetFirstByNonterminal(grammar, symbol);
+				res.push_back({shift.ruleIndex, shift.indexInRule + 1, symbol});
+				AssignRowValue(result, row, res);
+			}
+			else
+			{
+				auto pos = std::distance(row.symbols.begin(), std::find_if(row.symbols.begin(), row.symbols.end(), [&](const std::string& arg) { return  symbol == arg; }));
+				std::vector<Shift> shifts;
+				shifts.push_back({ shift.ruleIndex, shift.indexInRule + 1, symbol });
+				result[pos].emplace(shifts);
+			}
+		}
+	}
+	return result;
+}
+
+
+std::vector<std::optional<TableValue>> GetAllValues(const std::vector<std::vector<std::optional<TableValue>>>& vec)
+{
+	std::vector<std::optional<TableValue>> result;
+	for (const auto&values: vec)
+	{
+		for (auto&item: values)
+		{
+			result.push_back(item);
+		}
+	}
+	return result;
+}
+
+Table CreateSLRTable(const Grammar& grammar)
+{
+	Table table;
+	std::vector<std::string> inputSymbols = GetTerminalsAndNonterminals(grammar);
+	
+
+	Row firstRow = CreateFirstRow(grammar, inputSymbols);
+	std::vector<std::vector<Shift>> shifts;
+	auto newTransitions = CreateNewTransitions(firstRow.val, shifts);
+	table.push_back(firstRow);
+
+	do
+	{
+		std::vector<std::vector<std::optional<TableValue>>> newValuesVec;
+		for (auto &trans :newTransitions)
+		{
+			Row row;
+			row.state = trans;
+			row.symbols = inputSymbols;
+			auto newValues = CreateNextTableValues(grammar, row, shifts, trans);
+			row.val = newValues;
+			table.push_back(row);
+			newValuesVec.push_back(newValues);
+		}
+		auto values = GetAllValues(newValuesVec);
+		newTransitions = CreateNewTransitions(values, shifts);
+	} while (!newTransitions.empty());
+
+	return table;
+}
+
 Grammar CreateGrammar(std::istream& input)
 {
 	Grammar grammar;
@@ -160,7 +533,7 @@ Grammar CreateGrammar(std::istream& input)
 		AddNonteminal(nonterminals, leftPart);
 		ruleLine >> tmp; //  reading ->
 		std::getline(ruleLine, rightPart);
-		std::vector<Rules> rules;
+		std::vector<Rule> rules;
 		rules = GetRules(rightPart);
 		for (auto& rule : rules)
 		{
@@ -171,14 +544,18 @@ Grammar CreateGrammar(std::istream& input)
 
 	std::string axiom = grammar.front().left;
 
-	//FactorizeGrammar(grammar, nonterminals);
+	if (IsAxiomInRightSide(axiom, grammar))
+	{
+		axiom = CreateNewAxiom(axiom, grammar);
+	}
+
 
 	AddNonterminals(nonterminals, grammar);
 
 	AddEndSequenceToAxiom(grammar, axiom);
 
 
-	grammar = GetSortedGrammar(grammar);
+	//grammar = GetSortedGrammar(grammar);
 	std::cout << "Formed grammar\n";
 	//PrintGrammar(grammar, std::cout);
 
@@ -188,7 +565,7 @@ Grammar CreateGrammar(std::istream& input)
 	//PrintGrammar(grammar, std::cout);
 
 
-	SortGrammarByLeftNonterminal(grammar, axiom);
+	//SortGrammarByLeftNonterminal(grammar, axiom);
 
 	//std::cout << "\nResult\n";
 	//PrintGrammar(grammar, std::cout);
@@ -196,3 +573,68 @@ Grammar CreateGrammar(std::istream& input)
 	return grammar;
 }
 
+
+std::string StateToString(const std::vector<Shift>& state)
+{
+	std::stringstream ss;
+	for (auto& st: state)
+	{
+		ss << st.name << st.ruleIndex + 1 << st.indexInRule + 1;
+	}
+	return ss.str();
+}
+
+void PrintTableValue(const TableValue & value)
+{
+	std::visit([&](auto&& arg)
+		{
+			using T = std::decay_t<decltype(arg)>;
+			if constexpr (std::is_same_v<T, std::vector<Shift>>)
+			{
+				auto shift = std::get<std::vector<Shift>>(value);
+				std::cout  << StateToString(shift) << std::setw(20) << std::setfill(' ');
+			}
+			else if (std::is_same_v<T, Reduction>)
+			{
+				auto reduction = std::get<Reduction>(value);
+				std::cout << "R" + std::to_string(reduction.index) << std::setw(20) << std::setfill(' ');
+			}
+			else
+			{
+				std::cout << "OK" << std::setw(20) << std::setfill(' ');
+			}
+		}, value);
+}
+
+void PrintInputSymbols(const std::vector<std::string>& symbols)
+{
+
+	for (auto& sym : symbols)
+	{
+		std::cout << std::setw(20) << std::setfill(' ') << sym << std::setw(20) << std::setfill(' ');
+	}
+	std::cout << std::endl;
+}
+
+void PrintTable(const Table&table, std::ostream& output)
+{
+	PrintInputSymbols(table[0].symbols);
+	for (const auto& row : table)
+	{
+		std::cout << std::left << StateToString(row.state) << std::setw(20) << std::setfill(' ');
+		for (size_t i = 0; i < row.symbols.size(); i++)
+		{
+			std::cout << std::setw(20) << std::setfill(' ');
+			if (row.val[i].has_value())
+			{
+				PrintTableValue(row.val[i].value());
+				std::cout << std::setw(20) << std::setfill(' ');
+			}
+			else
+			{
+				std::cout << std::setw(20) << "-" << std::setfill(' ');
+			}
+		}
+		std::cout << "\n";
+	}
+}

@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <vector>
 #include <optional>
+#include <variant>
 
 const std::string EMPTY_RULE = "e";
 const std::string RULE_SEPARATOR = "|";
@@ -12,40 +13,73 @@ const std::string END_SEQUENCE = "$";
 const std::string RULE_DEFINITION_SEPARATOR = "->";
 const std::string GUIDE_SET_SEPARATOR = "/";
 const std::string TAB = "\t\t\t";
+const std::string OK_RESULT = "OK";
 
 
-struct Rules
+struct Rule
 {
 	std::string left;
 	std::vector<std::string> right;
-	std::vector<std::string> guideSet;
+public:
+	bool operator==(const Rule& rhs) const
+	{
+		return this->left == rhs.left && this->right == rhs.right;
+	}
+	bool operator!=(const Rule& rhs) const
+	{
+		return !(*this == rhs);
+	}
 };
 
-struct TableRow
+bool operator<(const Rule& lhs, const Rule& rhs) noexcept;
+
+struct Reduction
 {
-	std::string symbol;
-	std::vector<std::string> guideSet;
-	bool error;
-	std::optional<size_t> pointer;
-	bool isInStack;
-	bool end;
-	bool shift;
+	size_t index;
+	Rule const* rule;
 };
 
-typedef std::vector<Rules> Grammar;
-typedef std::pair<std::string, int> HasTransitionPair;
-typedef	std::pair<std::string, std::vector<HasTransitionPair>> Transition;
-typedef std::pair<TableRow, Rules> TableRowWithRule;
-typedef std::vector<TableRowWithRule> TableWithRules;
-typedef std::vector<TableRow> Table;
+struct Shift
+{
+	size_t ruleIndex;
+	size_t indexInRule;
+	std::string name;
+public:
+	bool operator==(const Shift& rhs) const
+	{
+		return this->ruleIndex == rhs.ruleIndex && this->indexInRule == rhs.indexInRule && this->name == rhs.name;
+	}
+	bool operator!=(const Shift& rhs) const
+	{
+		return !(*this == rhs);
+	}
+};
+
+bool operator<(const Shift& lhs, const Shift& rhs) noexcept;
+
+typedef std::variant<Reduction, std::vector<Shift>, bool> TableValue;
 
 
+struct Row
+{
+	std::vector<std::string> symbols;
+	std::vector<Shift> state;
+	std::vector<std::optional<TableValue>> val;
+};
+
+typedef std::vector<Row> Table;
+
+
+
+typedef std::vector<Rule> Grammar;
+
+Table CreateSLRTable(const Grammar& grammar);
+
+void PrintTable(const Table& table, std::ostream& output);
 
 Grammar CreateGrammar(std::istream& input);
 
-std::string ReadGrammarFromFile(const std::string inputFile);
 bool IsNonterminal(std::string const& str);
 
 void PrintGrammar(Grammar& const grammar, std::ostream& output);
 
-void PrintTable(Table table, std::ostream& out);
