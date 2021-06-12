@@ -21,7 +21,7 @@ int main(int argc, char** argv)
 	auto grammar = CreateGrammar(input);
 	auto table = CreateSLRTable(grammar);
 	PrintTable(table, std::cout);
-	//PrintGrammar(grammar, std::cout);
+	PrintGrammar(grammar, std::cout);
 	//PrintGrammar(grammar, outputGuideSet);
 	//CreateTable(grammar);
 

@@ -238,6 +238,12 @@ std::vector<Shift> GetFirst(const Grammar& grammar, const Rule& rule, const std:
 	std::string firstRight = rule.right[0];
 	size_t rulePos = std::distance(grammar.cbegin(), std::find(grammar.cbegin(), grammar.cend(), rule));
 
+
+	if (processedRules.count(rule))
+	{
+		return {};
+	}
+
 	if (IsNonterminal(rule.right[0]))
 	{
 		for (const auto& currentRule: grammar)
@@ -285,6 +291,18 @@ std::vector<Shift> GetFirstByNonterminal(const Grammar& grammar, const std::stri
 	return shift;
 }
 
+template <typename T>
+bool HasConflict(std::optional<TableValue> value)
+{
+	if (value.has_value() && std::holds_alternative<T>(value.value()))
+	{
+		return true;
+	}
+
+	return false;
+}
+
+
 void AssignRowValue(std::vector<std::optional<TableValue>>& values, const Row& row, const std::vector<Shift>& firsts)
 {
 	for (size_t i = 0; i < row.symbols.size(); i++)
@@ -299,10 +317,16 @@ void AssignRowValue(std::vector<std::optional<TableValue>>& values, const Row& r
 		}
 		if (tmp.size() > 0)
 		{
+			if (HasConflict<Reduction>(values[i]))
+			{
+				throw std::invalid_argument("Shift reduction conflict");
+			}
+
 			values[i] = tmp;
 		}
 	}
 }
+
 
 Row CreateFirstRow(const Grammar& grammar, const std::vector<std::string>& inputSymbols)
 {
@@ -376,12 +400,13 @@ std::vector<std::string> GetFollow(const Grammar& grammar, const std::string& no
 		{
 			for (auto symbolIt = it; symbolIt != right.end();)
 			{
-				if (*symbolIt != right.back())
+				if (symbolIt != --right.end())
 				{
 					auto next = ++symbolIt;
 					if (!IsNonterminal(*next))
 					{
 						result.push_back(*next);
+
 					}
 					else
 					{
@@ -424,6 +449,11 @@ void AssignReductionToTable(std::vector<std::optional<TableValue>> &result, cons
 		{
 			if (rowSymbols[i] == reductionSymbols[j])
 			{
+				if (HasConflict<std::vector<Shift>>(result[i]))
+				{
+					throw std::invalid_argument("Shift reduction conflict");
+				}
+
 				red.rule = &rule;
 				red.index = ruleIndex;
 				result[i].emplace(red);
@@ -463,9 +493,16 @@ std::vector<std::optional<TableValue>> CreateNextTableValues(const Grammar& gram
 			}
 			else
 			{
+
 				auto pos = std::distance(row.symbols.begin(), std::find_if(row.symbols.begin(), row.symbols.end(), [&](const std::string& arg) { return  symbol == arg; }));
 				std::vector<Shift> shifts;
 				shifts.push_back({ shift.ruleIndex, shift.indexInRule + 1, symbol });
+
+				if (HasConflict<Reduction>(result[pos]))
+				{
+					throw std::invalid_argument("Shift reduction conflict");
+				}
+
 				result[pos].emplace(shifts);
 			}
 		}
@@ -556,7 +593,6 @@ Grammar CreateGrammar(std::istream& input)
 
 
 	//grammar = GetSortedGrammar(grammar);
-	std::cout << "Formed grammar\n";
 	//PrintGrammar(grammar, std::cout);
 
 	//FormGuideSet(grammar, nonterminals);
@@ -592,28 +628,34 @@ void PrintTableValue(const TableValue & value)
 			if constexpr (std::is_same_v<T, std::vector<Shift>>)
 			{
 				auto shift = std::get<std::vector<Shift>>(value);
-				std::cout  << StateToString(shift) << std::setw(20) << std::setfill(' ');
+				std::cout  << std::right  << StateToString(shift);
 			}
 			else if (std::is_same_v<T, Reduction>)
 			{
 				auto reduction = std::get<Reduction>(value);
-				std::cout << "R" + std::to_string(reduction.index) << std::setw(20) << std::setfill(' ');
+				std::cout << std::right << "R" + std::to_string(reduction.index + 1) << std::setw(10) << std::setfill(' ');
 			}
 			else
 			{
-				std::cout << "OK" << std::setw(20) << std::setfill(' ');
+				std::cout << std::setw(20) << std::right << "OK";
 			}
 		}, value);
 }
 
 void PrintInputSymbols(const std::vector<std::string>& symbols)
 {
-
-	for (auto& sym : symbols)
+	for (size_t i = 0; i < symbols.size(); i++)
 	{
-		std::cout << std::setw(20) << std::setfill(' ') << sym << std::setw(20) << std::setfill(' ');
+		if (i == 0)
+		{
+			std::cout << std::setw(30) << symbols[i] << std::setw(10);
+		}
+		else
+		{
+			std::cout << std::setw(20) << symbols[i] << std::setw(10);
+		}
 	}
-	std::cout << std::endl;
+	std::cout << "\n\n";
 }
 
 void PrintTable(const Table&table, std::ostream& output)
@@ -621,20 +663,19 @@ void PrintTable(const Table&table, std::ostream& output)
 	PrintInputSymbols(table[0].symbols);
 	for (const auto& row : table)
 	{
-		std::cout << std::left << StateToString(row.state) << std::setw(20) << std::setfill(' ');
+		std::cout <<std::setw(10) << std::left << StateToString(row.state);
 		for (size_t i = 0; i < row.symbols.size(); i++)
 		{
 			std::cout << std::setw(20) << std::setfill(' ');
 			if (row.val[i].has_value())
 			{
 				PrintTableValue(row.val[i].value());
-				std::cout << std::setw(20) << std::setfill(' ');
 			}
 			else
 			{
-				std::cout << std::setw(20) << "-" << std::setfill(' ');
+				std::cout << std::right << "-" << std::setw(10) << std::setfill(' ');
 			}
 		}
-		std::cout << "\n";
+		std::cout << "\n\n";
 	}
 }
