@@ -555,6 +555,72 @@ Table CreateSLRTable(const Grammar& grammar)
 	return table;
 }
 
+std::vector<Rule> GetEmptyRules(Grammar const& grammar) {
+	std::vector<Rule> result;
+	for (auto rule : grammar)
+	{
+		if (rule.right[0] == EMPTY_RULE)
+		{
+			result.push_back(rule);
+		}
+	}
+
+	return result;
+}
+
+void RemoveEmptyRule(Grammar &grammar)
+{
+	auto emptyRules = GetEmptyRules(grammar);
+
+	for (auto emptyRule : emptyRules)
+	{
+		for (size_t i = 0; i < grammar.size(); i++)
+		{
+			std::vector<size_t> indexes;
+			auto foundEmptyRule = std::find(grammar[i].right.begin(), grammar[i].right.end(), emptyRule.left);
+			if (foundEmptyRule != grammar[i].right.end())
+			{
+				for (auto it = foundEmptyRule; it != grammar[i].right.end();)
+				{
+					auto foundEmptyRuleIndex = std::distance(grammar[i].right.begin(), it);
+					indexes.push_back(foundEmptyRuleIndex);
+
+					Rule newRule = grammar[i];
+					newRule.right.erase(newRule.right.begin() + foundEmptyRuleIndex);
+
+					auto foundSameRule = std::find(grammar.begin(), grammar.end(), newRule);
+					if (foundSameRule == grammar.end())
+					{
+						grammar.push_back(newRule);
+					}
+
+					it = std::find(++it, grammar[i].right.end(), emptyRule.left);
+					if (it == grammar[i].right.end())
+					{
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	for (auto smrIt = emptyRules.begin(); smrIt != emptyRules.end(); smrIt++)
+	{
+		for (auto grmIt = grammar.begin(); grmIt != grammar.end();)
+		{
+			auto end = grammar.end();
+			if (grmIt->right == smrIt->right && grmIt->left == smrIt->left)
+			{
+				grmIt = grammar.erase(grmIt);
+			}
+			else
+			{
+				grmIt++;
+			}
+		}
+	}
+}
+
 Grammar CreateGrammar(std::istream& input)
 {
 	Grammar grammar;
@@ -578,13 +644,11 @@ Grammar CreateGrammar(std::istream& input)
 			grammar.push_back(rule);
 		}
 	}
-
+	
+	RemoveEmptyRule(grammar);
 	std::string axiom = grammar.front().left;
 
-	if (IsAxiomInRightSide(axiom, grammar))
-	{
-		axiom = CreateNewAxiom(axiom, grammar);
-	}
+	axiom = CreateNewAxiom(axiom, grammar);
 
 
 	AddNonterminals(nonterminals, grammar);
