@@ -1,5 +1,4 @@
 #pragma once
-#pragma once
 #include <vector>
 #include <string>
 #include <unordered_map>
@@ -14,7 +13,6 @@ const std::string RULE_DEFINITION_SEPARATOR = "->";
 const std::string GUIDE_SET_SEPARATOR = "/";
 const std::string TAB = "\t\t\t";
 const std::string OK_RESULT = "OK";
-
 
 struct Rule
 {
@@ -68,9 +66,6 @@ struct Row
 };
 
 typedef std::vector<Row> Table;
-
-
-
 typedef std::vector<Rule> Grammar;
 
 Table CreateSLRTable(const Grammar& grammar);

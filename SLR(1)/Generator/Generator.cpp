@@ -650,25 +650,9 @@ Grammar CreateGrammar(std::istream& input)
 
 	axiom = CreateNewAxiom(axiom, grammar);
 
-
 	AddNonterminals(nonterminals, grammar);
 
 	AddEndSequenceToAxiom(grammar, axiom);
-
-
-	//grammar = GetSortedGrammar(grammar);
-	//PrintGrammar(grammar, std::cout);
-
-	//FormGuideSet(grammar, nonterminals);
-
-
-	//PrintGrammar(grammar, std::cout);
-
-
-	//SortGrammarByLeftNonterminal(grammar, axiom);
-
-	//std::cout << "\nResult\n";
-	//PrintGrammar(grammar, std::cout);
 
 	return grammar;
 }
