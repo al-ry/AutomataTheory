@@ -77,4 +77,5 @@ Grammar CreateGrammar(std::istream& input);
 bool IsNonterminal(std::string const& str);
 
 void PrintGrammar(Grammar& const grammar, std::ostream& output);
+void PrintTableForAnalyze(const Table& table, std::ostream& output);
 

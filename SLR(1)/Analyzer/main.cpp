@@ -36,22 +36,23 @@ int main(int argc, char** argv)
 	std::ifstream input("in\\" + std::string(argv[1]));
 	std::ifstream sequenceFile("in\\" + std::string(argv[2]));
 	std::vector<std::string> sequence = GetInputSequence(sequenceFile);
-	
+	AnalyzerTable table = ReadTable(input);
 
 	if (sequence.size() == 0)
 	{
 		std::cout << "Input sequence shoud not be empty\n";
 		return 1;
 	}
+
 	AddEndSequence(sequence);
 
-	auto grammar = CreateGrammar(input);
-	std::cout << "Result grammar\n";
-	PrintGrammar(grammar, std::cout);
+	//auto grammar = CreateGrammar(input);
+	//std::cout << "Result grammar\n";
+	//PrintGrammar(grammar, std::cout);
 
-	auto table = CreateSLRTable(grammar);
-	PrintTable(table, std::cout);
-
+	//auto table = CreateSLRTable(grammar);
+	//PrintTable(table, std::cout);
+	//PrintTableForAnalyze(table);
 	AnalyzeTable(table, sequence);
 
 	return 0;

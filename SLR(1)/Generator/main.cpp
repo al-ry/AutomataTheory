@@ -14,13 +14,22 @@ int main(int argc, char** argv)
 	}
 
 	std::ifstream input("in\\" + std::string(argv[1]));
-	std::ofstream outputGuideSet("out\\" + std::string(argv[2]));
+	std::ofstream output("out\\" + std::string(argv[2]));
 
 	auto grammar = CreateGrammar(input);
-	auto table = CreateSLRTable(grammar);
 
-	PrintTable(table, std::cout);
-	PrintGrammar(grammar, std::cout);
+	try
+	{
+		auto table = CreateSLRTable(grammar);
+		PrintTable(table, std::cout);
+		PrintGrammar(grammar, std::cout);
+		PrintTableForAnalyze(table, output);
+	}
+	catch (const std::invalid_argument& e)
+	{
+		std::cout << e.what();
+	}
+
 
 	return 0;
 }

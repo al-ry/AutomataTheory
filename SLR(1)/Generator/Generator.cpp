@@ -308,6 +308,11 @@ void AssignRowValue(std::vector<std::optional<TableValue>>& values, const Row& r
 	for (size_t i = 0; i < row.symbols.size(); i++)
 	{
 		std::vector<Shift> tmp;
+		if (HasConflict<Reduction>(values[i]))
+		{
+			throw std::invalid_argument("Shift reduction conflict");
+		}
+
 		for (size_t j = 0; j < firsts.size(); j++)
 		{
 			if (row.symbols[i] == firsts[j].name)
@@ -315,14 +320,29 @@ void AssignRowValue(std::vector<std::optional<TableValue>>& values, const Row& r
 				tmp.push_back(firsts[j]);
 			}
 		}
+
 		if (tmp.size() > 0)
 		{
-			if (HasConflict<Reduction>(values[i]))
+			if (values[i].has_value())
 			{
-				throw std::invalid_argument("Shift reduction conflict");
-			}
+				auto valuesArray = std::get<std::vector<Shift>>(values[i].value());
+				for (auto tmpValue : tmp)
+				{
+					auto sameElement = std::find(valuesArray.begin(), valuesArray.end(), tmpValue);
 
-			values[i] = tmp;
+					if (sameElement == valuesArray.end())
+					{
+						valuesArray.push_back(tmpValue);
+					}
+				}
+
+				values[i] = valuesArray;
+			}
+			else
+			{
+				values[i] = tmp;
+			}
+			
 		}
 	}
 }
@@ -690,25 +710,52 @@ void PrintTableValue(const TableValue & value)
 		}, value);
 }
 
-void PrintInputSymbols(const std::vector<std::string>& symbols)
+void PrintTableValueForAnalyzer(const TableValue& value, const Table & table, std::ostream& output)
+{
+	std::visit([&](auto&& arg)
+		{
+			using T = std::decay_t<decltype(arg)>;
+			if constexpr (std::is_same_v<T, std::vector<Shift>>)
+			{
+				auto shift = std::get<std::vector<Shift>>(value);
+
+				auto index = std::distance(table.begin(), std::find_if(table.begin(), table.end(), [&](Row row) {
+					return row.state == shift;
+				}));
+
+				output << std::right << "S(" << index << ")";
+			}
+			else if (std::is_same_v<T, Reduction>)
+			{
+				auto reduction = std::get<Reduction>(value);
+				output << std::right << "R(" << reduction.rule->left << reduction.rule->right.size() << ")" << std::setw(10) << std::setfill(' ');
+			}
+			else
+			{
+				output << std::setw(20) << std::right << "OK";
+			}
+		}, value);
+}
+
+void PrintInputSymbols(const std::vector<std::string>& symbols, std::ostream& output)
 {
 	for (size_t i = 0; i < symbols.size(); i++)
 	{
 		if (i == 0)
 		{
-			std::cout << std::setw(30) << symbols[i] << std::setw(10);
+			output << std::setw(30) << symbols[i] << std::setw(10);
 		}
 		else
 		{
-			std::cout << std::setw(20) << symbols[i] << std::setw(10);
+			output << std::setw(20) << symbols[i] << std::setw(10);
 		}
 	}
-	std::cout << "\n\n";
+	output << "\n\n";
 }
 
 void PrintTable(const Table&table, std::ostream& output)
 {
-	PrintInputSymbols(table[0].symbols);
+	PrintInputSymbols(table[0].symbols, output);
 	for (const auto& row : table)
 	{
 		std::cout <<std::setw(10) << std::left << StateToString(row.state);
@@ -725,5 +772,27 @@ void PrintTable(const Table&table, std::ostream& output)
 			}
 		}
 		std::cout << "\n\n";
+	}
+}
+
+void PrintTableForAnalyze(const Table& table, std::ostream& output)
+{
+	PrintInputSymbols(table[0].symbols, output);
+	for (const auto& row : table)
+	{
+		//output << std::setw(10) << std::left << StateToString(row.state);
+		for (size_t i = 0; i < row.symbols.size(); i++)
+		{
+			output << std::setw(20) << std::setfill(' ');
+			if (row.val[i].has_value())
+			{
+				PrintTableValueForAnalyzer(row.val[i].value(), table, output);
+			}
+			else
+			{
+				output << std::right << "-" << std::setw(10) << std::setfill(' ');
+			}
+		}
+		output << "\n\n";
 	}
 }

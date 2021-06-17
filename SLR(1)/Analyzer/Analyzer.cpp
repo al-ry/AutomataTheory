@@ -2,11 +2,131 @@
 #include <stack>
 #include <stdexcept>
 #include <iostream>
+#include <sstream>
 
-
-void AnalyzeTable(Table const& table, std::vector<std::string> inputSequence)
+std::vector<std::string> ReadSymbols(std::istream& input) 
 {
-	std::stack<Row> stateStack;
+	std::vector<std::string> result;
+
+	std::string line;
+	std::getline(input, line);
+	std::istringstream ss(line);
+
+	while (ss >> line)
+	{
+		result.push_back(line);
+	}
+
+	return result;
+}
+
+AnalyzerReduction ParseReduction(std::string& value) 
+{
+	AnalyzerReduction reduction;
+	std::string nonterminalName;
+	std::string size;
+	std::istringstream ss(value);
+	std::string line;
+	size_t sizeIndex = 0;
+
+	for (size_t i = 0; i < value.size(); i++)
+	{
+		nonterminalName.push_back(value[i]);
+
+		if (value[i] == '>')
+		{
+			sizeIndex = i + 1;
+			break;
+		}
+	}
+
+	for (size_t i = sizeIndex; i < value.size(); i++)
+	{
+		size.push_back(value[i]);
+	}
+
+	reduction.reductionNonterminal = nonterminalName;
+	reduction.symbolCount = std::stoi(size);
+
+	return reduction;
+}
+
+AnalyzerShift ParseShift(std::string& value)
+{
+	AnalyzerShift shift;
+	std::istringstream ss(value);
+
+	std::string line;
+
+	ss >> line;
+	shift.rowIndex = std::stoi(line);
+
+	return shift;
+
+}
+
+std::optional<AnalyzerTableValue> GetCurrentValue(std::string value) 
+{
+	if (value == "OK")
+	{
+		return true;
+	}
+
+	else if (value == "-")
+	{
+		return std::nullopt;
+	}
+
+	else if (value[0] == 'R')
+	{
+		std::string reduction = value.substr(2, value.size() - 3);
+		return ParseReduction(reduction);
+	}
+
+	else if (value[0] == 'S')
+	{
+		std::string shift = value.substr(2, value.size() - 3);
+		return ParseShift(shift);
+	}
+}
+
+std::vector<std::optional<AnalyzerTableValue>> GetNewTableRow(std::string row)
+{
+	std::vector<std::optional<AnalyzerTableValue>> values;
+	std::string line;
+	std::istringstream ss(row);
+
+	while (ss >> line)
+	{
+		values.push_back(GetCurrentValue(line));
+	}
+
+	return values;
+}
+
+
+
+AnalyzerTable ReadTable(std::istream& input)
+{
+	AnalyzerTable table;
+	std::vector<std::string> symbols = ReadSymbols(input);
+	std::string tableRow;
+
+	while (std::getline(input, tableRow))
+	{
+		if (!tableRow.empty())
+		{
+			table.push_back({ symbols, GetNewTableRow(tableRow) });
+		}
+	}
+
+	return table;
+
+}
+
+void AnalyzeTable(AnalyzerTable const& table, std::vector<std::string> inputSequence)
+{
+	std::stack<AnalyzerRow> stateStack;
 	std::stack<std::string> sequenceStack;
 	std::vector<std::string> inputSymbols = table[0].symbols;
 
@@ -27,20 +147,20 @@ void AnalyzeTable(Table const& table, std::vector<std::string> inputSequence)
 			std::visit([&](auto&& arg)
 				{
 					using T = std::decay_t<decltype(arg)>;
-					if constexpr (std::is_same_v<T, std::vector<Shift>>)
+					if constexpr (std::is_same_v<T, AnalyzerShift>)
 					{
-						auto shift = std::get<std::vector<Shift>>(tableValue);
-						auto foundRow = std::find_if(table.begin(), table.end(), [&](Row const& row) { return row.state == shift; });
-						stateStack.push(*foundRow);
+						auto shift = std::get<AnalyzerShift>(tableValue);
+						auto foundRow = table[shift.rowIndex];
+						stateStack.push(foundRow);
 						sequenceStack.push(inputSequence[i]);
 						i++;
 					}
-					else if (std::is_same_v<T, Reduction>)
+					else if (std::is_same_v<T, AnalyzerReduction>)
 					{
-						auto reduction = std::get<Reduction>(tableValue);
+						auto reduction = std::get<AnalyzerReduction>(tableValue);
 
-						size_t reductionSize = reduction.rule->right.size();
-						if (reduction.rule->left == table[0].state[0].name)
+						size_t reductionSize = reduction.symbolCount;
+						if (reduction.reductionNonterminal == table[0].symbols[0])
 						{
 							reductionSize--;
 						}
@@ -55,7 +175,7 @@ void AnalyzeTable(Table const& table, std::vector<std::string> inputSequence)
 							sequenceStack.pop();
 						}
 
-						inputSequence[i] = reduction.rule->left;
+						inputSequence[i] = reduction.reductionNonterminal;
 						
 					}
 					else
@@ -78,14 +198,13 @@ void AnalyzeTable(Table const& table, std::vector<std::string> inputSequence)
 					std::visit([&](auto&& arg)
 						{
 							using T = std::decay_t<decltype(arg)>;
-							if constexpr (std::is_same_v<T, std::vector<Shift>>)
+							if constexpr (std::is_same_v<T, AnalyzerShift>)
 							{
-								auto shifts = std::get<std::vector<Shift>>(currentRow);
-								std::cout << shifts[0].name << " ";
+								std::cout << currentState.symbols[j] << " ";
 							}
-							else if (std::is_same_v<T, Reduction>)
+							else if (std::is_same_v<T, AnalyzerReduction>)
 							{
-								std::cout << currentState.symbols[j];
+								std::cout << currentState.symbols[j] << " ";
 							}
 							else
 							{
