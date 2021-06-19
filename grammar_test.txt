@@ -1,0 +1,24 @@
+<Unit> -> <Decl>
+
+<Decl> -> enum <EnumDecl> | struct <TypeDecl> | var <VarDecl> | const <ConstDecl> | func <FuncDecl>
+
+<EnumDecl> -> name { <EnumItems> }
+<EnumItems> -> <EnumItem> | <EnumItem> , <EnumItems>
+<EnumItem> -> name | name = <Expr>
+
+
+<Expr> -> <TernaryExpr>
+<TernaryExpr> -> <OrExpr> ? <TernaryExpr> : <TernaryExpr> | <OrExpr>
+<OrExpr> -> <AndExpr> OR <AndExpr> | <AndExpr>
+<AndExpr> ->  <CmpExpr> AND <CmpExpr> | <CmpExpr>
+<CmpExpr> -> <AddExpr> <CmpOp> | <AddExpr>
+<CmpOp> -> Eq | NotEq | GT | LT | LTEq | GTEq
+<AddExpr> -> <MulExpr> <AddOp> <MulExpr> | <MulExpr> 
+<AddOp> -> Plus | Minus
+<MulExp> -> <UnaryExpr> <MulOp> <UnaryExpr> | <UnaryExpr>
+<MulOp> -> Mul | Div | Mod 
+<UnaryExpr> -> <UnaryOp> <UnaryExpr> | <BaseExpr>
+<UnaryOp> -> Plus | Minus | Not
+<BaseExpr> -> <OperandExpr>
+<OperandExpr> -> Int | Float | Str | Name | { <ExprList> } | <TypeSpec> | ( <Expr> )
+<TypeSpec> -> Name | ( : <Type> )

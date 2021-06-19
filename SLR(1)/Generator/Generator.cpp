@@ -648,6 +648,7 @@ Grammar CreateGrammar(std::istream& input)
 	std::string line;
 	while (std::getline(input, line))
 	{
+		if (line.size() == 0) continue;
 		std::stringstream ruleLine(line);
 		std::string tmp;
 		std::string rightPart;

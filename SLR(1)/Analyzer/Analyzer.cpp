@@ -124,7 +124,7 @@ AnalyzerTable ReadTable(std::istream& input)
 
 }
 
-void AnalyzeTable(AnalyzerTable const& table, std::vector<std::string> inputSequence)
+void AnalyzeTable(AnalyzerTable const& table, const Lexer& lexer)
 {
 	std::stack<AnalyzerRow> stateStack;
 	std::stack<std::string> sequenceStack;

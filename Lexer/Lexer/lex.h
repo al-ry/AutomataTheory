@@ -7,9 +7,30 @@
 #include <optional>
 #include <set>
 
+const std::vector<std::string> KEYWORDS = {
+	"if",
+	"else",
+	"return",
+	"continue",
+	"break",
+	"while",
+	"do",
+	"for",
+	"switch",
+	"case",
+	"default",
+	"func",
+	"const",
+	"struct",
+	"enum",
+	"sizeof",
+	"var"
+};
+
 typedef enum class TokenKing
 {
 	TOKEN_EOF,
+
 	TOKEN_COLON,
 	TOKEN_LPAREN,
 	TOKEN_RPAREN,
@@ -22,12 +43,36 @@ typedef enum class TokenKing
 	TOKEN_POUND,
 	TOKEN_QUESTION,
 	TOKEN_SEMICOLON,
+
 	TOKEN_KEYWORD,
+	TOKEN_INT_KEYWORD,
+	TOKEN_FLOAT_KEYWORD,
+	TOKEN_STR_KEYWORD,
+	TOKEN_STRUCT_KEYWORD,
+	TOKEN_ENUM_KEYWORD,
+	TOKEN_FUNC_KEYWORD,
+	TOKEN_BREAK_KEYWORD,
+	TOKEN_WHILE_KEYWORD,
+	TOKEN_SWITCH_KEYWORD,
+	TOKEN_CASE_KEYWORD,
+	TOKEN_DO_KEYWORD,
+	TOKEN_IF_KEYWORD,
+	TOKEN_ELSE_KEYWORD,
+	TOKEN_DEFAULT_KEYWORD,
+	TOKEN_RETURN_KEYWORD,
+	TOKEN_VAR_KEYWORD,
+	TOKEN_FOR_KEYWORD,
+	TOKEN_CONTINUE_KEYWORD,
+	TOKEN_CONST_KEYWORD,
+	TOKEN_SIZEOF_KEYWORD,
+
+	
 	TOKEN_INT,
 	TOKEN_FLOAT,
 	TOKEN_STR,
 	TOKEN_NAME,
 	TOKEN_CHAR,
+	
 	TOKEN_NOT,
 	TOKEN_MUL,
 	TOKEN_DIV,
@@ -83,6 +128,30 @@ const int OCT_BASE = 8;
 const int BIN_BASE = 2;
 const int DEC_BASE = 10;
 
+
+const std::map<std::string, TokenKind> KEYWORDS_TOKENS = {
+	{ "int", TokenKind::TOKEN_INT_KEYWORD },
+	{ "float", TokenKind::TOKEN_FLOAT_KEYWORD},
+	{ "string", TokenKind::TOKEN_STR_KEYWORD},
+	{ "struct", TokenKind::TOKEN_STRUCT_KEYWORD},
+	{ "enum", TokenKind::TOKEN_ENUM_KEYWORD},
+	{ "func", TokenKind::TOKEN_FUNC_KEYWORD},
+	{ "break", TokenKind::TOKEN_BREAK_KEYWORD},
+	{ "while", TokenKind::TOKEN_WHILE_KEYWORD},
+	{ "switch", TokenKind::TOKEN_SWITCH_KEYWORD},
+	{ "case", TokenKind::TOKEN_CASE_KEYWORD},
+	{ "do", TokenKind::TOKEN_DO_KEYWORD },
+	{ "if",TokenKind::TOKEN_IF_KEYWORD },
+	{ "else", TokenKind::TOKEN_ELSE_KEYWORD},
+	{ "default", TokenKing::TOKEN_DEFAULT_KEYWORD },
+	{ "return", TokenKind::TOKEN_RETURN_KEYWORD},
+	{ "var", TokenKind::TOKEN_VAR_KEYWORD},
+	{ "for", TokenKind::TOKEN_FOR_KEYWORD},
+	{ "continue", TokenKind::TOKEN_CONTINUE_KEYWORD},
+	{ "const", TokenKind::TOKEN_CONST_KEYWORD},
+	{ "sizeof",TokenKind::TOKEN_SIZEOF_KEYWORD},
+
+};
 
 const std::map<TokenKind, std::string> TOKEN_KIND_NAMES = {
 	{TokenKing::TOKEN_EOF, "EOF"},//
@@ -168,25 +237,7 @@ public:
 
 };
 
-const std::vector<std::string> KEYWORDS = {
-	"if",
-	"else",
-	"return",
-	"continue",
-	"break",
-	"while",
-	"do",
-	"for",
-	"switch",
-	"case",
-	"default",
-	"func",
-	"const",
-	"struct",
-	"enum",
-	"sizeof",
-	"var"
-};
+
 
 
 const std::map<char, char> ESCAPE_SEQUENCE_TO_CHAR = {

@@ -143,13 +143,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Lexer\Lexer\lex.cpp" />
+    <ClCompile Include="..\..\Lexer\Lexer\util.cpp" />
     <ClCompile Include="..\Generator\Generator.cpp" />
     <ClCompile Include="Analyzer.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Lexer\Lexer\lex.h" />
+    <ClInclude Include="..\..\Lexer\Lexer\util.h" />
     <ClInclude Include="..\Generator\Generator.h" />
     <ClInclude Include="Analyzer.h" />
+    <ClInclude Include="Util.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

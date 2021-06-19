@@ -8,6 +8,7 @@
 #include <cassert>
 
 
+
 void print_token_info(const Token& token)
 {
 	std::cout << "token_str_rep: " << "\"" << GetTokenName(token.kind) << "\"" << "\n";

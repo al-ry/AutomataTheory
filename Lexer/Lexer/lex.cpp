@@ -14,12 +14,17 @@ std::string GetTokenName(TokenKind kind)
 
 bool IsKeyword(const std::string& keyword)
 {
-	auto found = std::find(KEYWORDS.begin(), KEYWORDS.end(), keyword);
-	if (found != KEYWORDS.end())
+	auto found = KEYWORDS_TOKENS.find(keyword);
+	if (found != KEYWORDS_TOKENS.end())
 	{
 		return true;
 	}
 	return false;
+}
+
+TokenKind GetKeyword(const std::string& keyword)
+{
+	return KEYWORDS_TOKENS.find(keyword)->second;
 }
 
 std::optional<char> GetCharFromEscapeSeq(char ch)
@@ -733,7 +738,7 @@ void Lexer::ScanName()
 		return;
 	}
 	m_currToken.name = m_buf.data.substr(startPos, m_buf.pos - startPos);
-	m_currToken.kind = IsKeyword(m_currToken.name) ? TokenKing::TOKEN_KEYWORD : TokenKing::TOKEN_NAME;
+	m_currToken.kind = IsKeyword(m_currToken.name) ? GetKeyword(m_currToken.name) : TokenKing::TOKEN_NAME;
 }
 
 long long Lexer::StrToLL(size_t startPos, size_t endPos, int base)

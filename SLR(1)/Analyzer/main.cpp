@@ -1,4 +1,5 @@
 #include "../Generator/Generator.h"
+#include "../../Lexer/Lexer/lex.h"
 #include "Analyzer.h"
 #include <iostream>
 #include <fstream>
@@ -43,6 +44,9 @@ int main(int argc, char** argv)
 		std::cout << "Input sequence shoud not be empty\n";
 		return 1;
 	}
+	std::string buffer = ReadFileToBuffer("test_program.txt");
+	Lexer lex(buffer);
+	
 
 	AddEndSequence(sequence);
 
