@@ -1,4 +1,5 @@
 #include "Analyzer.h"
+#include "Util.h"
 #include <stack>
 #include <stdexcept>
 #include <iostream>
@@ -127,7 +128,7 @@ AnalyzerTable ReadTable(std::istream& input)
 void AnalyzeTable(AnalyzerTable const& table, Lexer& lexer)
 {
 	std::stack<AnalyzerRow> stateStack;
-	std::stack<std::string> sequenceStack;
+	//std::stack<std::string> sequenceStack;
 	std::stack<std::string> reductionStack;
 	std::vector<std::string> inputSymbols = table[0].symbols;
 
@@ -136,11 +137,24 @@ void AnalyzeTable(AnalyzerTable const& table, Lexer& lexer)
 	currentToken = lexer.GetNextToken();
 	while (currentToken.kind != TokenKind::TOKEN_EOF)
 	{
-		auto currentState = stateStack.top();
 
-		auto it = std::find(inputSymbols.begin(), inputSymbols.end(), currentToken.name);
-		auto itIndex = std::distance(inputSymbols.begin(), it);
-
+		std::vector<std::string>::iterator it;
+		ptrdiff_t itIndex;
+		AnalyzerRow currentState;
+		currentState = stateStack.top();
+		if (!reductionStack.empty())
+		{
+			auto nonterminal = reductionStack.top();
+			it = std::find(inputSymbols.begin(), inputSymbols.end(), nonterminal);
+			itIndex = std::distance(inputSymbols.begin(), it);
+			reductionStack.pop();
+		}
+		else
+		{
+			auto tokenStr = TOKEN_ADAPTATION.find(currentToken.kind);
+			it = std::find(inputSymbols.begin(), inputSymbols.end(), tokenStr->second);
+			itIndex = std::distance(inputSymbols.begin(), it);
+		}
 
 		if (currentState.val[itIndex].has_value())
 		{
@@ -174,7 +188,7 @@ void AnalyzeTable(AnalyzerTable const& table, Lexer& lexer)
 						for (size_t i = 0; i < reductionSize; i++)
 						{
 							stateStack.pop();
-							sequenceStack.pop();
+							//sequenceStack.pop();
 						}
 
 						//inputSequence[i] = reduction.reductionNonterminal;
@@ -185,14 +199,13 @@ void AnalyzeTable(AnalyzerTable const& table, Lexer& lexer)
 					{
 						std::cout << "Ok";
 						//i++;
-
 						currentToken = lexer.GetNextToken();
 					}
 				}, tableValue);
 		}
 		else
 		{
-			std::cout << "Error. " << " Found: " << currentToken.name << '\n';
+			std::cout << "Error. " << " Found: " << TOKEN_ADAPTATION.find(currentToken.kind)->second << '\n';
 			std::cout << "Expected: ";
 			for (size_t j = 0; j < currentState.val.size(); j++)
 			{
@@ -220,4 +233,10 @@ void AnalyzeTable(AnalyzerTable const& table, Lexer& lexer)
 			return;
 		}
 	}
+	if (!stateStack.empty()) 
+	{
+		std::cout << "Stack is not empty\n";
+		return;
+	}
+	std::cout << "Ok1";
 }
