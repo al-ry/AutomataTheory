@@ -57,7 +57,7 @@ int main(int argc, char** argv)
 	//auto table = CreateSLRTable(grammar);
 	//PrintTable(table, std::cout);
 	//PrintTableForAnalyze(table);
-	AnalyzeTable(table, sequence);
+	AnalyzeTable(table, lex);
 
 	return 0;
 }

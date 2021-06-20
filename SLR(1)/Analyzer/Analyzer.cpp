@@ -124,19 +124,21 @@ AnalyzerTable ReadTable(std::istream& input)
 
 }
 
-void AnalyzeTable(AnalyzerTable const& table, const Lexer& lexer)
+void AnalyzeTable(AnalyzerTable const& table, Lexer& lexer)
 {
 	std::stack<AnalyzerRow> stateStack;
 	std::stack<std::string> sequenceStack;
+	std::stack<std::string> reductionStack;
 	std::vector<std::string> inputSymbols = table[0].symbols;
 
 	stateStack.push(table[0]);
-
-	for (size_t i = 0; i < inputSequence.size();)
+	Token currentToken;
+	currentToken = lexer.GetNextToken();
+	while (currentToken.kind != TokenKind::TOKEN_EOF)
 	{
 		auto currentState = stateStack.top();
 
-		auto it = std::find(inputSymbols.begin(), inputSymbols.end(), inputSequence[i]);
+		auto it = std::find(inputSymbols.begin(), inputSymbols.end(), currentToken.name);
 		auto itIndex = std::distance(inputSymbols.begin(), it);
 
 
@@ -152,8 +154,8 @@ void AnalyzeTable(AnalyzerTable const& table, const Lexer& lexer)
 						auto shift = std::get<AnalyzerShift>(tableValue);
 						auto foundRow = table[shift.rowIndex];
 						stateStack.push(foundRow);
-						sequenceStack.push(inputSequence[i]);
-						i++;
+						//i++;
+						currentToken = lexer.GetNextToken();
 					}
 					else if (std::is_same_v<T, AnalyzerReduction>)
 					{
@@ -164,10 +166,10 @@ void AnalyzeTable(AnalyzerTable const& table, const Lexer& lexer)
 						{
 							reductionSize--;
 						}
-						else
-						{
-							i--;
-						}
+						//else
+						//{
+						//	i--;
+						//}
 
 						for (size_t i = 0; i < reductionSize; i++)
 						{
@@ -175,19 +177,22 @@ void AnalyzeTable(AnalyzerTable const& table, const Lexer& lexer)
 							sequenceStack.pop();
 						}
 
-						inputSequence[i] = reduction.reductionNonterminal;
+						//inputSequence[i] = reduction.reductionNonterminal;
+						reductionStack.push(reduction.reductionNonterminal);
 						
 					}
 					else
 					{
 						std::cout << "Ok";
-						i++;
+						//i++;
+
+						currentToken = lexer.GetNextToken();
 					}
 				}, tableValue);
 		}
 		else
 		{
-			std::cout << "Error. " << " Found: " << inputSequence[i] << '\n';
+			std::cout << "Error. " << " Found: " << currentToken.name << '\n';
 			std::cout << "Expected: ";
 			for (size_t j = 0; j < currentState.val.size(); j++)
 			{

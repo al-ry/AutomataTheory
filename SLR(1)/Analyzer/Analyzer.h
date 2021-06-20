@@ -1,5 +1,6 @@
 #pragma once
 #include "../Generator/Generator.h"
+#include "../../Lexer/Lexer/lex.h"
 
 
 struct AnalyzerReduction 
@@ -27,4 +28,4 @@ typedef std::vector<AnalyzerRow> AnalyzerTable;
 
 
 AnalyzerTable ReadTable(std::istream& input);
-void AnalyzeTable(AnalyzerTable const& table, std::vector<std::string> inputSequence);
+void AnalyzeTable(AnalyzerTable const& table, Lexer& lexer);
