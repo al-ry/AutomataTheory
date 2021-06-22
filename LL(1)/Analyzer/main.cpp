@@ -34,10 +34,13 @@ int main(int argc, char** argv)
 	auto grammar = CreateGrammar(input);
 	std::cout << "Result grammar\n";
 	PrintGrammar(grammar, std::cout);
-
-	if (!IsLLGrammar(grammar))
+	auto nonLLRules = IsLLGrammar(grammar);
+	if (nonLLRules.size() != 0)
 	{
-		std::cout << "Invalid input. Grammar has rules with intersecting guide sets\n";
+		for (auto rule: nonLLRules)
+		{
+			std::cout << rule.first << " { "<< rule.second << " }";
+		}
 		return 1;
 	}
 

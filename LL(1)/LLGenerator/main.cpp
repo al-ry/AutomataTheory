@@ -22,9 +22,13 @@ int main(int argc, char** argv)
 	PrintGrammar(grammar, outputGuideSet);
 	PrintGrammar(grammar, std::cout);
 
-	if (!IsLLGrammar(grammar))
+	auto nonLLRules = IsLLGrammar(grammar);
+	if (nonLLRules.size() != 0)
 	{
-		std::cout << "Invalid grammar. It should be LL\n";
+		for (auto rule : nonLLRules)
+		{
+			std::cout << rule.first << " { " << rule.second << " }";
+		}
 		return 1;
 	}
 

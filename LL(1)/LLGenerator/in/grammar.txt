@@ -1,0 +1,45 @@
+<Unit> -> <Decl> ; | <Decl> ; <Unit>
+<Decl> -> enum <EnumDecl> | struct <TypeDecl> | var <VarDecl> | const <ConstDecl> | func <FuncDecl>
+<EnumDecl> -> name { <EnumItems> } 
+<EnumItems> -> <EnumItem> | <EnumItem> , <EnumItems>
+<EnumItem> -> name | name = <Expr>
+<TypeDecl> -> name { <TypeFields> } 
+<TypeFields> -> <NameList> : <Type> ; | <NameList> : <Type> ; <TypeFields>
+<NameList> -> name | name , <NameList>
+<VarDecl> -> name = <Expr> | name : <Type> = <Expr> | name : <Type>
+<ConstDecl> -> name = <Expr> | name : <Type> = <Expr>
+<FuncDecl> -> name ( <FuncParamList> ) { <StatementBlock> } | name ( <FuncParamList> ) : <Type> { <StatementBlock> }
+<FuncParamList> -> <FuncParam> | <FuncParam> , <FuncParamList> | e
+<FuncParam> -> name : <Type>
+<StatementBlock> -> <Statement> | <Statement> <StatementBlock> | e
+<Statement> -> return <Expr> ; | return ;
+<Statement> -> break ;
+<Statement> -> continue ;
+<Statement> -> { <StatementBlock> }
+<Statement> -> if ( <Expr> ) { <StatementBlock> } <ElseIf>
+<ElseIf> -> else { <StatementBlock> } | else if ( <Expr> ) { <StatementBlock> } <ElseIf> | e
+<Statement> -> while ( <Expr> ) { <StatementBlock> }
+<Statement> -> do { <StatementBlock> } while ( <Expr> )
+<Statement> -> for ( <StatementList> ; <Expr> ; <StatementList> ) { <StatementBlock> } | for ( <StatementList> ; ; <StatementList> ) { <StatementBlock> }
+<Statement> -> switch ( <Expr> ) <SwitchBlock>
+<Statement> -> <AssignExpr> ;
+<Statement> -> <FuncCall> ;
+<AssignExpr> -> INC <Expr>  | DEC <Expr> | <Expr> <IncOrDecOrAssign>
+<IncOrDecOrAssign> -> INC | DEC | <AssignOp>
+<AssignOp> -> = <Expr> | = <FuncCall> | += <Expr> | -= <Expr> | %= <Expr> | /= <Expr> | : <Type> = <Expr>
+<FuncCall> -> name ( <ExprList> )
+<StatementList> -> <AssignExpr> <StatementListNext> | e
+<StatementListNext> -> , <StatementList> | e
+<Type> -> name | BoolKeyword | IntKeyword | StrKeyword | FloatKeyword | CharKeyword
+<SwitchBlock> -> { <SwitchCase> } | { <SwitchCase> <SwitchBlock> }
+<SwitchCase> ->  case <Expr> : <Statement> <SwitchCase> | default : <Statement>
+<Expr> -> <OperandExpr> <Condition>
+<OperandExpr> -> Int | Float | Str | name | true | false | Char | { <ExprList> } | ( <Expr> ) | <TypeFieldCall>
+<TypeFieldCall> -> name <TypeFieldCallNext>
+<TypeFieldCallNext> -> . <TypeFieldCall> | e
+<Condition> -> OR <Expr> | AND <Expr> | <CmpOp> <Expr> | <AddOp> <Expr> | <MulOp> <Expr> | e
+<CmpOp> -> Eq | NotEq | GT | LT | LTEq | GTEq
+<AddOp> -> Plus | Minus
+<MulOp> -> Mul | Div | Mod
+<ExprList> -> <Expr> <ExprListNext>
+<ExprListNext> -> , <ExprList> | e
