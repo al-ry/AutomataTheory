@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LLGenerator", "LLGenerator\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Analyzer", "Analyzer\Analyzer.vcxproj", "{28A531AB-5D0F-49E0-8504-2DABF9638313}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lexer", "..\Lexer\Lexer\Lexer.vcxproj", "{380C2121-F3F7-4146-9E07-A65D031E567F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -31,6 +33,14 @@ Global
 		{28A531AB-5D0F-49E0-8504-2DABF9638313}.Release|x64.Build.0 = Release|x64
 		{28A531AB-5D0F-49E0-8504-2DABF9638313}.Release|x86.ActiveCfg = Release|Win32
 		{28A531AB-5D0F-49E0-8504-2DABF9638313}.Release|x86.Build.0 = Release|Win32
+		{380C2121-F3F7-4146-9E07-A65D031E567F}.Debug|x64.ActiveCfg = Debug|x64
+		{380C2121-F3F7-4146-9E07-A65D031E567F}.Debug|x64.Build.0 = Debug|x64
+		{380C2121-F3F7-4146-9E07-A65D031E567F}.Debug|x86.ActiveCfg = Debug|Win32
+		{380C2121-F3F7-4146-9E07-A65D031E567F}.Debug|x86.Build.0 = Debug|Win32
+		{380C2121-F3F7-4146-9E07-A65D031E567F}.Release|x64.ActiveCfg = Release|x64
+		{380C2121-F3F7-4146-9E07-A65D031E567F}.Release|x64.Build.0 = Release|x64
+		{380C2121-F3F7-4146-9E07-A65D031E567F}.Release|x86.ActiveCfg = Release|Win32
+		{380C2121-F3F7-4146-9E07-A65D031E567F}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

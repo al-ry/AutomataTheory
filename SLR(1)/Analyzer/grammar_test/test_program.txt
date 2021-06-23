@@ -1,0 +1,87 @@
+enum weather 
+{ 
+	sunny = 1,
+	cloudy,
+	cold
+};
+
+enum week 
+{ 
+	sunday,
+	monday
+};
+
+const PI = 3.14;
+const PISQ = 3.14 * 3.14d;
+
+const stackSize : int = 256;
+
+var global : bool = true;
+
+var notInitilazed : int;
+
+var ch : char = 'w';
+
+struct People {
+	id, age : int;
+	sex : bool;
+	address : string;
+	car : Car;	
+};
+
+func DoSomething() : string
+{
+	return "Done";
+};
+
+func DoNothing()
+{
+
+};
+
+func DoNothingWithReturn() { return; };
+
+func FuncWithParams(bar1: People, bar2 : string) : int
+{
+
+};
+
+func FuncWithParams(bar1: char) : int
+{
+
+};
+
+func FuncWithStatements() : int
+{
+	DoNothing();
+	i = 0;
+	FuncWithParams(i);
+	bar = FuncWithParams(i);
+	PICopy = PI;
+	//i++;
+	//i--;
+	//++i;
+	//--i;
+	if (a > b && isTrue)
+	{
+	return true;
+	}
+	if (!isTrue)
+	{
+	return 1;
+	} else
+	{
+		isTrue = false;
+	}
+	for (i = 5; i > 0; i = 6) {
+	}
+	while (a > b) {
+
+	}
+};
+
+
+
+
+
+

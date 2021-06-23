@@ -2,11 +2,11 @@
 
 <Decl> -> enum <EnumDecl> | struct <TypeDecl> | var <VarDecl> | const <ConstDecl> | func <FuncDecl>
 
-<EnumDecl> -> name { <EnumItems> } 
+<EnumDecl> -> name { <EnumItems> }
 <EnumItems> -> <EnumItem> | <EnumItem> , <EnumItems>
 <EnumItem> -> name | name = <Expr>
 
-<TypeDecl> -> name { <TypeFields> } 
+<TypeDecl> -> name { <TypeFields> }
 <TypeFields> -> <NameList> : <Type> ; | <NameList> : <Type> ; <TypeFields>
 
 <NameList> -> name | name , <NameList>
@@ -20,8 +20,8 @@
 <FuncParamList> -> <FuncParam> | <FuncParam> , <FuncParamList> | e
 <FuncParam> -> name : <Type>
 
-<StatementBlock> -> <Statement> <StatementBlockNext>
-<StatementBlockNext> -> <StatementBlock> | e
+<StatementBlock> -> <Statement> <A>
+<A> -> <StatementBlock> | e
 
 <Statement> -> return <Expr> ; | return ;
 <Statement> -> break ;
@@ -48,17 +48,16 @@
 <SwitchBlock> -> { <SwitchCase> } | { <SwitchCase> <SwitchBlock> }
 <SwitchCase> ->  case <Expr> : <Statement> <SwitchCase> | default : <Statement>
 
-<Expr> -> <OperandExpr> <Condition>
-<OperandExpr> -> <NumberOperand> | Str | name <FuncCallExpr> | true | false | Char | ( <Expr> )
+<Expr> -> <BaseExpr> <Condition>
+<BaseExpr> -> <UnaryOp> <OperandExpr>
+<OperandExpr> -> Float | Int | Str | name <FuncCallExpr> | true | false | Char | ( <Expr> )
 <FuncCallExpr> -> ( <ExprList> ) | <TypeFieldCallNext>
 <TypeFieldCallNext> -> . name <TypeFieldCallNext> | e
 <Condition> -> OR <Expr> | AND <Expr> | <CmpOp> <Expr> | <AddOp> <Expr> | <MulOp> <Expr> | e
 <CmpOp> -> Eq | NotEq | GT | LT | LTEq | GTEq
 <AddOp> -> Plus | Minus
 <MulOp> -> Mul | Div | Mod
-<NumberOperand> -> <UnaryOp> <IntOrFloat>
-<IntOrFloat> -> Float | Int
-<UnaryOp> -> Plus | Minus | e
+<UnaryOp> -> Plus | Minus | Not | e
 
-<ExprList> -> <Expr> <ExprListNext>
+<ExprList> -> <Expr> <ExprListNext> | e
 <ExprListNext> -> , <ExprList> | e

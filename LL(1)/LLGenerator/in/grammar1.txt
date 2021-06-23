@@ -10,18 +10,16 @@
 <TypeFields> -> <NameList> : <Type> ; | <NameList> : <Type> ; <TypeFields>
 
 <NameList> -> name | name , <NameList>
-<VarDecl> -> name = <Expr> | name : <Type> <VarDeclWithInit>
-<VarDeclWithInit> -> = <Expr> | e
+
+<VarDecl> -> name = <Expr> | name : <Type> = <Expr> | name : <Type>
 
 <ConstDecl> -> name = <Expr> | name : <Type> = <Expr>
 
 <FuncDecl> -> name ( <FuncParamList> ) { <StatementBlock> } | name ( <FuncParamList> ) : <Type> { <StatementBlock> }
-
 <FuncParamList> -> <FuncParam> | <FuncParam> , <FuncParamList> | e
 <FuncParam> -> name : <Type>
 
-<StatementBlock> -> <Statement> <StatementBlockNext>
-<StatementBlockNext> -> <StatementBlock> | e
+<StatementBlock> -> <Statement> | <Statement> <StatementBlock> | e
 
 <Statement> -> return <Expr> ; | return ;
 <Statement> -> break ;
@@ -29,17 +27,17 @@
 <Statement> -> { <StatementBlock> }
 <Statement> -> if ( <Expr> ) { <StatementBlock> } <ElseIf>
 <ElseIf> -> else { <StatementBlock> } | else if ( <Expr> ) { <StatementBlock> } <ElseIf> | e
+
 <Statement> -> while ( <Expr> ) { <StatementBlock> }
 <Statement> -> do { <StatementBlock> } while ( <Expr> )
 <Statement> -> for ( <StatementList> ; <Expr> ; <StatementList> ) { <StatementBlock> } | for ( <StatementList> ; ; <StatementList> ) { <StatementBlock> }
 <Statement> -> switch ( <Expr> ) <SwitchBlock>
 <Statement> -> <AssignExpr> ;
+<Statement> -> <FuncCall> ;
 
-<AssignExpr> -> INC <Expr>  | DEC <Expr> | <Expr> <IncOrDecOrAssign>
-<IncOrDecOrAssign> -> INC | DEC | <AssignOp>
-<AssignOp> -> = <Expr> | += <Expr> | -= <Expr> | %= <Expr> | /= <Expr> | : <Type> = <Expr> | e
+<AssignExpr> -> INC <Expr> | DEC <Expr> | <Expr> INC | <Expr> DEC  | <Expr> <AssignOp>
+<AssignOp> -> = <Expr> | = <FuncCall> | += <Expr> | -= <Expr> | %= <Expr> | /= <Expr> | : <Type> = <Expr>
 <FuncCall> -> name ( <ExprList> )
-
 <StatementList> -> <AssignExpr> <StatementListNext> | e
 <StatementListNext> -> , <StatementList> | e
 
@@ -48,17 +46,21 @@
 <SwitchBlock> -> { <SwitchCase> } | { <SwitchCase> <SwitchBlock> }
 <SwitchCase> ->  case <Expr> : <Statement> <SwitchCase> | default : <Statement>
 
-<Expr> -> <OperandExpr> <Condition>
-<OperandExpr> -> <NumberOperand> | Str | name <FuncCallExpr> | true | false | Char | ( <Expr> )
-<FuncCallExpr> -> ( <ExprList> ) | <TypeFieldCallNext>
-<TypeFieldCallNext> -> . name <TypeFieldCallNext> | e
-<Condition> -> OR <Expr> | AND <Expr> | <CmpOp> <Expr> | <AddOp> <Expr> | <MulOp> <Expr> | e
+<Expr> -> <TernaryExpr>
+<TernaryExpr> -> <OrExpr> ? <TernaryExpr> : <TernaryExpr> ; | <OrExpr>
+<OrExpr> -> <AndExpr> OR <OrExpr> | <AndExpr>
+<AndExpr> ->  <CmpExpr> AND <AndExpr> | <CmpExpr>
+<CmpExpr> -> <AddExpr> <CmpOp> <CmpExpr> | <AddExpr>
 <CmpOp> -> Eq | NotEq | GT | LT | LTEq | GTEq
+<AddExpr> -> <MulExpr> <AddOp> <AddExpr> | <MulExpr>
 <AddOp> -> Plus | Minus
+<MulExpr> -> <UnaryExpr> <MulOp> <MulExpr> | <UnaryExpr>
 <MulOp> -> Mul | Div | Mod
-<NumberOperand> -> <UnaryOp> <IntOrFloat>
-<IntOrFloat> -> Float | Int
-<UnaryOp> -> Plus | Minus | e
+<UnaryExpr> -> <UnaryOp> <UnaryExpr> | <BaseExpr>
+<UnaryOp> -> Plus | Minus | Not
+<BaseExpr> -> <OperandExpr>
+<OperandExpr> -> Int | Float | Str | name | true | false | Char | { <ExprList> } | <TypeSpec> | ( <Expr> ) | <TypeFieldCall>
+<TypeFieldCall> -> name . <TypeFieldCall> |  name
+<TypeSpec> -> name | ( : <Type> )
 
-<ExprList> -> <Expr> <ExprListNext>
-<ExprListNext> -> , <ExprList> | e
+<ExprList> -> <Expr> , <ExprList> | <Expr> | e

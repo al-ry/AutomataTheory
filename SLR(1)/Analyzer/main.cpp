@@ -39,16 +39,16 @@ int main(int argc, char** argv)
 	std::vector<std::string> sequence = GetInputSequence(sequenceFile);
 	AnalyzerTable table = ReadTable(input);
 
-	if (sequence.size() == 0)
-	{
-		std::cout << "Input sequence shoud not be empty\n";
-		return 1;
-	}
+	//if (sequence.size() == 0)
+	//{
+	//	std::cout << "Input sequence shoud not be empty\n";
+	//	return 1;
+	//}
 	std::string buffer = ReadFileToBuffer("test_program.txt");
 	Lexer lex(buffer);
 	
 
-	AddEndSequence(sequence);
+	//AddEndSequence(sequence);
 
 	//auto grammar = CreateGrammar(input);
 	//std::cout << "Result grammar\n";

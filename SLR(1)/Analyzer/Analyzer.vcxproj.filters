@@ -30,6 +30,9 @@
     <ClCompile Include="..\..\Lexer\Lexer\util.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="test.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Generator\Generator.h">
@@ -41,10 +44,10 @@
     <ClInclude Include="..\..\Lexer\Lexer\lex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Util.h">
+    <ClInclude Include="..\..\Lexer\Lexer\util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Lexer\Lexer\util.h">
+    <ClInclude Include="..\..\Lexer\Lexer\Common.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

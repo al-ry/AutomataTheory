@@ -1,0 +1,15 @@
+enum weather 
+{ 
+	sunny = 1,
+	cloudy,
+	cold
+};
+
+enum week 
+{ 
+	sunday,
+	monday
+};
+
+
+

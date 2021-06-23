@@ -1,5 +1,5 @@
 #include "Analyzer.h"
-#include "Util.h"
+#include "../../Lexer/Lexer/Common.h"
 #include <stack>
 #include <stdexcept>
 #include <iostream>
@@ -128,14 +128,14 @@ AnalyzerTable ReadTable(std::istream& input)
 void AnalyzeTable(AnalyzerTable const& table, Lexer& lexer)
 {
 	std::stack<AnalyzerRow> stateStack;
-	//std::stack<std::string> sequenceStack;
 	std::stack<std::string> reductionStack;
+	std::stack<Token> reductionNext;
 	std::vector<std::string> inputSymbols = table[0].symbols;
 
 	stateStack.push(table[0]);
 	Token currentToken;
 	currentToken = lexer.GetNextToken();
-	while (currentToken.kind != TokenKind::TOKEN_EOF)
+	while (currentToken.kind != TokenKind::TOKEN_EOF || !stateStack.empty())
 	{
 
 		std::vector<std::string>::iterator it;
@@ -169,42 +169,52 @@ void AnalyzeTable(AnalyzerTable const& table, Lexer& lexer)
 						auto foundRow = table[shift.rowIndex];
 						stateStack.push(foundRow);
 						//i++;
-						currentToken = lexer.GetNextToken();
+						if (!reductionNext.empty())
+						{
+							currentToken = reductionNext.top();
+							reductionNext.pop();
+						}
+						else 
+						{
+							currentToken = lexer.GetNextToken();
+						}
 					}
 					else if (std::is_same_v<T, AnalyzerReduction>)
 					{
 						auto reduction = std::get<AnalyzerReduction>(tableValue);
 
 						size_t reductionSize = reduction.symbolCount;
-						if (reduction.reductionNonterminal == table[0].symbols[0])
-						{
-							reductionSize--;
-						}
+						//if (reduction.reductionNonterminal == table[0].symbols[0])
+						//{
+						//	reductionSize--;
+						//}
 						//else
 						//{
-						//	i--;
+						//	prevToken = currentToken;
 						//}
 
 						for (size_t i = 0; i < reductionSize; i++)
 						{
 							stateStack.pop();
-							//sequenceStack.pop();
 						}
 
 						//inputSequence[i] = reduction.reductionNonterminal;
-						reductionStack.push(reduction.reductionNonterminal);
-						
+						reductionNext.push(currentToken);
+						//reductionStack.push(TOKEN_ADAPTATION.find(currentToken.kind)->second);
+						reductionStack.push(reduction.reductionNonterminal);		
 					}
 					else
 					{
 						std::cout << "Ok";
 						//i++;
-						currentToken = lexer.GetNextToken();
+						//currentToken = lexer.GetNextToken();
 					}
 				}, tableValue);
 		}
 		else
 		{
+			std::cout << "In Line: " << currentToken.loc.lineNum << '\n';
+			std::cout << "In Pos: " << currentToken.loc.lineOffset << '\n';
 			std::cout << "Error. " << " Found: " << TOKEN_ADAPTATION.find(currentToken.kind)->second << '\n';
 			std::cout << "Expected: ";
 			for (size_t j = 0; j < currentState.val.size(); j++)

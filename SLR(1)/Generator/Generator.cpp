@@ -308,15 +308,15 @@ void AssignRowValue(std::vector<std::optional<TableValue>>& values, const Row& r
 	for (size_t i = 0; i < row.symbols.size(); i++)
 	{
 		std::vector<Shift> tmp;
-		if (HasConflict<Reduction>(values[i]))
-		{
-			throw std::invalid_argument("Shift reduction conflict");
-		}
 
 		for (size_t j = 0; j < firsts.size(); j++)
 		{
 			if (row.symbols[i] == firsts[j].name)
 			{
+				if (HasConflict<Reduction>(values[i]))
+				{
+					throw std::invalid_argument("Shift reduction conflict");
+				}
 				tmp.push_back(firsts[j]);
 			}
 		}
@@ -523,7 +523,16 @@ std::vector<std::optional<TableValue>> CreateNextTableValues(const Grammar& gram
 					throw std::invalid_argument("Shift reduction conflict");
 				}
 
-				result[pos].emplace(shifts);
+				if (result[pos].has_value())
+				{
+					auto shiftValue = std::get<std::vector<Shift>>(result[pos].value());
+					shiftValue.push_back(shifts[0]);
+					result[pos] = shiftValue;
+				}
+				else
+				{
+					result[pos].emplace(shifts);
+				}
 			}
 		}
 	}
@@ -592,12 +601,12 @@ void RemoveEmptyRule(Grammar &grammar)
 {
 	auto emptyRules = GetEmptyRules(grammar);
 
-	for (auto emptyRule : emptyRules)
+	for (size_t j = 0; j < emptyRules.size(); j++)
 	{
 		for (size_t i = 0; i < grammar.size(); i++)
 		{
 			std::vector<size_t> indexes;
-			auto foundEmptyRule = std::find(grammar[i].right.begin(), grammar[i].right.end(), emptyRule.left);
+			auto foundEmptyRule = std::find(grammar[i].right.begin(), grammar[i].right.end(), emptyRules[j].left);
 			if (foundEmptyRule != grammar[i].right.end())
 			{
 				for (auto it = foundEmptyRule; it != grammar[i].right.end();)
@@ -608,13 +617,20 @@ void RemoveEmptyRule(Grammar &grammar)
 					Rule newRule = grammar[i];
 					newRule.right.erase(newRule.right.begin() + foundEmptyRuleIndex);
 
+					if (newRule.right.size() == 0) 
+					{
+						newRule.right.push_back(EMPTY_RULE);
+						auto foundInEmptyRules = std::find(emptyRules.begin(), emptyRules.end(), newRule);
+						if (foundInEmptyRules == emptyRules.end()) { emptyRules.push_back(newRule); }
+					}
+
 					auto foundSameRule = std::find(grammar.begin(), grammar.end(), newRule);
 					if (foundSameRule == grammar.end())
 					{
 						grammar.push_back(newRule);
 					}
 
-					it = std::find(++it, grammar[i].right.end(), emptyRule.left);
+					it = std::find(++it, grammar[i].right.end(), emptyRules[j].left);
 					if (it == grammar[i].right.end())
 					{
 						break;
@@ -629,7 +645,7 @@ void RemoveEmptyRule(Grammar &grammar)
 		for (auto grmIt = grammar.begin(); grmIt != grammar.end();)
 		{
 			auto end = grammar.end();
-			if (grmIt->right == smrIt->right && grmIt->left == smrIt->left)
+			if ((grmIt->right == smrIt->right && grmIt->left == smrIt->left) || (grmIt->right.size() == 1 && grmIt->right[0] == EMPTY_RULE ))
 			{
 				grmIt = grammar.erase(grmIt);
 			}
@@ -640,6 +656,13 @@ void RemoveEmptyRule(Grammar &grammar)
 		}
 	}
 }
+
+//void RemoveEmptyRigth(Grammar& grammar) {
+//	for ()
+//	{
+//
+//	}
+//}
 
 Grammar CreateGrammar(std::istream& input)
 {
@@ -667,6 +690,7 @@ Grammar CreateGrammar(std::istream& input)
 	}
 	
 	RemoveEmptyRule(grammar);
+	//RemoveEmptyRigth(grammar);
 	std::string axiom = grammar.front().left;
 
 	axiom = CreateNewAxiom(axiom, grammar);
@@ -744,11 +768,11 @@ void PrintInputSymbols(const std::vector<std::string>& symbols, std::ostream& ou
 	{
 		if (i == 0)
 		{
-			output << std::setw(30) << symbols[i] << std::setw(10);
+			output << std::setw(30) << symbols[i] << std::setw(30);
 		}
 		else
 		{
-			output << std::setw(20) << symbols[i] << std::setw(10);
+			output << std::setw(20) << symbols[i] << std::setw(30);
 		}
 	}
 	output << "\n\n";
@@ -759,17 +783,17 @@ void PrintTable(const Table&table, std::ostream& output)
 	PrintInputSymbols(table[0].symbols, output);
 	for (const auto& row : table)
 	{
-		std::cout <<std::setw(10) << std::left << StateToString(row.state);
+		std::cout <<std::setw(30) << std::left << StateToString(row.state);
 		for (size_t i = 0; i < row.symbols.size(); i++)
 		{
-			std::cout << std::setw(20) << std::setfill(' ');
+			std::cout << std::setw(30) << std::setfill(' ');
 			if (row.val[i].has_value())
 			{
 				PrintTableValue(row.val[i].value());
 			}
 			else
 			{
-				std::cout << std::right << "-" << std::setw(10) << std::setfill(' ');
+				std::cout << std::right << "-" << std::setw(30) << std::setfill(' ');
 			}
 		}
 		std::cout << "\n\n";
@@ -784,14 +808,14 @@ void PrintTableForAnalyze(const Table& table, std::ostream& output)
 		//output << std::setw(10) << std::left << StateToString(row.state);
 		for (size_t i = 0; i < row.symbols.size(); i++)
 		{
-			output << std::setw(20) << std::setfill(' ');
+			output << std::setw(30) << std::setfill(' ');
 			if (row.val[i].has_value())
 			{
 				PrintTableValueForAnalyzer(row.val[i].value(), table, output);
 			}
 			else
 			{
-				output << std::right << "-" << std::setw(10) << std::setfill(' ');
+				output << std::right << "-" << std::setw(30) << std::setfill(' ');
 			}
 		}
 		output << "\n\n";

@@ -1,4 +1,0 @@
-<S> -> id = <E>
-<S> -> while <E> do <S>
-<E> -> <E> + <E>
-<E> -> id

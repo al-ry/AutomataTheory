@@ -65,6 +65,10 @@ typedef enum class TokenKing
 	TOKEN_CONTINUE_KEYWORD,
 	TOKEN_CONST_KEYWORD,
 	TOKEN_SIZEOF_KEYWORD,
+	TOKEN_TRUE_KEYWORD,
+	TOKEN_FALSE_KEYWORD,
+	TOKEN_BOOL_KEYWORD,
+	TOKEN_CHAR_KEYWORD,
 
 	
 	TOKEN_INT,
@@ -150,6 +154,10 @@ const std::map<std::string, TokenKind> KEYWORDS_TOKENS = {
 	{ "continue", TokenKind::TOKEN_CONTINUE_KEYWORD},
 	{ "const", TokenKind::TOKEN_CONST_KEYWORD},
 	{ "sizeof",TokenKind::TOKEN_SIZEOF_KEYWORD},
+	{ "true", TokenKind::TOKEN_TRUE_KEYWORD},
+	{ "false", TokenKind::TOKEN_FALSE_KEYWORD},
+	{ "bool", TokenKind::TOKEN_BOOL_KEYWORD},
+	{ "char", TokenKind::TOKEN_CHAR_KEYWORD},
 
 };
 

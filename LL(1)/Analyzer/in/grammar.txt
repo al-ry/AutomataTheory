@@ -48,17 +48,16 @@
 <SwitchBlock> -> { <SwitchCase> } | { <SwitchCase> <SwitchBlock> }
 <SwitchCase> ->  case <Expr> : <Statement> <SwitchCase> | default : <Statement>
 
-<Expr> -> <OperandExpr> <Condition>
-<OperandExpr> -> <NumberOperand> | Str | name <FuncCallExpr> | true | false | Char | ( <Expr> )
+<Expr> -> <BaseExpr> <Condition>
+<BaseExpr> -> <UnaryOp> <OperandExpr>
+<OperandExpr> -> Float | Int | Str | name <FuncCallExpr> | true | false | Char | ( <Expr> )
 <FuncCallExpr> -> ( <ExprList> ) | <TypeFieldCallNext>
 <TypeFieldCallNext> -> . name <TypeFieldCallNext> | e
 <Condition> -> OR <Expr> | AND <Expr> | <CmpOp> <Expr> | <AddOp> <Expr> | <MulOp> <Expr> | e
 <CmpOp> -> Eq | NotEq | GT | LT | LTEq | GTEq
 <AddOp> -> Plus | Minus
 <MulOp> -> Mul | Div | Mod
-<NumberOperand> -> <UnaryOp> <IntOrFloat>
-<IntOrFloat> -> Float | Int
-<UnaryOp> -> Plus | Minus | e
+<UnaryOp> -> Plus | Minus | Not | e
 
-<ExprList> -> <Expr> <ExprListNext>
+<ExprList> -> <Expr> <ExprListNext> | e
 <ExprListNext> -> , <ExprList> | e

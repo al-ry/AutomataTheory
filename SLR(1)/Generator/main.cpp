@@ -21,8 +21,8 @@ int main(int argc, char** argv)
 	try
 	{
 		auto table = CreateSLRTable(grammar);
-		PrintTable(table, std::cout);
-		PrintGrammar(grammar, std::cout);
+		//PrintTable(table, std::cout);
+		//PrintGrammar(grammar, std::cout);
 		PrintTableForAnalyze(table, output);
 	}
 	catch (const std::invalid_argument& e)

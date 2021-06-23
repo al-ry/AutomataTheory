@@ -27,7 +27,7 @@ int main(int argc, char** argv)
 	{
 		for (auto rule : nonLLRules)
 		{
-			std::cout << rule.first << " { " << rule.second << " }";
+			std::cout << rule.first << " { " << rule.second << " }" << std::endl;
 		}
 		return 1;
 	}

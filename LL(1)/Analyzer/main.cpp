@@ -2,6 +2,7 @@
 #include <iostream>
 #include "../LLGenerator/Utils.h"
 #include "../LLGenerator/Generator.h"
+#include "../../Lexer/Lexer/lex.h"
 #include "Analyzerh.h"
 
 std::vector<std::string> GetInputSequence(std::istream& input)
@@ -33,7 +34,7 @@ int main(int argc, char** argv)
 
 	auto grammar = CreateGrammar(input);
 	std::cout << "Result grammar\n";
-	PrintGrammar(grammar, std::cout);
+	//PrintGrammar(grammar, std::cout);
 	auto nonLLRules = IsLLGrammar(grammar);
 	if (nonLLRules.size() != 0)
 	{
@@ -43,11 +44,14 @@ int main(int argc, char** argv)
 		}
 		return 1;
 	}
+	std::string buffer = ReadFileToBuffer("test_program.txt");
+	Lexer lex(buffer);
 
 	auto table = GenerateTable(grammar);
-	PrintTable(table, std::cout);
+	//PrintTable(table, std::cout);
 
-	AnalyzeTable(table, sequence);
+	//AnalyzeTable(table, sequence);
+	AnalyzeTable(table, lex);
 
 	return 0;
 }

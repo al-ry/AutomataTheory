@@ -1,0 +1,401 @@
+Number			Symbol			GS			Shift			Error			Pointer			Stack			End			
+0			<Y13>			enum struct var const func 			0			1			127			0			0			
+1			<VarDeclWithInit>			; 			0			0			129			0			0			
+2			<VarDeclWithInit>			= 			0			1			130			0			0			
+3			<VarDecl>			name 			0			1			132			0			0			
+4			<Unit>			enum struct var const func 			0			1			134			0			0			
+5			<UnaryOp>			Plus 			0			0			137			0			0			
+6			<UnaryOp>			Float Int 			0			0			138			0			0			
+7			<UnaryOp>			Minus 			0			1			139			0			0			
+8			<TypeFields>			name 			0			1			140			0			0			
+9			<TypeFieldCallNext>			. 			0			0			145			0			0			
+10			<TypeFieldCallNext>			Eq NotEq GT LT LTEq GTEq Plus Minus Mul Div Mod OR AND ) : ; += -= %= /= = , INC DEC } 			0			1			148			0			0			
+11			<TypeDecl>			name 			0			1			149			0			0			
+12			<Type>			name 			0			0			153			0			0			
+13			<Type>			BoolKeyword 			0			0			154			0			0			
+14			<Type>			IntKeyword 			0			0			155			0			0			
+15			<Type>			StrKeyword 			0			0			156			0			0			
+16			<Type>			FloatKeyword 			0			0			157			0			0			
+17			<Type>			CharKeyword 			0			1			158			0			0			
+18			<SwitchCase>			case 			0			0			159			0			0			
+19			<SwitchCase>			default 			0			1			164			0			0			
+20			<SwitchBlock>			{ 			0			1			167			0			0			
+21			<StatementListNext>			, 			0			0			170			0			0			
+22			<StatementListNext>			) ; 			0			1			172			0			0			
+23			<StatementList>			) ; 			0			0			173			0			0			
+24			<StatementList>			Minus Plus Str name true false Char ( INC DEC Float Int 			0			1			174			0			0			
+25			<StatementBlockNext>			} 			0			0			176			0			0			
+26			<StatementBlockNext>			Minus Plus Str name true false Char ( INC DEC break continue { if while do switch for return Float Int 			0			1			177			0			0			
+27			<StatementBlock>			Minus Plus Str name true false Char ( INC DEC break continue { if while do switch for return Float Int 			0			1			178			0			0			
+28			<Statement>			break 			0			0			180			0			0			
+29			<Statement>			continue 			0			0			182			0			0			
+30			<Statement>			{ 			0			0			184			0			0			
+31			<Statement>			Minus Plus Str name true false Char ( INC DEC Float Int 			0			0			187			0			0			
+32			<Statement>			while 			0			0			189			0			0			
+33			<Statement>			do 			0			0			196			0			0			
+34			<Statement>			switch 			0			0			204			0			0			
+35			<Statement>			if 			0			0			209			0			0			
+36			<Statement>			for 			0			0			217			0			0			
+37			<Statement>			return 			0			1			222			0			0			
+38			<OperandExpr>			Str 			0			0			224			0			0			
+39			<OperandExpr>			false 			0			0			225			0			0			
+40			<OperandExpr>			name 			0			0			226			0			0			
+41			<OperandExpr>			Char 			0			0			228			0			0			
+42			<OperandExpr>			Minus Plus Float Int 			0			0			229			0			0			
+43			<OperandExpr>			( 			0			0			230			0			0			
+44			<OperandExpr>			true 			0			1			233			0			0			
+45			<NumberOperand>			Minus Plus Float Int 			0			1			234			0			0			
+46			<NameList>			name 			0			1			236			0			0			
+47			<MulOp>			Mod 			0			0			238			0			0			
+48			<MulOp>			Mul 			0			0			239			0			0			
+49			<MulOp>			Div 			0			1			240			0			0			
+50			<IntOrFloat>			Int 			0			0			241			0			0			
+51			<IntOrFloat>			Float 			0			1			242			0			0			
+52			<IncOrDecOrAssign>			+= -= %= /= : ; = , ) 			0			0			243			0			0			
+53			<IncOrDecOrAssign>			DEC 			0			0			244			0			0			
+54			<IncOrDecOrAssign>			INC 			0			1			245			0			0			
+55			<FuncParamList>			name 			0			0			246			0			0			
+56			<FuncParamList>			) 			0			1			248			0			0			
+57			<FuncParam>			name 			0			1			249			0			0			
+58			<FuncDecl>			name 			0			1			252			0			0			
+59			<FuncCallExpr>			. Eq NotEq GT LT LTEq GTEq Plus Minus Mul Div Mod OR AND ) : ; += -= %= /= = , INC DEC } 			0			0			257			0			0			
+60			<FuncCallExpr>			( 			0			1			258			0			0			
+61			<FuncCall>			name 			0			1			261			0			0			
+62			<F9>			Minus Plus Str name true false Char ( Float Int 			0			0			265			0			0			
+63			<F9>			; 			0			1			272			0			0			
+64			<F8>			, 			0			0			278			0			0			
+65			<F8>			) 			0			1			280			0			0			
+66			<F7>			: 			0			0			281			0			0			
+67			<F7>			{ 			0			1			286			0			0			
+68			<F6>			: 			0			0			289			0			0			
+69			<F6>			= 			0			1			293			0			0			
+70			<F5>			: 			0			0			295			0			0			
+71			<F5>			= 			0			1			298			0			0			
+72			<F4>			: 			0			0			300			0			0			
+73			<F4>			, 			0			1			301			0			0			
+74			<F3>			name 			0			0			303			0			0			
+75			<F3>			} 			0			1			304			0			0			
+76			<F2>			, } 			0			0			305			0			0			
+77			<F2>			= 			0			1			306			0			0			
+78			<F1>			, 			0			0			308			0			0			
+79			<F1>			} 			0			1			310			0			0			
+80			<F12>			{ 			0			0			311			0			0			
+81			<F12>			} 			0			1			313			0			0			
+82			<F11>			{ 			0			0			314			0			0			
+83			<F11>			if 			0			1			317			0			0			
+84			<F10>			Minus Plus Str name true false Char ( Float Int 			0			0			325			0			0			
+85			<F10>			; 			0			1			327			0			0			
+86			<F0>			enum struct var const func 			0			0			328			0			0			
+87			<F0>			$ 			0			1			329			0			0			
+88			<ExprListNext>			, 			0			0			330			0			0			
+89			<ExprListNext>			) 			0			1			332			0			0			
+90			<ExprList>			Minus Plus Str name true false Char ( Float Int 			0			1			333			0			0			
+91			<Expr>			Minus Plus Str name true false Char ( Float Int 			0			1			335			0			0			
+92			<EnumItems>			name 			0			1			337			0			0			
+93			<EnumItem>			name 			0			1			339			0			0			
+94			<EnumDecl>			name 			0			1			341			0			0			
+95			<ElseIf>			else 			0			0			345			0			0			
+96			<ElseIf>			Minus Plus Str name true false Char ( INC DEC break continue { if while do switch for return Float Int } case default 			0			1			347			0			0			
+97			<Decl>			var 			0			0			348			0			0			
+98			<Decl>			func 			0			0			350			0			0			
+99			<Decl>			const 			0			0			352			0			0			
+100			<Decl>			struct 			0			0			354			0			0			
+101			<Decl>			enum 			0			1			356			0			0			
+102			<ConstDecl>			name 			0			1			358			0			0			
+103			<Condition>			AND 			0			0			360			0			0			
+104			<Condition>			Mul Div Mod 			0			0			362			0			0			
+105			<Condition>			Plus Minus 			0			0			364			0			0			
+106			<Condition>			Eq NotEq GT LT LTEq GTEq 			0			0			366			0			0			
+107			<Condition>			OR 			0			0			368			0			0			
+108			<Condition>			) : ; += -= %= /= = , INC DEC } 			0			1			370			0			0			
+109			<CmpOp>			Eq 			0			0			371			0			0			
+110			<CmpOp>			GTEq 			0			0			372			0			0			
+111			<CmpOp>			LTEq 			0			0			373			0			0			
+112			<CmpOp>			LT 			0			0			374			0			0			
+113			<CmpOp>			GT 			0			0			375			0			0			
+114			<CmpOp>			NotEq 			0			1			376			0			0			
+115			<AssignOp>			%= 			0			0			377			0			0			
+116			<AssignOp>			= 			0			0			379			0			0			
+117			<AssignOp>			+= 			0			0			381			0			0			
+118			<AssignOp>			-= 			0			0			383			0			0			
+119			<AssignOp>			: 			0			0			385			0			0			
+120			<AssignOp>			; , ) 			0			0			389			0			0			
+121			<AssignOp>			/= 			0			1			390			0			0			
+122			<AssignExpr>			DEC 			0			0			392			0			0			
+123			<AssignExpr>			Minus Plus Str name true false Char ( Float Int 			0			0			394			0			0			
+124			<AssignExpr>			INC 			0			1			396			0			0			
+125			<AddOp>			Minus 			0			0			398			0			0			
+126			<AddOp>			Plus 			0			1			399			0			0			
+127			<Unit>			enum struct var const func 			0			1			4			1			0			
+128			$			$ 			1			1			null			0			1			
+129			e			; 			0			1			null			0			0			
+130			=			= 			1			1			131			0			0			
+131			<Expr>			Minus Plus Str name true false Char ( Float Int 			0			1			91			0			0			
+132			name			name 			1			1			133			0			0			
+133			<F5>			: = 			0			1			70			0			0			
+134			<Decl>			var func const struct enum 			0			1			97			1			0			
+135			;			; 			1			1			136			0			0			
+136			<F0>			enum struct var const func $ 			0			1			86			0			0			
+137			Plus			Plus 			1			1			null			0			0			
+138			e			Float Int 			0			1			null			0			0			
+139			Minus			Minus 			1			1			null			0			0			
+140			<NameList>			name 			0			1			46			1			0			
+141			:			: 			1			1			142			0			0			
+142			<Type>			name BoolKeyword IntKeyword StrKeyword FloatKeyword CharKeyword 			0			1			12			1			0			
+143			;			; 			1			1			144			0			0			
+144			<F3>			name } 			0			1			74			0			0			
+145			.			. 			1			1			146			0			0			
+146			name			name 			1			1			147			0			0			
+147			<TypeFieldCallNext>			. Eq NotEq GT LT LTEq GTEq Plus Minus Mul Div Mod OR AND ) : ; += -= %= /= = , INC DEC } 			0			1			9			0			0			
+148			e			Eq NotEq GT LT LTEq GTEq Plus Minus Mul Div Mod OR AND ) : ; += -= %= /= = , INC DEC } 			0			1			null			0			0			
+149			name			name 			1			1			150			0			0			
+150			{			{ 			1			1			151			0			0			
+151			<TypeFields>			name 			0			1			8			1			0			
+152			}			} 			1			1			null			0			0			
+153			name			name 			1			1			null			0			0			
+154			BoolKeyword			BoolKeyword 			1			1			null			0			0			
+155			IntKeyword			IntKeyword 			1			1			null			0			0			
+156			StrKeyword			StrKeyword 			1			1			null			0			0			
+157			FloatKeyword			FloatKeyword 			1			1			null			0			0			
+158			CharKeyword			CharKeyword 			1			1			null			0			0			
+159			case			case 			1			1			160			0			0			
+160			<Expr>			Minus Plus Str name true false Char ( Float Int 			0			1			91			1			0			
+161			:			: 			1			1			162			0			0			
+162			<Statement>			break continue { Minus Plus Str name true false Char ( INC DEC Float Int while do switch if for return 			0			1			28			1			0			
+163			<SwitchCase>			case default 			0			1			18			0			0			
+164			default			default 			1			1			165			0			0			
+165			:			: 			1			1			166			0			0			
+166			<Statement>			break continue { Minus Plus Str name true false Char ( INC DEC Float Int while do switch if for return 			0			1			28			0			0			
+167			{			{ 			1			1			168			0			0			
+168			<SwitchCase>			case default 			0			1			18			1			0			
+169			<F12>			{ } 			0			1			80			0			0			
+170			,			, 			1			1			171			0			0			
+171			<StatementList>			) ; Minus Plus Str name true false Char ( INC DEC Float Int 			0			1			23			0			0			
+172			e			) ; 			0			1			null			0			0			
+173			e			) ; 			0			1			null			0			0			
+174			<AssignExpr>			DEC Minus Plus Str name true false Char ( Float Int INC 			0			1			122			1			0			
+175			<StatementListNext>			, ) ; 			0			1			21			0			0			
+176			e			} 			0			1			null			0			0			
+177			<StatementBlock>			Minus Plus Str name true false Char ( INC DEC break continue { if while do switch for return Float Int 			0			1			27			0			0			
+178			<Statement>			break continue { Minus Plus Str name true false Char ( INC DEC Float Int while do switch if for return 			0			1			28			1			0			
+179			<StatementBlockNext>			} Minus Plus Str name true false Char ( INC DEC break continue { if while do switch for return Float Int 			0			1			25			0			0			
+180			break			break 			1			1			181			0			0			
+181			;			; 			1			1			null			0			0			
+182			continue			continue 			1			1			183			0			0			
+183			;			; 			1			1			null			0			0			
+184			{			{ 			1			1			185			0			0			
+185			<StatementBlock>			Minus Plus Str name true false Char ( INC DEC break continue { if while do switch for return Float Int 			0			1			27			1			0			
+186			}			} 			1			1			null			0			0			
+187			<AssignExpr>			DEC Minus Plus Str name true false Char ( Float Int INC 			0			1			122			1			0			
+188			;			; 			1			1			null			0			0			
+189			while			while 			1			1			190			0			0			
+190			(			( 			1			1			191			0			0			
+191			<Expr>			Minus Plus Str name true false Char ( Float Int 			0			1			91			1			0			
+192			)			) 			1			1			193			0			0			
+193			{			{ 			1			1			194			0			0			
+194			<StatementBlock>			Minus Plus Str name true false Char ( INC DEC break continue { if while do switch for return Float Int 			0			1			27			1			0			
+195			}			} 			1			1			null			0			0			
+196			do			do 			1			1			197			0			0			
+197			{			{ 			1			1			198			0			0			
+198			<StatementBlock>			Minus Plus Str name true false Char ( INC DEC break continue { if while do switch for return Float Int 			0			1			27			1			0			
+199			}			} 			1			1			200			0			0			
+200			while			while 			1			1			201			0			0			
+201			(			( 			1			1			202			0			0			
+202			<Expr>			Minus Plus Str name true false Char ( Float Int 			0			1			91			1			0			
+203			)			) 			1			1			null			0			0			
+204			switch			switch 			1			1			205			0			0			
+205			(			( 			1			1			206			0			0			
+206			<Expr>			Minus Plus Str name true false Char ( Float Int 			0			1			91			1			0			
+207			)			) 			1			1			208			0			0			
+208			<SwitchBlock>			{ 			0			1			20			0			0			
+209			if			if 			1			1			210			0			0			
+210			(			( 			1			1			211			0			0			
+211			<Expr>			Minus Plus Str name true false Char ( Float Int 			0			1			91			1			0			
+212			)			) 			1			1			213			0			0			
+213			{			{ 			1			1			214			0			0			
+214			<StatementBlock>			Minus Plus Str name true false Char ( INC DEC break continue { if while do switch for return Float Int 			0			1			27			1			0			
+215			}			} 			1			1			216			0			0			
+216			<ElseIf>			else Minus Plus Str name true false Char ( INC DEC break continue { if while do switch for return Float Int } case default 			0			1			95			0			0			
+217			for			for 			1			1			218			0			0			
+218			(			( 			1			1			219			0			0			
+219			<StatementList>			) ; Minus Plus Str name true false Char ( INC DEC Float Int 			0			1			23			1			0			
+220			;			; 			1			1			221			0			0			
+221			<F9>			Minus Plus Str name true false Char ( Float Int ; 			0			1			62			0			0			
+222			return			return 			1			1			223			0			0			
+223			<F10>			Minus Plus Str name true false Char ( Float Int ; 			0			1			84			0			0			
+224			Str			Str 			1			1			null			0			0			
+225			false			false 			1			1			null			0			0			
+226			name			name 			1			1			227			0			0			
+227			<FuncCallExpr>			. Eq NotEq GT LT LTEq GTEq Plus Minus Mul Div Mod OR AND ) : ; += -= %= /= = , INC DEC } ( 			0			1			59			0			0			
+228			Char			Char 			1			1			null			0			0			
+229			<NumberOperand>			Minus Plus Float Int 			0			1			45			0			0			
+230			(			( 			1			1			231			0			0			
+231			<Expr>			Minus Plus Str name true false Char ( Float Int 			0			1			91			1			0			
+232			)			) 			1			1			null			0			0			
+233			true			true 			1			1			null			0			0			
+234			<UnaryOp>			Plus Float Int Minus 			0			1			5			1			0			
+235			<IntOrFloat>			Int Float 			0			1			50			0			0			
+236			name			name 			1			1			237			0			0			
+237			<F4>			: , 			0			1			72			0			0			
+238			Mod			Mod 			1			1			null			0			0			
+239			Mul			Mul 			1			1			null			0			0			
+240			Div			Div 			1			1			null			0			0			
+241			Int			Int 			1			1			null			0			0			
+242			Float			Float 			1			1			null			0			0			
+243			<AssignOp>			%= = += -= : ; , ) /= 			0			1			115			0			0			
+244			DEC			DEC 			1			1			null			0			0			
+245			INC			INC 			1			1			null			0			0			
+246			<FuncParam>			name 			0			1			57			1			0			
+247			<F8>			, ) 			0			1			64			0			0			
+248			e			) 			0			1			null			0			0			
+249			name			name 			1			1			250			0			0			
+250			:			: 			1			1			251			0			0			
+251			<Type>			name BoolKeyword IntKeyword StrKeyword FloatKeyword CharKeyword 			0			1			12			0			0			
+252			name			name 			1			1			253			0			0			
+253			(			( 			1			1			254			0			0			
+254			<FuncParamList>			name ) 			0			1			55			1			0			
+255			)			) 			1			1			256			0			0			
+256			<F7>			: { 			0			1			66			0			0			
+257			<TypeFieldCallNext>			. Eq NotEq GT LT LTEq GTEq Plus Minus Mul Div Mod OR AND ) : ; += -= %= /= = , INC DEC } 			0			1			9			0			0			
+258			(			( 			1			1			259			0			0			
+259			<ExprList>			Minus Plus Str name true false Char ( Float Int 			0			1			90			1			0			
+260			)			) 			1			1			null			0			0			
+261			name			name 			1			1			262			0			0			
+262			(			( 			1			1			263			0			0			
+263			<ExprList>			Minus Plus Str name true false Char ( Float Int 			0			1			90			1			0			
+264			)			) 			1			1			null			0			0			
+265			<Expr>			Minus Plus Str name true false Char ( Float Int 			0			1			91			1			0			
+266			;			; 			1			1			267			0			0			
+267			<StatementList>			) ; Minus Plus Str name true false Char ( INC DEC Float Int 			0			1			23			1			0			
+268			)			) 			1			1			269			0			0			
+269			{			{ 			1			1			270			0			0			
+270			<StatementBlock>			Minus Plus Str name true false Char ( INC DEC break continue { if while do switch for return Float Int 			0			1			27			1			0			
+271			}			} 			1			1			null			0			0			
+272			;			; 			1			1			273			0			0			
+273			<StatementList>			) ; Minus Plus Str name true false Char ( INC DEC Float Int 			0			1			23			1			0			
+274			)			) 			1			1			275			0			0			
+275			{			{ 			1			1			276			0			0			
+276			<StatementBlock>			Minus Plus Str name true false Char ( INC DEC break continue { if while do switch for return Float Int 			0			1			27			1			0			
+277			}			} 			1			1			null			0			0			
+278			,			, 			1			1			279			0			0			
+279			<FuncParamList>			name ) 			0			1			55			0			0			
+280			e			) 			0			1			null			0			0			
+281			:			: 			1			1			282			0			0			
+282			<Type>			name BoolKeyword IntKeyword StrKeyword FloatKeyword CharKeyword 			0			1			12			1			0			
+283			{			{ 			1			1			284			0			0			
+284			<StatementBlock>			Minus Plus Str name true false Char ( INC DEC break continue { if while do switch for return Float Int 			0			1			27			1			0			
+285			}			} 			1			1			null			0			0			
+286			{			{ 			1			1			287			0			0			
+287			<StatementBlock>			Minus Plus Str name true false Char ( INC DEC break continue { if while do switch for return Float Int 			0			1			27			1			0			
+288			}			} 			1			1			null			0			0			
+289			:			: 			1			1			290			0			0			
+290			<Type>			name BoolKeyword IntKeyword StrKeyword FloatKeyword CharKeyword 			0			1			12			1			0			
+291			=			= 			1			1			292			0			0			
+292			<Expr>			Minus Plus Str name true false Char ( Float Int 			0			1			91			0			0			
+293			=			= 			1			1			294			0			0			
+294			<Expr>			Minus Plus Str name true false Char ( Float Int 			0			1			91			0			0			
+295			:			: 			1			1			296			0			0			
+296			<Type>			name BoolKeyword IntKeyword StrKeyword FloatKeyword CharKeyword 			0			1			12			1			0			
+297			<VarDeclWithInit>			; = 			0			1			1			0			0			
+298			=			= 			1			1			299			0			0			
+299			<Expr>			Minus Plus Str name true false Char ( Float Int 			0			1			91			0			0			
+300			e			: 			0			1			null			0			0			
+301			,			, 			1			1			302			0			0			
+302			<NameList>			name 			0			1			46			0			0			
+303			<TypeFields>			name 			0			1			8			0			0			
+304			e			} 			0			1			null			0			0			
+305			e			, } 			0			1			null			0			0			
+306			=			= 			1			1			307			0			0			
+307			<Expr>			Minus Plus Str name true false Char ( Float Int 			0			1			91			0			0			
+308			,			, 			1			1			309			0			0			
+309			<EnumItems>			name 			0			1			92			0			0			
+310			e			} 			0			1			null			0			0			
+311			<SwitchBlock>			{ 			0			1			20			1			0			
+312			}			} 			1			1			null			0			0			
+313			}			} 			1			1			null			0			0			
+314			{			{ 			1			1			315			0			0			
+315			<StatementBlock>			Minus Plus Str name true false Char ( INC DEC break continue { if while do switch for return Float Int 			0			1			27			1			0			
+316			}			} 			1			1			null			0			0			
+317			if			if 			1			1			318			0			0			
+318			(			( 			1			1			319			0			0			
+319			<Expr>			Minus Plus Str name true false Char ( Float Int 			0			1			91			1			0			
+320			)			) 			1			1			321			0			0			
+321			{			{ 			1			1			322			0			0			
+322			<StatementBlock>			Minus Plus Str name true false Char ( INC DEC break continue { if while do switch for return Float Int 			0			1			27			1			0			
+323			}			} 			1			1			324			0			0			
+324			<ElseIf>			else Minus Plus Str name true false Char ( INC DEC break continue { if while do switch for return Float Int } case default 			0			1			95			0			0			
+325			<Expr>			Minus Plus Str name true false Char ( Float Int 			0			1			91			1			0			
+326			;			; 			1			1			null			0			0			
+327			;			; 			1			1			null			0			0			
+328			<Unit>			enum struct var const func 			0			1			4			0			0			
+329			e			$ 			0			1			null			0			0			
+330			,			, 			1			1			331			0			0			
+331			<ExprList>			Minus Plus Str name true false Char ( Float Int 			0			1			90			0			0			
+332			e			) 			0			1			null			0			0			
+333			<Expr>			Minus Plus Str name true false Char ( Float Int 			0			1			91			1			0			
+334			<ExprListNext>			, ) 			0			1			88			0			0			
+335			<OperandExpr>			Str false name Char Minus Plus Float Int ( true 			0			1			38			1			0			
+336			<Condition>			AND Mul Div Mod Plus Minus Eq NotEq GT LT LTEq GTEq OR ) : ; += -= %= /= = , INC DEC } 			0			1			103			0			0			
+337			<EnumItem>			name 			0			1			93			1			0			
+338			<F1>			, } 			0			1			78			0			0			
+339			name			name 			1			1			340			0			0			
+340			<F2>			, } = 			0			1			76			0			0			
+341			name			name 			1			1			342			0			0			
+342			{			{ 			1			1			343			0			0			
+343			<EnumItems>			name 			0			1			92			1			0			
+344			}			} 			1			1			null			0			0			
+345			else			else 			1			1			346			0			0			
+346			<F11>			{ if 			0			1			82			0			0			
+347			e			Minus Plus Str name true false Char ( INC DEC break continue { if while do switch for return Float Int } case default 			0			1			null			0			0			
+348			var			var 			1			1			349			0			0			
+349			<VarDecl>			name 			0			1			3			0			0			
+350			func			func 			1			1			351			0			0			
+351			<FuncDecl>			name 			0			1			58			0			0			
+352			const			const 			1			1			353			0			0			
+353			<ConstDecl>			name 			0			1			102			0			0			
+354			struct			struct 			1			1			355			0			0			
+355			<TypeDecl>			name 			0			1			11			0			0			
+356			enum			enum 			1			1			357			0			0			
+357			<EnumDecl>			name 			0			1			94			0			0			
+358			name			name 			1			1			359			0			0			
+359			<F6>			: = 			0			1			68			0			0			
+360			AND			AND 			1			1			361			0			0			
+361			<Expr>			Minus Plus Str name true false Char ( Float Int 			0			1			91			0			0			
+362			<MulOp>			Mod Mul Div 			0			1			47			1			0			
+363			<Expr>			Minus Plus Str name true false Char ( Float Int 			0			1			91			0			0			
+364			<AddOp>			Minus Plus 			0			1			125			1			0			
+365			<Expr>			Minus Plus Str name true false Char ( Float Int 			0			1			91			0			0			
+366			<CmpOp>			Eq GTEq LTEq LT GT NotEq 			0			1			109			1			0			
+367			<Expr>			Minus Plus Str name true false Char ( Float Int 			0			1			91			0			0			
+368			OR			OR 			1			1			369			0			0			
+369			<Expr>			Minus Plus Str name true false Char ( Float Int 			0			1			91			0			0			
+370			e			) : ; += -= %= /= = , INC DEC } 			0			1			null			0			0			
+371			Eq			Eq 			1			1			null			0			0			
+372			GTEq			GTEq 			1			1			null			0			0			
+373			LTEq			LTEq 			1			1			null			0			0			
+374			LT			LT 			1			1			null			0			0			
+375			GT			GT 			1			1			null			0			0			
+376			NotEq			NotEq 			1			1			null			0			0			
+377			%=			%= 			1			1			378			0			0			
+378			<Expr>			Minus Plus Str name true false Char ( Float Int 			0			1			91			0			0			
+379			=			= 			1			1			380			0			0			
+380			<Expr>			Minus Plus Str name true false Char ( Float Int 			0			1			91			0			0			
+381			+=			+= 			1			1			382			0			0			
+382			<Expr>			Minus Plus Str name true false Char ( Float Int 			0			1			91			0			0			
+383			-=			-= 			1			1			384			0			0			
+384			<Expr>			Minus Plus Str name true false Char ( Float Int 			0			1			91			0			0			
+385			:			: 			1			1			386			0			0			
+386			<Type>			name BoolKeyword IntKeyword StrKeyword FloatKeyword CharKeyword 			0			1			12			1			0			
+387			=			= 			1			1			388			0			0			
+388			<Expr>			Minus Plus Str name true false Char ( Float Int 			0			1			91			0			0			
+389			e			; , ) 			0			1			null			0			0			
+390			/=			/= 			1			1			391			0			0			
+391			<Expr>			Minus Plus Str name true false Char ( Float Int 			0			1			91			0			0			
+392			DEC			DEC 			1			1			393			0			0			
+393			<Expr>			Minus Plus Str name true false Char ( Float Int 			0			1			91			0			0			
+394			<Expr>			Minus Plus Str name true false Char ( Float Int 			0			1			91			1			0			
+395			<IncOrDecOrAssign>			+= -= %= /= : ; = , ) DEC INC 			0			1			52			0			0			
+396			INC			INC 			1			1			397			0			0			
+397			<Expr>			Minus Plus Str name true false Char ( Float Int 			0			1			91			0			0			
+398			Minus			Minus 			1			1			null			0			0			
+399			Plus			Plus 			1			1			null			0			0			

@@ -4,7 +4,7 @@
 
 
 const std::map<TokenKind, std::string> TOKEN_ADAPTATION = {
-	{TokenKing::TOKEN_EOF, "EOF"},//
+	{TokenKing::TOKEN_EOF, "$"},//
 	{TokenKing::TOKEN_COLON, ":"},//
 	{TokenKing::TOKEN_LPAREN, "("},//
 	{TokenKing::TOKEN_RPAREN, ")"},//
@@ -19,11 +19,34 @@ const std::map<TokenKind, std::string> TOKEN_ADAPTATION = {
 	{TokenKing::TOKEN_SEMICOLON, ";"},//
 	{TokenKind::TOKEN_KEYWORD, "keyword"},//
 	{TokenKind::TOKEN_ENUM_KEYWORD, "enum"},
+	{TokenKind::TOKEN_INT_KEYWORD, "IntKeyword" },
+	{TokenKind::TOKEN_FLOAT_KEYWORD, "FloatKeyword"},
+	{TokenKind::TOKEN_STR_KEYWORD, "StrKeyword"},
+	{TokenKind::TOKEN_STRUCT_KEYWORD, "struct"},
+	{TokenKind::TOKEN_FUNC_KEYWORD,  "func"},
+	{TokenKind::TOKEN_BREAK_KEYWORD,  "break"},
+	{TokenKind::TOKEN_WHILE_KEYWORD, "while"},
+	{TokenKind::TOKEN_SWITCH_KEYWORD, "switch"},
+	{TokenKind::TOKEN_CASE_KEYWORD, "case"},
+	{TokenKind::TOKEN_DO_KEYWORD, "do", },
+	{TokenKind::TOKEN_IF_KEYWORD, "if" },
+	{TokenKind::TOKEN_ELSE_KEYWORD,  "else"},
+	{TokenKing::TOKEN_DEFAULT_KEYWORD, "default"},
+	{TokenKind::TOKEN_RETURN_KEYWORD,  "return"},
+	{TokenKind::TOKEN_VAR_KEYWORD, "var"},
+	{TokenKind::TOKEN_FOR_KEYWORD, "for"},
+	{TokenKind::TOKEN_CONTINUE_KEYWORD, "continue"},
+	{TokenKind::TOKEN_CONST_KEYWORD, "const"},
+	{TokenKind::TOKEN_SIZEOF_KEYWORD, "sizeof"},
+	{TokenKind::TOKEN_TRUE_KEYWORD, "true", },
+	{TokenKind::TOKEN_FALSE_KEYWORD, "false"},
+	{TokenKind::TOKEN_BOOL_KEYWORD, "BoolKeyword"},
+	{TokenKind::TOKEN_CHAR_KEYWORD, "CharKeyword"},
 	{TokenKind::TOKEN_INT, "Int"},
 	{TokenKind::TOKEN_FLOAT, "Float"},
 	{TokenKind::TOKEN_STR, "Str"},
 	{TokenKind::TOKEN_NAME, "name"},//
-	{TokenKind::TOKEN_CHAR, "char"},//
+	{TokenKind::TOKEN_CHAR, "Char"},//
 	{TokenKind::TOKEN_NOT, "Not"},//
 	{TokenKind::TOKEN_MUL, "Mul"},//
 	{TokenKind::TOKEN_DIV, "Div"},//
@@ -33,8 +56,8 @@ const std::map<TokenKind, std::string> TOKEN_ADAPTATION = {
 	{TokenKind::TOKEN_SUB, "Minus"},//
 	{TokenKind::TOKEN_OR, "|"},//
 	{TokenKind::TOKEN_OR_OR, "OR"},//
-	{TokenKind::TOKEN_INC, "++"},//
-	{TokenKind::TOKEN_DEC, "--"},//
+	{TokenKind::TOKEN_INC, "INC"},//
+	{TokenKind::TOKEN_DEC, "DEC"},//
 	{TokenKind::TOKEN_AND_AND, "AND"},//
 	{TokenKind::TOKEN_NOTEQ, "NotEq"},//
 	{TokenKind::TOKEN_EQ, "Eq"},//
