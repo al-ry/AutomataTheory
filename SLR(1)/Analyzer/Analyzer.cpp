@@ -168,7 +168,6 @@ void AnalyzeTable(AnalyzerTable const& table, Lexer& lexer)
 						auto shift = std::get<AnalyzerShift>(tableValue);
 						auto foundRow = table[shift.rowIndex];
 						stateStack.push(foundRow);
-						//i++;
 						if (!reductionNext.empty())
 						{
 							currentToken = reductionNext.top();
@@ -184,30 +183,17 @@ void AnalyzeTable(AnalyzerTable const& table, Lexer& lexer)
 						auto reduction = std::get<AnalyzerReduction>(tableValue);
 
 						size_t reductionSize = reduction.symbolCount;
-						//if (reduction.reductionNonterminal == table[0].symbols[0])
-						//{
-						//	reductionSize--;
-						//}
-						//else
-						//{
-						//	prevToken = currentToken;
-						//}
-
 						for (size_t i = 0; i < reductionSize; i++)
 						{
 							stateStack.pop();
 						}
 
-						//inputSequence[i] = reduction.reductionNonterminal;
 						reductionNext.push(currentToken);
-						//reductionStack.push(TOKEN_ADAPTATION.find(currentToken.kind)->second);
 						reductionStack.push(reduction.reductionNonterminal);		
 					}
 					else
 					{
 						std::cout << "Ok";
-						//i++;
-						//currentToken = lexer.GetNextToken();
 					}
 				}, tableValue);
 		}

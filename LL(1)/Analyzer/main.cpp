@@ -28,9 +28,6 @@ int main(int argc, char** argv)
 
 	std::cout << "\n";
 	std::ifstream input("in\\" + std::string(argv[1]));
-	std::ifstream sequenceFile("in\\" + std::string(argv[2]));
-	std::vector<std::string> sequence = GetInputSequence(sequenceFile);
-
 
 	auto grammar = CreateGrammar(input);
 	std::cout << "Result grammar\n";
@@ -44,7 +41,7 @@ int main(int argc, char** argv)
 		}
 		return 1;
 	}
-	std::string buffer = ReadFileToBuffer("test_program.txt");
+	std::string buffer = ReadFileToBuffer("in\\" + std::string(argv[2]));
 	Lexer lex(buffer);
 
 	auto table = GenerateTable(grammar);

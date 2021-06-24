@@ -38,7 +38,6 @@
 <AssignExpr> -> INC <Expr>  | DEC <Expr> | <Expr> <IncOrDecOrAssign>
 <IncOrDecOrAssign> -> INC | DEC | <AssignOp>
 <AssignOp> -> = <Expr> | += <Expr> | -= <Expr> | %= <Expr> | /= <Expr> | : <Type> = <Expr> | e
-<FuncCall> -> name ( <ExprList> )
 
 <StatementList> -> <AssignExpr> <StatementListNext> | e
 <StatementListNext> -> , <StatementList> | e
@@ -48,16 +47,20 @@
 <SwitchBlock> -> { <SwitchCase> } | { <SwitchCase> <SwitchBlock> }
 <SwitchCase> ->  case <Expr> : <Statement> <SwitchCase> | default : <Statement>
 
-<Expr> -> <BaseExpr> <Condition>
-<BaseExpr> -> <UnaryOp> <OperandExpr>
-<OperandExpr> -> Float | Int | Str | name <FuncCallExpr> | true | false | Char | ( <Expr> )
-<FuncCallExpr> -> ( <ExprList> ) | <TypeFieldCallNext>
-<TypeFieldCallNext> -> . name <TypeFieldCallNext> | e
-<Condition> -> OR <Expr> | AND <Expr> | <CmpOp> <Expr> | <AddOp> <Expr> | <MulOp> <Expr> | e
+<Expr> -> <OrExpr>
+<OrExpr> -> <AndExpr> OR <OrExpr> | <AndExpr>
+<AndExpr> ->  <CmpExpr> AND <AndExpr> | <CmpExpr>
+<CmpExpr> -> <AddExpr> <CmpOp> <CmpExpr> | <AddExpr>
 <CmpOp> -> Eq | NotEq | GT | LT | LTEq | GTEq
+<AddExpr> -> <MulExpr> <AddOp> <AddExpr> | <MulExpr>
 <AddOp> -> Plus | Minus
+<MulExpr> -> <UnaryExpr> <MulOp> <MulExpr> | <UnaryExpr>
 <MulOp> -> Mul | Div | Mod
-<UnaryOp> -> Plus | Minus | Not | e
+<UnaryExpr> -> <UnaryOp> <UnaryExpr> | <BaseExpr>
+<UnaryOp> -> Plus | Minus | Not
+<BaseExpr> -> <OperandExpr>
+<OperandExpr> -> Int | Float | Str | <TypeFieldCall> | true | false | Char | ( <Expr> )
+<TypeFieldCall> -> name . <TypeFieldCall> | name ( <ExprList> ) |  name
 
 <ExprList> -> <Expr> <ExprListNext> | e
 <ExprListNext> -> , <ExprList> | e

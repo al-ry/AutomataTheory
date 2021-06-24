@@ -94,7 +94,7 @@ func CycleTests()
 	for (i = 5; i > 0; i = 6) {
 		DoSomething();
 	}
-	while ((a > b || isTrue || f && (a !=b || c > f)) && (true && false) || IsValid(a)) {
+	while ((a > b || isTrue || f && (a !=b || c > f)) && (true && false) || IsValid()) {
 		DoSomething(i + 1, i);
 		a = b;
 		for (i = 0; i > PI; i = i + 1) { i++; }
@@ -152,7 +152,8 @@ func AssignTest()
 	a : int = 0;
 	a = -b;
 	a = +b;
-	a : bool = !false;
+	a : bool = !true;
+	result : int = (-a*b)+-b;
 };
 
 

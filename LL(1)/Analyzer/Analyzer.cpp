@@ -62,20 +62,20 @@ void IterateTable(Table table, std::vector<std::string> inputSequence, size_t ru
 			else if (!stack.empty())
 			{
 				auto row = stack.top();
-				std::cout << "From stack " + std::to_string(row) + "\n";
-				stack.pop();
-				std::cout << "Stack: \n";
-				PrintStack(stack);
-				std::cout << "\n";
+				//std::cout << "From stack " + std::to_string(row) + "\n";
+				//stack.pop();
+				//std::cout << "Stack: \n";
+				//PrintStack(stack);
+				//std::cout << "\n";
 				IterateTable(table, inputSequence, row, sequenceIndex, stack, pointerVector);
 			}
 		}
 		else
 		{
-			std::cout << "To stack " + std::to_string(ruleIndex + 1) + "\n";
-			std::cout << "Stack: \n";
-			PrintStack(stack);
-			std::cout << "\n";
+			//std::cout << "To stack " + std::to_string(ruleIndex + 1) + "\n";
+			//std::cout << "Stack: \n";
+			//PrintStack(stack);
+			//std::cout << "\n";
 			stack.push(ruleIndex + 1);
 			IterateTable(table, inputSequence, table[ruleIndex].pointer.value(), sequenceIndex, stack, pointerVector);
 		}
