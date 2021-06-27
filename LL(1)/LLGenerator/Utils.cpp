@@ -323,7 +323,9 @@ void PrintTable(Table table, std::ostream& out)
 		size_t counter = i;
 
 		out << counter << TAB << table[i].symbol << TAB;
+		out << "'{' ";
 		std::copy(table[i].guideSet.begin(), table[i].guideSet.end(), output_iterator);
+		out << " '}'";
 		out << TAB << table[i].shift << TAB << table[i].error << TAB << (table[i].pointer.has_value() ? std::to_string(table[i].pointer.value()) : "null") << TAB << table[i].isInStack << TAB << table[i].end << TAB;
 		out << "\n";
 	}
@@ -741,8 +743,6 @@ void FormGuideSet(Grammar& grammar, std::vector<std::string>& nonterminals)
 
 			if (IsNonterminal(firstRuleSymbol))
 			{
-				//rule.guideSet = GetAllTerminalsOf(firstRuleSymbol, transitions);
-
 				if (similarNonterminalWithEmptyRule != grammar.end())
 				{
 					for (size_t i = 0; i < transitions[nonterminalTransitionIndex].second.size(); i++)
@@ -772,7 +772,6 @@ void FormGuideSet(Grammar& grammar, std::vector<std::string>& nonterminals)
 
 					}
 				}
-				//rule.guideSet = guideSet;
 			}
 		}
 	}
