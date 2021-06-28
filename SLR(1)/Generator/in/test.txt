@@ -1,0 +1,4 @@
+<S> -> <A> <B> | Int | Float
+<A> -> Int <A> | if
+<B> -> <C> <A> | else
+<C> -> <C> Float | name

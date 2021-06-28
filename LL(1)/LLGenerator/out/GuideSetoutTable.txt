@@ -1,0 +1,274 @@
+<Y19> -> <Unit> $  { enum struct var const func }
+
+<VarDeclWithInit> -> e  { ; }
+
+<VarDeclWithInit> -> = <Expr>  { = }
+
+<VarDecl> -> name <F5>  { name }
+
+<Unit> -> <Decl> ; <F0>  { enum struct var const func }
+
+<UnaryOp> -> Plus  { Plus }
+
+<UnaryOp> -> Not  { Not }
+
+<UnaryOp> -> Minus  { Minus }
+
+<UnaryExpr> -> <UnaryOp> <UnaryExpr>  { Plus Minus Not }
+
+<UnaryExpr> -> <BaseExpr>  { name Int Float Str true false Char ( }
+
+<TypeFields> -> <NameList> : <Type> ; <F3>  { name }
+
+<TypeFieldCall> -> name <F18>  { name }
+
+<TypeDecl> -> name { <TypeFields> }  { name }
+
+<Type> -> BoolKeyword  { BoolKeyword }
+
+<Type> -> name  { name }
+
+<Type> -> CharKeyword  { CharKeyword }
+
+<Type> -> FloatKeyword  { FloatKeyword }
+
+<Type> -> StrKeyword  { StrKeyword }
+
+<Type> -> IntKeyword  { IntKeyword }
+
+<SwitchCase> -> case <Expr> : <Statement> <SwitchCase>  { case }
+
+<SwitchCase> -> default : <Statement>  { default }
+
+<SwitchBlock> -> { <SwitchCase> <F12>  { { }
+
+<StatementListNext> -> , <StatementList>  { , }
+
+<StatementListNext> -> e  { ) ; }
+
+<StatementList> -> <AssignExpr> <StatementListNext>  { Plus Minus Not name Int Float Str true false Char ( INC DEC }
+
+<StatementList> -> e  { ) ; }
+
+<StatementBlock> -> <Statement> <A>  { Plus Minus Not name Int Float Str true false Char ( INC DEC break continue { if while do switch for return }
+
+<Statement> -> <AssignExpr> ;  { Plus Minus Not name Int Float Str true false Char ( INC DEC }
+
+<Statement> -> for ( <StatementList> ; <F9>  { for }
+
+<Statement> -> return <F10>  { return }
+
+<Statement> -> switch ( <Expr> ) <SwitchBlock>  { switch }
+
+<Statement> -> do { <StatementBlock> } while ( <Expr> )  { do }
+
+<Statement> -> while ( <Expr> ) { <StatementBlock> }  { while }
+
+<Statement> -> if ( <Expr> ) { <StatementBlock> } <ElseIf>  { if }
+
+<Statement> -> { <StatementBlock> }  { { }
+
+<Statement> -> continue ;  { continue }
+
+<Statement> -> break ;  { break }
+
+<OrExpr> -> <AndExpr> <F13>  { Plus Minus Not name Int Float Str true false Char ( }
+
+<OperandExpr> -> Str  { Str }
+
+<OperandExpr> -> true  { true }
+
+<OperandExpr> -> Float  { Float }
+
+<OperandExpr> -> ( <Expr> )  { ( }
+
+<OperandExpr> -> Int  { Int }
+
+<OperandExpr> -> <TypeFieldCall>  { name }
+
+<OperandExpr> -> Char  { Char }
+
+<OperandExpr> -> false  { false }
+
+<NameList> -> name <F4>  { name }
+
+<MulOp> -> Mod  { Mod }
+
+<MulOp> -> Div  { Div }
+
+<MulOp> -> Mul  { Mul }
+
+<MulExpr> -> <UnaryExpr> <F17>  { Plus Minus Not name Int Float Str true false Char ( }
+
+<IncOrDecOrAssign> -> INC  { INC }
+
+<IncOrDecOrAssign> -> DEC  { DEC }
+
+<IncOrDecOrAssign> -> <AssignOp>  { += -= %= /= : ; = , ) }
+
+<FuncParamList> -> <FuncParam> <F8>  { name }
+
+<FuncParamList> -> e  { ) }
+
+<FuncParam> -> name : <Type>  { name }
+
+<FuncDecl> -> name ( <FuncParamList> ) <F7>  { name }
+
+<F9> -> <Expr> ; <StatementList> ) { <StatementBlock> }  { Plus Minus Not name Int Float Str true false Char ( }
+
+<F9> -> ; <StatementList> ) { <StatementBlock> }  { ; }
+
+<F8> -> , <FuncParamList>  { , }
+
+<F8> -> e  { ) }
+
+<F7> -> { <StatementBlock> }  { { }
+
+<F7> -> : <Type> { <StatementBlock> }  { : }
+
+<F6> -> = <Expr>  { = }
+
+<F6> -> : <Type> = <Expr>  { : }
+
+<F5> -> = <Expr>  { = }
+
+<F5> -> : <Type> <VarDeclWithInit>  { : }
+
+<F4> -> , <NameList>  { , }
+
+<F4> -> e  { : }
+
+<F3> -> <TypeFields>  { name }
+
+<F3> -> e  { } }
+
+<F2> -> = <Expr>  { = }
+
+<F2> -> e  { , } }
+
+<F1> -> , <EnumItems>  { , }
+
+<F1> -> e  { } }
+
+<F18> -> ( <ExprList> )  { ( }
+
+<F18> -> e  { Mul Div Mod Plus Minus Eq NotEq GT LT LTEq GTEq AND OR ) : ; += -= %= /= = , INC DEC } }
+
+<F18> -> . <TypeFieldCall>  { . }
+
+<F17> -> e  { Plus Minus Eq NotEq GT LT LTEq GTEq AND OR ) : ; += -= %= /= = , INC DEC } }
+
+<F17> -> <MulOp> <MulExpr>  { Mul Div Mod }
+
+<F16> -> <AddOp> <AddExpr>  { Plus Minus }
+
+<F16> -> e  { Eq NotEq GT LT LTEq GTEq AND OR ) : ; += -= %= /= = , INC DEC } }
+
+<F15> -> e  { AND OR ) : ; += -= %= /= = , INC DEC } }
+
+<F15> -> <CmpOp> <CmpExpr>  { Eq NotEq GT LT LTEq GTEq }
+
+<F14> -> e  { OR ) : ; += -= %= /= = , INC DEC } }
+
+<F14> -> AND <AndExpr>  { AND }
+
+<F13> -> e  { ) : ; += -= %= /= = , INC DEC } }
+
+<F13> -> OR <OrExpr>  { OR }
+
+<F12> -> }  { } }
+
+<F12> -> <SwitchBlock> }  { { }
+
+<F11> -> { <StatementBlock> }  { { }
+
+<F11> -> if ( <Expr> ) { <StatementBlock> } <ElseIf>  { if }
+
+<F10> -> ;  { ; }
+
+<F10> -> <Expr> ;  { Plus Minus Not name Int Float Str true false Char ( }
+
+<F0> -> <Unit>  { enum struct var const func }
+
+<F0> -> e  { $ }
+
+<ExprListNext> -> , <ExprList>  { , }
+
+<ExprListNext> -> e  { ) }
+
+<ExprList> -> <Expr> <ExprListNext>  { Plus Minus Not name Int Float Str true false Char ( }
+
+<ExprList> -> e  { ) }
+
+<Expr> -> <OrExpr>  { Plus Minus Not name Int Float Str true false Char ( }
+
+<EnumItems> -> <EnumItem> <F1>  { name }
+
+<EnumItem> -> name <F2>  { name }
+
+<EnumDecl> -> name { <EnumItems> }  { name }
+
+<ElseIf> -> e  { Plus Minus Not name Int Float Str true false Char ( INC DEC break continue { if while do switch for return } case default }
+
+<ElseIf> -> else <F11>  { else }
+
+<Decl> -> struct <TypeDecl>  { struct }
+
+<Decl> -> enum <EnumDecl>  { enum }
+
+<Decl> -> func <FuncDecl>  { func }
+
+<Decl> -> var <VarDecl>  { var }
+
+<Decl> -> const <ConstDecl>  { const }
+
+<ConstDecl> -> name <F6>  { name }
+
+<CmpOp> -> LT  { LT }
+
+<CmpOp> -> GT  { GT }
+
+<CmpOp> -> Eq  { Eq }
+
+<CmpOp> -> LTEq  { LTEq }
+
+<CmpOp> -> GTEq  { GTEq }
+
+<CmpOp> -> NotEq  { NotEq }
+
+<CmpExpr> -> <AddExpr> <F15>  { Plus Minus Not name Int Float Str true false Char ( }
+
+<BaseExpr> -> <OperandExpr>  { name Int Float Str true false Char ( }
+
+<AssignOp> -> -= <Expr>  { -= }
+
+<AssignOp> -> : <Type> = <Expr>  { : }
+
+<AssignOp> -> %= <Expr>  { %= }
+
+<AssignOp> -> = <Expr>  { = }
+
+<AssignOp> -> += <Expr>  { += }
+
+<AssignOp> -> e  { ; , ) }
+
+<AssignOp> -> /= <Expr>  { /= }
+
+<AssignExpr> -> INC <Expr>  { INC }
+
+<AssignExpr> -> DEC <Expr>  { DEC }
+
+<AssignExpr> -> <Expr> <IncOrDecOrAssign>  { Plus Minus Not name Int Float Str true false Char ( }
+
+<AndExpr> -> <CmpExpr> <F14>  { Plus Minus Not name Int Float Str true false Char ( }
+
+<AddOp> -> Plus  { Plus }
+
+<AddOp> -> Minus  { Minus }
+
+<AddExpr> -> <MulExpr> <F16>  { Plus Minus Not name Int Float Str true false Char ( }
+
+<A> -> e  { } }
+
+<A> -> <StatementBlock>  { Plus Minus Not name Int Float Str true false Char ( INC DEC break continue { if while do switch for return }
+
