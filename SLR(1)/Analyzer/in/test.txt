@@ -1,1 +1,128 @@
-if
+
+struct Date {
+	int date;
+}
+
+struct Passport {
+	int number;
+	string issuedBy;
+	Date issueDate;
+}
+
+Passport pass;
+
+struct Age {
+	int age;
+	//int age;
+}
+
+
+struct People {
+	Age age;
+	int weight;
+	bool marry;
+	Passport passport;
+}
+
+
+
+bool isBad(bool z, int p, People people)
+{
+	y = 5 + 5;
+	for (;;) {
+
+	}
+	for (int i = a + b; i > 5;i = 1) {
+		int test = 0;
+	}
+	if (z == true) {
+		char a;
+		string hello = "hello world";
+	}
+	int test;
+
+	for (int i = 0; i > 0; i = i + 1) {
+
+	}
+
+	int qwerty = 5;
+	//string str = "stro4ka";
+	while (y < 10)
+	{
+		int some = 5;
+		int q = 5;
+		//y = y + xAB;
+	}
+	bool res = isBad(a,b,c);
+	//y = y +1;		
+	char ch = 'c';
+	char c;
+	return p != 2 + 2;
+}
+
+
+People people;
+int next = 5;
+People people2 = 5 + intik;
+
+int main(string c, int a)
+{
+	y = 6 + y;
+	{
+		//int a;
+		int a;
+		{
+			int a;
+		}
+	}
+	People people;
+	//people.age = 18;
+	//people.passport.issuedBy = "MVD department of Russia";
+	//people.marry = isMarried(people);
+	int x = 5;
+	//int age = people.age;
+	int y = 200 + people.something;
+
+
+
+	for (int i = 1; i != 5; i = i + 1)
+	{
+		while (y < 10)
+		{
+			int q = 5;
+			y = y + xAB;
+		}
+		if (isGood)
+		{
+			string testIf = "if";
+			y = y - 057;
+		}
+		else
+		{
+			string testElse = "else";
+			y = y + b10101;
+		}
+
+		if (isBad(x == y, 9))
+		{
+			if (isGood)
+			{
+				int isGood;
+				x = - y + - (( 12 * - 13 ) + x + (y / - x));
+			}
+		}
+	}
+
+	return y * x;
+	
+}
+
+bool isBad(bool z, int p)
+{
+	char ch = 'c';
+	char c;
+	return p != 2;
+}
+
+
+

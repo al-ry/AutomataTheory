@@ -1,0 +1,24 @@
+<Unit> -> <DeclTypes> <Unit> | <DeclFunc> <Unit> | e
+
+<DeclTypes> ->  enum <EnumDecl> | struct <TypeDecl> | <VarDecl> ;
+<DeclFunc> -> func <FuncDecl>
+
+<EnumDecl> -> e 
+<TypeDecl> -> e
+<VarDecl> -> e
+<Type> -> name | BoolKeyword | IntKeyword | StrKeyword | FloatKeyword | CharKeyword
+
+<FuncDecl> -> name ( <FuncParamList> ) <Next>
+
+<Next> -> { <Block> }  | : <Type> { <Block> }  |  { } | : <Type> { }
+
+
+<FuncParamList> -> e
+
+
+
+<Stmt> -> <DeclTypes> <Stmt> | <Assign> ; <Stmt> | e
+
+
+<Assign> -> name <AssignOp> ;
+<AssignOp> -> = name | += name | -= name | %= name | /= name | e

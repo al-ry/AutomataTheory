@@ -1,0 +1,113 @@
+Global block started
+    Struct with name: Date
+      Field: date with type int
+
+    Struct with name: Passport
+      Field: number with type int
+      Field: issuedBy with type string
+      Field: issueDate with type Date
+
+    Variable: pass with type Passport
+    Struct with name: Age
+      Field: age with type int
+
+    Struct with name: People
+      Field: age with type Age
+      Field: weight with type int
+      Field: marry with type bool
+      Field: passport with type Passport
+
+    {
+      Function parameter: z with type bool
+      Function parameter: p with type int
+      Function parameter: people with type People
+      For block started: 
+      {
+      }
+
+      For block started: 
+      {
+        Variable: i with type int
+        Variable: test with type int
+      }
+
+      If block started:
+      {
+        Variable: a with type char
+        Variable: hello with type string
+      }
+
+      Variable: test with type int
+      For block started: 
+      {
+        Variable: i with type int
+      }
+
+      Variable: qwerty with type int
+      While block started:
+      {
+        Variable: some with type int
+        Variable: q with type int
+      }
+
+      Variable: res with type bool
+      Variable: ch with type char
+      Variable: c with type char
+    }
+
+    Variable: people with type People
+    Variable: next with type int
+    Variable: people2 with type People
+    {
+      Function parameter: c with type string
+      Function parameter: a with type int
+      {
+        Variable: a with type int
+        {
+          Variable: a with type int
+        }
+
+      }
+
+      Variable: people with type People
+      Variable: x with type int
+      Variable: y with type int
+      For block started: 
+      {
+        Variable: i with type int
+        While block started:
+        {
+          Variable: q with type int
+        }
+
+        If block started:
+        {
+          Variable: testIf with type string
+        }
+
+        Else block started:
+        {
+          Variable: testElse with type string
+        }
+
+        If block started:
+        {
+          If block started:
+          {
+            Variable: isGood with type int
+          }
+
+        }
+
+      }
+
+    }
+
+    {
+      Function parameter: z with type bool
+      Function parameter: p with type int
+      Variable: ch with type char
+      Variable: c with type char
+    }
+
+Global block ended up

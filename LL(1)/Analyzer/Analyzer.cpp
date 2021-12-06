@@ -97,9 +97,6 @@ void IterateTable(Table table, Lexer& lexer, size_t ruleIndex, Token currentToke
 
 void AnalyzeTable(Table table, Lexer& lexer)
 {
-	std::cout << "Input sequence: ";
-
-	std::cout << "\n";
 	std::stack<size_t> stack;
 	std::vector<std::string> pointerVector;
 	

@@ -1,3 +1,5 @@
+
+
 enum weather 
 { 
 	sunny = 1,
@@ -132,7 +134,8 @@ func ArithmeticTest()
 	++i;
 	--i;
 	//--i++;
-	a = a + b - c * 28.3d % 39;
+	a = a + b - !c * 28.3d % 39;
+	
 	state : bool = 1 || a == b && isActive;
 	state = a && b && c;
 };

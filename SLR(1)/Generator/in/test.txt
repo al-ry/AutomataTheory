@@ -1,4 +1,89 @@
-<S> -> <A> <B> | Int | Float
-<A> -> Int <A> | if
-<B> -> <C> <A> | else
-<C> -> <C> Float | name
+<MainExpr> -> <Expr> <MainExpr>
+<MainExpr> -> <Expr>
+
+<Expr> -> struct <StructDecl>
+<StructDecl> -> name { <TypeFields> }
+<TypeFields> -> <Type> name  ; <TypeFields> | <Type> name ;
+<Expr> -> <AssignWithDecl> ;
+<Expr> -> <Decl> ; 
+<Expr> -> <Type> name ( <TypedParamsList> ) { <StatementList> }
+<Expr> -> <Type> name ( <TypedParamsList> ) { }
+<Expr> -> <Type> name ( ) { <StatementList> }
+<Expr> -> <Type> name ( ) { }
+
+<TypedParamsList> -> <Type> name , <TypedParamsList>
+<TypedParamsList> -> <Type> name
+
+<StatementList> -> <Statement> <StatementList>
+<StatementList> -> <Statement>
+
+<Statement> -> <Assign> ;
+<Statement> -> <Loop>
+<Statement> -> <If>
+<Statement> -> return ;
+<Statement> -> return <Operation> ; | return <Condition> ;
+<Statement> -> break ;
+<Statement> -> continue ;
+<Statement> ->  { <StatementList> } | { }
+
+<Assign> -> <AssignWithDecl>
+<AssignWithDecl> -> <Type> name = <Operation> | <Type> name = <Condition>
+<Assign> -> <TypeFieldCall> = <Operation> | <TypeFieldCall> = <Condition> 
+<Assign> -> <Decl>
+<Decl> -> <Type> name
+
+<Loop> -> while ( <Condition> ) { <StatementList> }
+<Loop> -> while ( <Condition> ) { }
+<Loop> -> for ( <Assign> ; <Condition> ; <Assign> ) { <StatementList> }
+<Loop> -> for ( <Assign> ; <Condition> ; <Assign> ) { }
+<Loop> -> for ( ; ; ) { }
+<Loop> -> for ( ; ; ) {<StatementList> }
+
+<If> -> if ( <Condition> ) { <StatementList> }
+<If> -> if ( <Condition> ) { }
+<If> -> if ( <Condition> ) { <StatementList> } else { <StatementList> }
+<If> -> if ( <Condition> ) { } else { <StatementList> }
+<If> -> if ( <Condition> ) { <StatementList> } else { }
+<If> -> if ( <Condition> ) { } else { }
+
+
+<Condition> -> <OrExpr>
+<OrExpr> -> <AndExpr> OR <OrExpr> | <AndExpr>
+<AndExpr> ->  <CmpExpr> AND <AndExpr> | <CmpExpr> | <BoolExpr>
+<CmpExpr> -> <E> <CmpOp> <CmpExpr> | <E>
+<BoolExpr> ->  true | false
+<CmpOp> -> Eq | NotEq | GT | LT | LTEq | GTEq
+
+
+<Operation> -> <E>
+<E> -> <E> Plus <T>
+<E> -> <E> Minus <T>
+<E> -> <T>
+<T> -> <T> Mul <F>
+<T> -> <T> Div <F>
+<T> -> <F>
+<F> -> Minus <F>
+<F> -> ( <E> )
+<F> -> <Value>
+<F> -> name
+<F> -> <TypeFieldCall>
+<TypeFieldCall> -> name . <TypeFieldCall> |  name
+<F> -> name ( <ParamsList> )
+<F> -> name ( )
+
+<ParamsList> -> <Condition> , <ParamsList> | <Operation> , <ParamsList>
+<ParamsList> -> <Condition> | <Operation>
+
+<Value> -> Int
+<Value> -> Float
+<Value> -> Str
+<Value> -> Char
+<Value> -> true
+<Value> -> false
+
+<Type> -> IntKeyword
+<Type> -> FloatKeyword
+<Type> -> CharKeyword
+<Type> -> StrKeyword
+<Type> -> BoolKeyword
+<Type> -> name

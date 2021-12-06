@@ -1,18 +1,21 @@
 enum weather 
 { 
-	sunny = 1,
+	sunny,
 	cloudy,
 	cold
-};
+}
 
 enum week 
 { 
 	sunday,
 	monday
-};
+}
 
-const PI = 3.14;
-const PISQ = 3.14 * 3.14d;
+//variable : int = --5;
+var variable2 : int = a + 5;
+
+const PI : int = 3.14;
+const PISQ : int = 3.14 * 3.14d;
 
 const stackSize : int = 256;
 
@@ -27,30 +30,32 @@ struct People {
 	sex : bool;
 	address : string;
 	car : Car;	
-};
+}
 
+/*
 func DoSomething() : string
 {
 	return "Done";
 };
+*/
 
-func DoNothingWithReturn() { return; };
+func DoNothingWithReturn() { return; }
 
 func FuncWithParams(bar1: People, bar2 : string) : int
 {
 	return 5;
-};
+}
 
 func FuncWithParams(bar1: char) : int
 {
 	{
 		a = b;
 	}
-};
+}
 
 func FuncWithStatements() : int
 {
-	str : string = "foo";
+	var str : string = "foo";
 	car.fuel = car1.fuel;
 	DoNothing();
 	i = 0;
@@ -70,7 +75,7 @@ func FuncWithStatements() : int
 		isTrue = false;
 	}
 
-	if (str == "string") { a = b; }
+	//if (str == "string") { a = b; }
 
 	if (variable == true) {
 		a = -a;
@@ -80,13 +85,19 @@ func FuncWithStatements() : int
 		return;
 	}
 
-	for (i = 5; i > 0; i = 6) {
+	for (var i : int = 5; i > 8; i = 6) {
 		continue;
 	}
+
+	for (i = 5; i > 8; i = 6) {
+		continue;
+	}
+
+
 	while (a > b) {
 		break;
 	}
-};
+}
 
 func CycleTests()
 {
@@ -102,7 +113,7 @@ func CycleTests()
 	}
 	for (i = 0, j = 0; i >= length && j > length; i++, j++) { IsValid(); }
 	do  { expr =  a + b * c % 8 / 4.4; } while (true)
-};
+}
 
 func SwitchCaseTest(ch : char) : bool
 {
@@ -123,7 +134,7 @@ func SwitchCaseTest(ch : char) : bool
 		}
 		default: { return 15; }
 	}
-};
+}
 
 func ArithmeticTest()
 {
@@ -133,15 +144,16 @@ func ArithmeticTest()
 	--i;
 	//--i++;
 	a = a + b - c * 28.3d % 39;
+	
 	state : bool = 1 || a == b && isActive;
 	state = a && b && c;
-};
+}
 
 func TestTernaryOperator()
 {
 	//a == b ? b = a : a = b;
 	return;
-};
+}
 
 func AssignTest() 
 {
@@ -153,8 +165,8 @@ func AssignTest()
 	a = -b;
 	a = +b;
 	a : bool = !true;
-	result : int = (-a*b)+-b;
-};
+	result : int = (-a*b)+b;
+}
 
 
 

@@ -1,0 +1,8 @@
+
+1 сохранение страктов +
+2 присвоение в существуюущую переменную +
+3 struct redefinition +
+4 function redefinition -
+5 struct definition without body -
+
+y = y + 5

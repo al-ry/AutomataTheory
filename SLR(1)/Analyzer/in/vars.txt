@@ -1,0 +1,3 @@
+bool boolik = true;
+int intik = 5;
+People p;

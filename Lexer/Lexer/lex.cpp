@@ -209,6 +209,11 @@ Token Lexer::GetNextToken()
 	return m_currToken;
 }
 
+Token Lexer::SeekNextToken()
+{
+	return Token();
+}
+
 
 //private members
 char Lexer::PeekChar()

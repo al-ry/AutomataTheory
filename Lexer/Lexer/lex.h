@@ -322,6 +322,7 @@ class Lexer
 public:
 	Lexer(const std::string& buf);
 	Token GetNextToken();
+	Token SeekNextToken();
 private:
 	char PeekChar();
 	char ReadChar();

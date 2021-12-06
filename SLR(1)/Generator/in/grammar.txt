@@ -1,19 +1,17 @@
-<Unit> -> <Decl> ; | <Decl> ; <Unit>
+<Unit> -> <Decl> | <Decl> <Unit>
 
-<Decl> -> enum <EnumDecl> | struct <TypeDecl> | var <VarDecl> | const <ConstDecl> | func <FuncDecl>
+<Decl> -> enum <EnumDecl> | struct <TypeDecl> | <VarDecl> | func <FuncDecl>
 
 <EnumDecl> -> name { <EnumItems> }
 <EnumItems> -> <EnumItem> | <EnumItem> , <EnumItems>
-<EnumItem> -> name | name = <Expr>
+<EnumItem> -> name
 
 <TypeDecl> -> name { <TypeFields> }
 <TypeFields> -> <NameList> : <Type> ; | <NameList> : <Type> ; <TypeFields>
 
 <NameList> -> name | name , <NameList>
-<VarDecl> -> name = <Expr> | name : <Type> <VarDeclWithInit>
+<VarDecl> -> var name : <Type> <VarDeclWithInit> ; | const name : <Type> <VarDeclWithInit> ;
 <VarDeclWithInit> -> = <Expr> | e
-
-<ConstDecl> -> name = <Expr> | name : <Type> = <Expr>
 
 <FuncDecl> -> name ( <FuncParamList> ) { <StatementBlock> } | name ( <FuncParamList> ) : <Type> { <StatementBlock> }
 
@@ -34,13 +32,13 @@
 <Statement> -> for ( <StatementList> ; <Expr> ; <StatementList> ) { <StatementBlock> } | for ( <StatementList> ; ; <StatementList> ) { <StatementBlock> }
 <Statement> -> switch ( <Expr> ) <SwitchBlock>
 <Statement> -> <AssignExpr> ;
+<Statement> -> <VarDecl>
 
-<AssignExpr> -> INC <Expr>  | DEC <Expr> | <Expr> <IncOrDecOrAssign>
-<IncOrDecOrAssign> -> INC | DEC | <AssignOp>
-<AssignOp> -> = <Expr> | += <Expr> | -= <Expr> | %= <Expr> | /= <Expr> | : <Type> = <Expr> | e
+<AssignExpr> -> <Expr> <AssignOp>
+<AssignOp> -> = <Expr> | += <Expr> | -= <Expr> | %= <Expr> | /= <Expr> | e
 
-<StatementList> -> <AssignExpr> <StatementListNext> | e
-<StatementListNext> -> , <StatementList> | e
+<StatementList> -> <AssignExpr>  | <VarDecl> | e
+<StmtListNext> -> , <StatementList> | e
 
 <Type> -> name | BoolKeyword | IntKeyword | StrKeyword | FloatKeyword | CharKeyword
 
