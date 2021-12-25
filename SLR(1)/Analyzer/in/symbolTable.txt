@@ -1,24 +1,23 @@
 Global block started
+    Variable: i with type int
+    Variable: a with type int
+    Variable: b with type int
+    Variable: Test with type bool
+    {
+      {
+      }
+
+      {
+      }
+
+    }
+
     Variable: w with type bool
     Variable: qwe with type bool
-    Variable: i with type int
-    Variable: b with type int
     Variable: fl with type float
     Variable: strBool with type bool
     Variable: str with type string
     Variable: ch with type char
     Variable: ich with type int
     Variable: q with type bool
-    Variable: Test with type bool
-    {
-      Variable: i with type int
-      Variable: b with type int
-      Variable: fl with type float
-      Variable: strBool with type bool
-      Variable: str with type string
-      Variable: ch with type char
-      Variable: ich with type int
-      Variable: q with type bool
-    }
-
 Global block ended up

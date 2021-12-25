@@ -150,7 +150,9 @@ std::string ProcessUnaryCondition(const std::unique_ptr<Node>& node)
 	{
 		return "int";
 	}
-	throw std::exception("It's not unary expression");
+	std::string error =
+		"It's not an unary expression. Type for unary minus should be either float or int";
+	throw std::exception(error.c_str());
 }
 
 std::string GetType(const std::unique_ptr<Node>& node)
@@ -178,7 +180,8 @@ std::string GetType(const std::unique_ptr<Node>& node)
 			node->type = ProcessCondition(node);
 			if (node->type == "bool" || node->type == "string")
 			{
-				std::string error = "Not compatible operation for type " + node->type;
+				std::string error = "Not compatible operation for type "
+					+ node->type;
 				throw std::exception(error.c_str());
 			}
 		}
@@ -228,6 +231,11 @@ void CheckTypes(ASTTree& tree)
 		if (node->name == "<Assign>")
 		{
 			GetType(node);
+		}
+		else 
+		if (node->name == "<If>" || node->name == "<While>")
+		{
+			GetType("bool", GetType(node->nodes.at(2)));
 		}
 		CheckTypes(node->nodes);
 	}
