@@ -1,3 +1,33 @@
-bool boolik = true;
-int intik = 5;
-People p;
+//float f = 5.5;
+//string str = "str";
+//char ch = 'c';
+//int intik = 5;
+
+//int o = 5 > 6;
+bool w = true && true || true;
+bool qwe = 5 + 3 > 6 && 6 != 6 || ! true;
+
+int i = 5;
+int b = i + i * 2 + -5.5;
+
+float fl = 5.5 / 5. % 2;
+fl = 5 + 5.5;
+
+bool strBool = "str" > "1";
+
+//string str = "sto4ka" + 'c' + "lkj";  
+string str;
+str = "45";
+
+char ch = 5 + 'c' + 5;
+int ich = 5 + 'h' + 5;
+
+bool q = true;
+
+bool Test()
+{
+
+}
+//q = false + true;
+//bool boolik = b;
+//People p;

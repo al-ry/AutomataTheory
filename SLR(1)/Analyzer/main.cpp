@@ -56,7 +56,14 @@ int main(int argc, char** argv)
 	//auto table = CreateSLRTable(grammar);
 	//PrintTable(table, std::cout);
 	//PrintTableForAnalyze(table);
-	AnalyzeTable(table, lex);
+	try
+	{
+		AnalyzeTable(table, lex);
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << e.what();
+	}
 
 	return 0;
 }

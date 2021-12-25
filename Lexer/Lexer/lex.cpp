@@ -389,7 +389,7 @@ void Lexer::ScanChar()
 		m_currToken.kind = TokenKind::TOKEN_ERROR;
 		return;
 	}
-	m_currToken.kind = TokenKind::TOKEN_INT;
+	m_currToken.kind = TokenKind::TOKEN_CHAR;
 	m_currToken.mod = TokenMod::MOD_CHAR;
 	m_currToken.int_number = value;
 	ReadChar();

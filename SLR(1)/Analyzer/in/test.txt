@@ -1,7 +1,28 @@
+int a = 5 + 5;
+int b;
+int c;
+bool q;
+
+
+bool test() 
+{
+	for (;;) {
+		int c;
+	}
+	int a = 5;
+	int b;
+	int c = a + b;
+}
+
+//
+
+string str;
+
 
 struct Date {
 	int date;
 }
+
 
 struct Passport {
 	int number;
@@ -28,10 +49,16 @@ struct People {
 
 bool isBad(bool z, int p, People people)
 {
+	{
+
+	}
+	int y;
 	y = 5 + 5;
 	for (;;) {
 
 	}
+
+	bool qwe;
 	for (int i = a + b; i > 5;i = 1) {
 		int test = 0;
 	}
@@ -63,11 +90,11 @@ bool isBad(bool z, int p, People people)
 
 People people;
 int next = 5;
-People people2 = 5 + intik;
+//People people2 = 5 + intik;
 
 int main(string c, int a)
 {
-	y = 6 + y;
+	int y = 6 + y;
 	{
 		//int a;
 		int a;
@@ -81,16 +108,16 @@ int main(string c, int a)
 	//people.marry = isMarried(people);
 	int x = 5;
 	//int age = people.age;
-	int y = 200 + people.something;
+	//int y = 200 + people.something;
 
 
-
+	bool isGood = true;
 	for (int i = 1; i != 5; i = i + 1)
 	{
 		while (y < 10)
 		{
 			int q = 5;
-			y = y + xAB;
+			y = y + 0xAB;
 		}
 		if (isGood)
 		{
@@ -100,7 +127,7 @@ int main(string c, int a)
 		else
 		{
 			string testElse = "else";
-			y = y + b10101;
+			y = y + 0b10101;
 		}
 
 		if (isBad(x == y, 9))
@@ -117,12 +144,7 @@ int main(string c, int a)
 	
 }
 
-bool isBad(bool z, int p)
-{
-	char ch = 'c';
-	char c;
-	return p != 2;
-}
 
+//
 
 

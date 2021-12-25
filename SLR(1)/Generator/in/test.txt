@@ -4,8 +4,7 @@
 <Expr> -> struct <StructDecl>
 <StructDecl> -> name { <TypeFields> }
 <TypeFields> -> <Type> name  ; <TypeFields> | <Type> name ;
-<Expr> -> <AssignWithDecl> ;
-<Expr> -> <Decl> ; 
+<Expr> -> <Assign> ;
 <Expr> -> <Type> name ( <TypedParamsList> ) { <StatementList> }
 <Expr> -> <Type> name ( <TypedParamsList> ) { }
 <Expr> -> <Type> name ( ) { <StatementList> }
@@ -26,18 +25,18 @@
 <Statement> -> continue ;
 <Statement> ->  { <StatementList> } | { }
 
-<Assign> -> <AssignWithDecl>
-<AssignWithDecl> -> <Type> name = <Operation> | <Type> name = <Condition>
-<Assign> -> <TypeFieldCall> = <Operation> | <TypeFieldCall> = <Condition> 
-<Assign> -> <Decl>
-<Decl> -> <Type> name
+<Assign> -> <Type> name = <Operation>
+<Assign> -> <Type> name = <Condition>
+<Assign> -> <TypeFieldCall> = <Operation>
+<Assign> -> <TypeFieldCall> = <Condition> 
+<Assign> -> <Type> name
 
 <Loop> -> while ( <Condition> ) { <StatementList> }
 <Loop> -> while ( <Condition> ) { }
 <Loop> -> for ( <Assign> ; <Condition> ; <Assign> ) { <StatementList> }
 <Loop> -> for ( <Assign> ; <Condition> ; <Assign> ) { }
 <Loop> -> for ( ; ; ) { }
-<Loop> -> for ( ; ; ) {<StatementList> }
+<Loop> -> for ( ; ; ) { <StatementList> }
 
 <If> -> if ( <Condition> ) { <StatementList> }
 <If> -> if ( <Condition> ) { }
@@ -49,9 +48,8 @@
 
 <Condition> -> <OrExpr>
 <OrExpr> -> <AndExpr> OR <OrExpr> | <AndExpr>
-<AndExpr> ->  <CmpExpr> AND <AndExpr> | <CmpExpr> | <BoolExpr>
+<AndExpr> ->  <CmpExpr> AND <AndExpr> | <CmpExpr>
 <CmpExpr> -> <E> <CmpOp> <CmpExpr> | <E>
-<BoolExpr> ->  true | false
 <CmpOp> -> Eq | NotEq | GT | LT | LTEq | GTEq
 
 
@@ -61,11 +59,12 @@
 <E> -> <T>
 <T> -> <T> Mul <F>
 <T> -> <T> Div <F>
+<T> -> <T> Mod <F>
 <T> -> <F>
 <F> -> Minus <F>
 <F> -> ( <E> )
+<F> -> Not <F>
 <F> -> <Value>
-<F> -> name
 <F> -> <TypeFieldCall>
 <TypeFieldCall> -> name . <TypeFieldCall> |  name
 <F> -> name ( <ParamsList> )
