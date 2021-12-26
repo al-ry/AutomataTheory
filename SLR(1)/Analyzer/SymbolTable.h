@@ -62,9 +62,9 @@ struct SymbolTable {
 	bool isWaitingForStructDefinition = false;
 };
 
-
+bool IsPrimitiveType(const std::string& name);
 bool StructAlreadyExist(const std::vector<StructInfo>& structs, const std::string& name);
 void UpdateSymbolsTable(const std::vector<Token>& prevTokens,const Token& token, const Token& nextToken, SymbolTable& symbolTable, std::ofstream& output);
 void CloseGlobalBlock(SymbolTable& symbolTable, std::ofstream& out);
 void InitFirstBlock(SymbolTable& symbolTable, std::ofstream& out);
-std::string GetVariableTypeFromSymbolTable(const SymbolTable& symbolTable, const std::string& name);
+std::optional<std::string> GetVariableTypeFromSymbolTable(const SymbolTable& symbolTable, const std::string& name);

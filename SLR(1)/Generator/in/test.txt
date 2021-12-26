@@ -31,12 +31,13 @@
 <Assign> -> <TypeFieldCall> = <Condition> 
 <Assign> -> <Type> name
 
-<Loop> -> while ( <Condition> ) { <StatementList> }
-<Loop> -> while ( <Condition> ) { }
-<Loop> -> for ( <Assign> ; <Condition> ; <Assign> ) { <StatementList> }
-<Loop> -> for ( <Assign> ; <Condition> ; <Assign> ) { }
-<Loop> -> for ( ; ; ) { }
-<Loop> -> for ( ; ; ) { <StatementList> }
+<Loop> -> <While> | <For>
+<While> -> while ( <Condition> ) { <StatementList> }
+<While> -> while ( <Condition> ) { }
+<For> -> for ( <Assign> ; <Condition> ; <Assign> ) { <StatementList> }
+<For> -> for ( <Assign> ; <Condition> ; <Assign> ) { }
+<For> -> for ( ; ; ) { }
+<For> -> for ( ; ; ) { <StatementList> }
 
 <If> -> if ( <Condition> ) { <StatementList> }
 <If> -> if ( <Condition> ) { }

@@ -146,6 +146,7 @@
     <ClCompile Include="..\..\Lexer\Lexer\lex.cpp" />
     <ClCompile Include="..\..\Lexer\Lexer\util.cpp" />
     <ClCompile Include="..\Generator\Generator.cpp" />
+    <ClCompile Include="Actions.cpp" />
     <ClCompile Include="Analyzer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Node.cpp" />
@@ -157,6 +158,7 @@
     <ClInclude Include="..\..\Lexer\Lexer\lex.h" />
     <ClInclude Include="..\..\Lexer\Lexer\util.h" />
     <ClInclude Include="..\Generator\Generator.h" />
+    <ClInclude Include="Actions.h" />
     <ClInclude Include="Analyzer.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="SymbolTable.h" />

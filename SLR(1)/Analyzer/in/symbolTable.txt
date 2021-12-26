@@ -1,9 +1,25 @@
 Global block started
+    {
+      Variable: age with type int
+      Variable: name with type string
+      Variable: sex with type bool
+    }
+
+    Struct with name: People
+      Field: age with type int
+      Field: name with type string
+      Field: sex with type bool
+
+    Variable: people with type People
     Variable: i with type int
     Variable: a with type int
     Variable: b with type int
     Variable: Test with type bool
     {
+      {
+        Variable: i with type int
+      }
+
       {
       }
 

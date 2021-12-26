@@ -1,5 +1,6 @@
 #include "SymbolTable.h"
 #include <stdexcept>
+#include <optional>
 #include <iostream>
 #include <sstream>
 #include <fstream>
@@ -9,6 +10,7 @@ std::string GetTokenTypeMapping(const Token& token) {
 	switch (token.kind)
 	{
 	case TokenKind::TOKEN_INT:
+		return "int";
 		return "int";
 	case TokenKind::TOKEN_INT_KEYWORD:
 		return "int";
@@ -32,8 +34,27 @@ std::string GetTokenTypeMapping(const Token& token) {
 }
 
 
+bool CheckIfAnyStructHasFieldWithName(const SymbolTable& symbolTable, const std::string& name)
+{
+	StructInfo info ;
+	for (auto& strct : symbolTable.structs)
+	{
+		for (auto& fields  : strct.fields)
+		{
+			info = strct;
+			if (fields.name == name) return true;
+		}
+	}
+	if (info.name != "")
+	{
+		std::string error = "unknown field: " + name + " in struct: " + info.name;
+		throw std::exception(error.c_str());	
+	}
+	return false;
+}
+
 //should be tested
-std::string GetVariableTypeFromSymbolTable(const SymbolTable& symbolTable, const std::string& name)
+std::optional<std::string> GetVariableTypeFromSymbolTable(const SymbolTable& symbolTable, const std::string& name)
 {
 	for (auto it = symbolTable.table.rbegin(); it != symbolTable.table.rend(); ++it)
 	{
@@ -41,9 +62,16 @@ std::string GetVariableTypeFromSymbolTable(const SymbolTable& symbolTable, const
 		for (auto& variable : codeBlock)
 			if (variable.first == name) return variable.second;
 	}
-	std::string error = "unknown variable: " + name;
-	std::cout << error;
-	throw std::exception(error.c_str());
+	if (CheckIfAnyStructHasFieldWithName(symbolTable, name))
+	{
+		return std::nullopt;
+	}
+	else
+	{
+		std::string error = "unknown variable: " + name;
+		throw std::exception(error.c_str());
+	}
+
 }
 
 
@@ -158,7 +186,6 @@ std::string TryToProcessStruct(const std::string& name, SymbolTable& symbolTable
 		}
 		else
 		{
-			std::cout << "Undefined struct: " << name;
 			throw std::exception("Undefined struct");
 		}
 	}
@@ -172,7 +199,7 @@ void PushVariable(SymbolTable& symbolTable, std::ofstream& out)
 	symbolTable.isWaitingForName = false;
 	if (CheckIfVariableExist(back, symbolTable.currentVariable.first))
 	{
-		std::cout << "declared: " << symbolTable.currentVariable.first << " " << symbolTable.currentVariable.second;
+		std::cout << "declared: " << symbolTable.currentVariable.first << " " << symbolTable.currentVariable.second << std::endl;
 		throw std::exception("variable already declared");
 	}
 	back.push_back(symbolTable.currentVariable);
@@ -199,7 +226,6 @@ void ProcessVariable(const Token& token, const Token& nextToken, SymbolTable& sy
 		{
 			if (!StructAlreadyExist(symbolTable.structs, token.name))
 			{
-				std::cout << "Struct haven't been delcared";
 				throw std::exception("Struct haven't been delcared");
 			}
 		}
@@ -501,7 +527,6 @@ void UpdateSymbolsTable(const std::vector<Token>& prevTokens, const Token& token
 		}
 		else
 		{
-			std::cout << "Struct already delcared";
 			throw std::exception("Struct already declared");
 		}
 	}

@@ -2,7 +2,7 @@
 #include "SymbolTable.h"
 #include "../../Lexer/Lexer/Common.h"
 #include "../Generator/Generator.h"
-
+#include "Actions.h"
 
 bool IsLiteral(TokenKind kind)
 {
@@ -24,8 +24,16 @@ void CreateNewNode(ASTTree& tree, const SymbolTable& table, const Token& token)
 	node->kind = token.kind;
 	node->loc = token.loc;
 	if (token.kind == TokenKind::TOKEN_NAME && !StructAlreadyExist(table.structs, token.name))
-	{
-		node->type = GetVariableTypeFromSymbolTable(table, token.name);
+	{ 
+		auto result = GetVariableTypeFromSymbolTable(table, token.name);
+		if (result.has_value())
+		{
+			node->type = result.value();
+			if (!IsPrimitiveType(node->type))
+			{
+				node->action = std::make_unique<StructFieldAction>(GetStructFieldType, table);
+			}
+		}
 	}
 	else if (IsLiteral(token.kind))
 	{
@@ -218,6 +226,10 @@ std::string GetType(const std::unique_ptr<Node>& node)
 		{
 			node->type = node->nodes.front()->type;
 		}
+		else if (node->nodes.size() == 3)
+		{
+			node->type = node->nodes.front()->action->DoAction(node->nodes.back());
+		}
 	}
 	return node->type;
 }
@@ -232,11 +244,26 @@ void CheckTypes(ASTTree& tree)
 		{
 			GetType(node);
 		}
-		else 
-		if (node->name == "<If>" || node->name == "<While>")
+		else if (node->name == "<If>")
 		{
 			GetType("bool", GetType(node->nodes.at(2)));
 		}
+		else
+		if (node->name == "<Loop>")
+		{
+			if (node->nodes.front()->name == "<While>")
+			{
+				GetType("bool", GetType(node->nodes.front()->nodes.at(2)));
+			}
+			else
+			if (node->nodes.front()->name == "<For>" && node->nodes.front()->nodes.size() > 8)
+			{
+				GetType(node->nodes.front()->nodes.at(2));
+				GetType(node->nodes.front()->nodes.at(4));
+				GetType(node->nodes.front()->nodes.at(6));
+			}
+		}
+
 		CheckTypes(node->nodes);
 	}
 }

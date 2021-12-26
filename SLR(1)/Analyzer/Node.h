@@ -1,11 +1,15 @@
 #pragma once
-#include "SymbolTable.h"
+#include "Actions.h"
 #include <string>
 #include <memory>
 #include <vector>
+#include <functional>
+#include <iostream>
+
 
 struct Node
 {
+	std::unique_ptr<IAction> action;
 	std::string type;
 	std::string name;
 	TokenKind kind;
