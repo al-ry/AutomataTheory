@@ -11,12 +11,12 @@ struct Age
     string str;
 }
  
-struct Test{
+/*struct Test{
     string test;
-}
+}*/
 struct Company
 {
-    Test company;
+    Company company;
     string name;
     string address;
 }
@@ -36,7 +36,7 @@ People people;
 //people.height = people.height + 5 / people.age.age;
 //people.age.age = 10;
 //people.age.str = "228";
-people.work.company.test = "ISpring";
+people.work.company.name = "ISpring";
 //int o = 5 > 6;
 int i = 5;
 int a = 5;
@@ -51,7 +51,6 @@ bool Test()
     while (b > a) {}
 
 }
-
 
 bool w = true && true || true;
 bool qwe = 5 + 3 > 6 && 6 != 6 || ! true;

@@ -36,18 +36,18 @@ std::string GetTokenTypeMapping(const Token& token) {
 
 bool CheckIfAnyStructHasFieldWithName(const SymbolTable& symbolTable, const std::string& name)
 {
-	StructInfo info ;
+	std::shared_ptr<StructInfo> info;
 	for (auto& strct : symbolTable.structs)
 	{
-		for (auto& fields  : strct.fields)
+		for (auto& fields  : strct->fields)
 		{
 			info = strct;
 			if (fields.name == name) return true;
 		}
 	}
-	if (info.name != "")
+	if (info->name != "")
 	{
-		std::string error = "unknown field: " + name + " in struct: " + info.name;
+		std::string error = "unknown field: " + name + " in struct: " + info->name;
 		throw std::exception(error.c_str());	
 	}
 	return false;
@@ -142,10 +142,10 @@ bool CheckIfVariableExist(std::vector<std::pair<std::string, std::string>>& curr
 
 bool IsDefinedStructWithName(const SymbolTable& symbolTable, const std::string& name)
 {
-	std::vector<StructInfo> structs = symbolTable.structs;
+	std::vector<std::shared_ptr<StructInfo>> structs = symbolTable.structs;
 	for (auto& structInfo : structs)
 	{
-		if (structInfo.name == name)
+		if (structInfo->name == name)
 		{
 			return true;
 		}
@@ -207,11 +207,11 @@ void PushVariable(SymbolTable& symbolTable, std::ofstream& out)
 	out << "Variable: " + back.back().first + " with type " + back.back().second << std::endl;
 }
 
-bool StructAlreadyExist(const std::vector<StructInfo>& structs, const std::string& name)
+bool StructAlreadyExist(const std::vector<std::shared_ptr<StructInfo>>& structs, const std::string& name)
 {
 	for (const auto& it : structs)
 	{
-		if (name == it.name) return true;
+		if (name == it->name) return true;
 	}
 	return false;
 }
@@ -358,10 +358,10 @@ void PushStructVariable(SymbolTable& symbolTable)
 
 void PrintStructsVariables(const SymbolTable& symbolTable, std::ofstream& output)
 {
-	StructInfo info = symbolTable.structs.back();
+	auto info = symbolTable.structs.back();
 	AddTabsToOut(symbolTable.nestingLevel + 1, output);
-	output << "Struct with name: " << info.name << std::endl;
-	for (auto& var : info.fields)
+	output << "Struct with name: " << info->name << std::endl;
+	for (auto& var : info->fields)
 	{
 		AddTabsToOut(symbolTable.nestingLevel + 2, output);
 		output << "Field: " << var.name << " with type " << (var.type.has_value() ? var.type.value() : var.info->name) << std::endl;
@@ -369,14 +369,14 @@ void PrintStructsVariables(const SymbolTable& symbolTable, std::ofstream& output
 	output << std::endl;
 }
 
-StructInfo* GetComplexType(SymbolTable& symbolTable, const std::string& type)
+std::shared_ptr<StructInfo> GetComplexType(SymbolTable& symbolTable, const std::string& type)
 {
 	auto& structs = symbolTable.structs;
 	for (auto& structInfo : structs)
 	{
-		if (structInfo.name == type)
+		if (structInfo->name == type)
 		{
-			return &structInfo;
+			return structInfo;
 		}
 	}
 	return nullptr;
@@ -393,11 +393,11 @@ bool CheckIfStructFieldAlreadyExist(StructInfo& structInfo, FieldInfo& fieldInfo
 	return false;
 }
 
-void TryToProcessStructField(SymbolTable& symbolTable, const std::vector<std::pair<std::string, std::string>>& lastBlock, StructInfo& lastStruct)
+void TryToProcessStructField(SymbolTable& symbolTable, const std::vector<std::pair<std::string, std::string>>& lastBlock, std::shared_ptr<StructInfo> lastStruct)
 {
 	for (auto& var: lastBlock)
 	{
-		StructInfo* type = GetComplexType(symbolTable, var.second);
+		auto type = GetComplexType(symbolTable, var.second);
 		FieldInfo info;
 		if (type != nullptr)
 		{
@@ -407,21 +407,20 @@ void TryToProcessStructField(SymbolTable& symbolTable, const std::vector<std::pa
 		{
 			info = FieldInfo(var.first, var.second);
 		}
-		lastStruct.fields.push_back(info);
+		lastStruct->fields.push_back(info);
 	}
 }
 
 bool TryToProcessStruct(const Token& token, const Token& nextToken, SymbolTable& symbolTable, std::ofstream& output) {
 	if (token.kind == TokenKind::TOKEN_STRUCT_KEYWORD)
 	{
-		StructInfo structInfo;
-		symbolTable.structs.push_back(structInfo);
+		symbolTable.structs.push_back(std::make_shared<StructInfo>());
 		symbolTable.isWaitingForStructDefinition = true;
 		return true;
 	}
 	if (symbolTable.isWaitingForStructDefinition && token.kind == TokenKind::TOKEN_NAME)
 	{
-		symbolTable.structs.back().name = token.name; //?
+		symbolTable.structs.back()->name = token.name; //?
 		symbolTable.isWaitingForStructDefinition = false;
 		symbolTable.isProcessingStruct = true;
 		return true;
@@ -520,8 +519,8 @@ void UpdateSymbolsTable(const std::vector<Token>& prevTokens, const Token& token
 	if (token.kind == TokenKind::TOKEN_STRUCT_KEYWORD)
 	{
 		if (!StructAlreadyExist(symbolTable.structs, nextToken.name)) {
-			StructInfo info;
-			info.name = nextToken.name;
+			auto info = std::make_shared<StructInfo>();
+			info->name = nextToken.name;
 			symbolTable.structs.push_back(info);
 			symbolTable.isProcessingStruct = true;
 		}

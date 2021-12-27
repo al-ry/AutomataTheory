@@ -16,13 +16,13 @@ bool IsLiteral(TokenKind kind)
 		|| kind == TokenKind::TOKEN_SUB;
 }
 
-StructInfo GetStructInfoWithName(const SymbolTable& symbolTable, const std::string& name)
+std::shared_ptr<StructInfo> GetStructInfoWithName(const SymbolTable& symbolTable, const std::string& name)
 {
-	std::vector<StructInfo> structs = symbolTable.structs;
-	StructInfo info;
+	std::vector<std::shared_ptr<StructInfo>> structs = symbolTable.structs;
+	std::shared_ptr<StructInfo> info;
 	for (auto& structInfo : structs)
 	{
-		if (structInfo.name == name)
+		if (structInfo->name == name)
 		{
 			return structInfo;
 		}
