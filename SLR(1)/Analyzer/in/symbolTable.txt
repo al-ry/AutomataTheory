@@ -1,39 +1,28 @@
 Global block started
     {
       Variable: age with type int
-      Variable: name with type string
-      Variable: sex with type bool
+      Variable: str with type string
     }
 
-    Struct with name: People
+    Struct with name: Age
       Field: age with type int
-      Field: name with type string
-      Field: sex with type bool
+      Field: str with type string
 
-    Variable: people with type People
-    Variable: i with type int
-    Variable: a with type int
-    Variable: b with type int
-    Variable: Test with type bool
     {
-      {
-        Variable: i with type int
-      }
-
-      {
-      }
-
-      {
-      }
-
+      Variable: test with type string
     }
 
-    Variable: w with type bool
-    Variable: qwe with type bool
-    Variable: fl with type float
-    Variable: strBool with type bool
-    Variable: str with type string
-    Variable: ch with type char
-    Variable: ich with type int
-    Variable: q with type bool
-Global block ended up
+    Struct with name: Test
+      Field: test with type string
+
+    {
+      Variable: company with type Test
+      Variable: name with type string
+      Variable: address with type string
+    }
+
+    Struct with name: Company
+      Field: company with type Test
+      Field: name with type string
+      Field: address with type string
+

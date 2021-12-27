@@ -16,6 +16,20 @@ bool IsLiteral(TokenKind kind)
 		|| kind == TokenKind::TOKEN_SUB;
 }
 
+StructInfo GetStructInfoWithName(const SymbolTable& symbolTable, const std::string& name)
+{
+	std::vector<StructInfo> structs = symbolTable.structs;
+	StructInfo info;
+	for (auto& structInfo : structs)
+	{
+		if (structInfo.name == name)
+		{
+			return structInfo;
+		}
+	}
+	return info;
+}
+
 
 void CreateNewNode(ASTTree& tree, const SymbolTable& table, const Token& token)
 {
@@ -31,7 +45,7 @@ void CreateNewNode(ASTTree& tree, const SymbolTable& table, const Token& token)
 			node->type = result.value();
 			if (!IsPrimitiveType(node->type))
 			{
-				node->action = std::make_unique<StructFieldAction>(GetStructFieldType, table);
+				node->action = std::make_unique<StructFieldAction>(GetStructFieldType, GetStructInfoWithName(table, node->type));
 			}
 		}
 	}

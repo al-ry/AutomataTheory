@@ -5,14 +5,38 @@
 
 
 
-struct People {
+struct Age 
+{
     int age;
+    string str;
+}
+ 
+struct Test{
+    string test;
+}
+struct Company
+{
+    Test company;
+    string name;
+    string address;
+}
+
+struct People {
+    Company work;
+    Age age;
     string name;
     bool sex;
+    int height;
 }
 
 People people;
-people.age.age = 5;
+//people.name = "kj";
+//people.name = "djfdf";
+//people.sex = true;
+//people.height = people.height + 5 / people.age.age;
+//people.age.age = 10;
+//people.age.str = "228";
+people.work.company.test = "ISpring";
 //int o = 5 > 6;
 int i = 5;
 int a = 5;

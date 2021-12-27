@@ -22,3 +22,4 @@ typedef std::vector<std::unique_ptr<Node>> ASTTree;
 
 void CreateNewNode(ASTTree& node, const SymbolTable& table, const Token& token);
 void CheckTypes(ASTTree& tree);
+StructInfo GetStructInfoWithName(const SymbolTable& symbolTable, const std::string& name);
