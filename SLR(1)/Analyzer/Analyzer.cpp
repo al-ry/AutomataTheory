@@ -137,10 +137,10 @@ void AnalyzeTable(AnalyzerTable const& table, Lexer& lexer)
 	std::ofstream output("in\\symbolTable.txt");
 	SymbolTable symbolTable;
 	InitFirstBlock(symbolTable, output);
-	ASTTree tree;
+	SyntaxTree tree;
 	auto node = std::make_unique<Node>();
 	tree.push_back(std::move(node));
-
+	AST astTree;
 
 	std::stack<AnalyzerRow> stateStack;
 	std::stack<std::string> reductionStack;
@@ -209,7 +209,29 @@ void AnalyzeTable(AnalyzerTable const& table, Lexer& lexer)
 						for (size_t i = 0; i < reductionSize; i++)
 						{
 							stateStack.pop();
-							
+							if (reduction.reductionNonterminal == "<Assign>" && i == 0 && reductionSize != 2)
+							{
+								node->attribute =
+									std::make_unique<BinaryExprAST>(
+										OperationTokenToChar(tree.at(tree.size() - 2)->kind),
+										std::move(tree.at(tree.size() - 3)->attribute),
+										std::move(tree.back()->attribute));
+								astTree.push_back(std::move(node->attribute));
+							}
+							else
+							if ((reduction.reductionNonterminal == "<E>" || reduction.reductionNonterminal == "<T>") && reductionSize == 3 && i == 0)
+							{
+								node->attribute =
+									std::make_unique<BinaryExprAST>(
+										OperationTokenToChar(tree.at(tree.size() -2)->kind),
+										std::move(tree.at(tree.size() - 3)->attribute),
+										std::move(tree.back()->attribute));
+							}
+							else if (i == 0)
+							{
+								node->attribute = std::move(tree.back()->attribute);
+							}
+						
 							node->nodes.insert(node->nodes.begin(), std::move(tree.back()));
 							tree.pop_back();
 						}

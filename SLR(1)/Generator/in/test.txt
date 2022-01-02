@@ -63,7 +63,7 @@
 <T> -> <T> Mod <F>
 <T> -> <F>
 <F> -> Minus <F>
-<F> -> ( <E> )
+<F> -> ( <Condition> )
 <F> -> Not <F>
 <F> -> <Value>
 <F> -> <TypeFieldCall>

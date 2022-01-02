@@ -36,7 +36,7 @@ std::string GetTokenTypeMapping(const Token& token) {
 
 bool CheckIfAnyStructHasFieldWithName(const SymbolTable& symbolTable, const std::string& name)
 {
-	std::shared_ptr<StructInfo> info;
+	std::shared_ptr<StructInfo> info = nullptr;
 	for (auto& strct : symbolTable.structs)
 	{
 		for (auto& fields  : strct->fields)
@@ -45,7 +45,7 @@ bool CheckIfAnyStructHasFieldWithName(const SymbolTable& symbolTable, const std:
 			if (fields.name == name) return true;
 		}
 	}
-	if (info->name != "")
+	if (info != nullptr)
 	{
 		std::string error = "unknown field: " + name + " in struct: " + info->name;
 		throw std::exception(error.c_str());	

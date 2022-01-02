@@ -30,8 +30,36 @@ std::shared_ptr<StructInfo> GetStructInfoWithName(const SymbolTable& symbolTable
 	return info;
 }
 
+char OperationTokenToChar(TokenKind kind)
+{
+	if (kind == TokenKind::TOKEN_ADD)
+	{
+		return '+';
+	}
+	else if (kind == TokenKind::TOKEN_SUB)
+	{
+		return '-';
+	}
+	else if (kind == TokenKind::TOKEN_MUL)
+	{
+		return '*';
+	}
+	else if (kind == TokenKind::TOKEN_MOD)
+	{
+		return '%';
+	}
+	else if (kind == TokenKind::TOKEN_DIV)
+	{
+		return '/';
+	}
+	else if (kind == TokenKind::TOKEN_ASSIGN)
+	{
+		return '=';
+	}
+}
 
-void CreateNewNode(ASTTree& tree, const SymbolTable& table, const Token& token)
+
+void CreateNewNode(SyntaxTree& tree, const SymbolTable& table, const Token& token)
 {
 	auto node = std::make_unique<Node>();
 	node->name = token.name;
@@ -47,11 +75,14 @@ void CreateNewNode(ASTTree& tree, const SymbolTable& table, const Token& token)
 			{
 				node->action = std::make_unique<StructFieldAction>(GetStructFieldType, GetStructInfoWithName(table, node->type));
 			}
+			node->attribute = std::move(std::make_unique<VariableExprAST>(node->name));
 		}
 	}
 	else if (IsLiteral(token.kind))
 	{
 		node->name = TOKEN_ADAPTATION.find(token.kind)->second;
+
+		node->attribute = std::move(std::make_unique<NumberExprAST>(token.int_number));
 	}
 	tree.push_back(std::move(node));
 }
@@ -120,6 +151,19 @@ std::string ProcessCondition(const std::unique_ptr<Node>& node)
 
 }
 
+std::string ProcessOperationInBrackets(const std::unique_ptr<Node>& node)
+{
+	if (node->nodes.size() == 1)
+	{
+		return GetType(node->nodes.at(0));
+	}
+	if (node->nodes.size() == 3)
+	{
+		return GetType(node->nodes.at(1));
+	}
+
+}
+
 std::string ProcessOperation(const std::unique_ptr<Node>& node)
 {
 	return std::string();
@@ -163,18 +207,27 @@ std::string ProcessNotCondition(const std::unique_ptr<Node>& node)
 }
 std::string ProcessUnaryCondition(const std::unique_ptr<Node>& node)
 {
-	std::string name = GetType(node->nodes.back());
-	if (name == "float")
+	std::string type;
+	if (node->nodes.size() == 1)
+	{
+		type = GetType(node->nodes.back());
+	}
+	else if (node->nodes.size() == 3)
+	{
+		type = GetType(node->nodes.at(1));
+	}
+	if (type == "float")
 	{
 		return  "float";
 	}
-	else if (name == "int")
+	else if (type == "int")
 	{
 		return "int";
 	}
 	std::string error =
 		"It's not an unary expression. Type for unary minus should be either float or int";
 	throw std::exception(error.c_str());
+
 }
 
 std::string GetType(const std::unique_ptr<Node>& node)
@@ -227,7 +280,7 @@ std::string GetType(const std::unique_ptr<Node>& node)
 		}
 		else
 		{
-			node->type = ProcessCondition(node);
+			node->type = ProcessOperationInBrackets(node);
 		}
 	}
 	else if (node->name == "<Value>")
@@ -250,7 +303,7 @@ std::string GetType(const std::unique_ptr<Node>& node)
 
 
 
-void CheckTypes(ASTTree& tree)
+void CheckTypes(SyntaxTree& tree)
 {
 	for (auto& node: tree)
 	{
@@ -281,3 +334,10 @@ void CheckTypes(ASTTree& tree)
 		CheckTypes(node->nodes);
 	}
 }
+
+VariableExprAST::VariableExprAST(const std::string& name) : Name(name) {}
+
+NumberExprAST::NumberExprAST(double val) : Val(val) {}
+
+BinaryExprAST::BinaryExprAST(char op, std::unique_ptr<ExprAST> lhs, std::unique_ptr<ExprAST> rhs) : Op(op), LHS(std::move(lhs)), RHS(std::move(rhs)) {}
+
