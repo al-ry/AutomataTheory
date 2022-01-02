@@ -5,23 +5,34 @@
 #include <vector>
 #include <functional>
 #include <iostream>
+#include <fstream>
+#include <sstream>
 
 
 class ExprAST {
 public:
 	virtual ~ExprAST() {}
+	virtual void writeGraphRepresentation(std::stringstream& ss) = 0;
+	virtual std::string getRelationName() = 0;
+
 };
 
 class VariableExprAST : public ExprAST {
 	std::string Name;
 public:
 	VariableExprAST(const std::string& name);
+
+	void writeGraphRepresentation(std::stringstream& ss);
+	std::string getRelationName();
 };
 
 class NumberExprAST : public ExprAST {
 	double Val;
 public:
 	NumberExprAST(double val);
+
+	void writeGraphRepresentation(std::stringstream& ss);
+	std::string getRelationName();
 };
 
 class BinaryExprAST : public ExprAST {
@@ -29,6 +40,9 @@ class BinaryExprAST : public ExprAST {
 	std::unique_ptr<ExprAST> LHS, RHS;
 public:
 	BinaryExprAST(char op, std::unique_ptr<ExprAST> lhs, std::unique_ptr<ExprAST> rhs);
+
+	void writeGraphRepresentation(std::stringstream& ss);
+	std::string getRelationName();
 };
 
 typedef std::vector<std::unique_ptr<ExprAST>> AST;

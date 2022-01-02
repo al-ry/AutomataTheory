@@ -3,6 +3,9 @@
 #include "Analyzer.h"
 #include <iostream>
 #include <fstream>
+#include "Node.h"
+#include <fstream>
+#include <sstream>
 
 std::vector<std::string> GetInputSequence(std::istream& input)
 {
@@ -25,6 +28,29 @@ void AddEndSequence(std::vector<std::string> & sequence)
 	}
 }
 
+void PrintTree(const AST& tree) {
+	std::stringstream nodes;
+	std::stringstream relations;
+	nodes << "digraph G{\n";
+	tree.begin()->get()->writeGraphRepresentation(nodes);
+
+	nodes << relations.str();
+	nodes << "}\n";
+	const std::string pathToDot = "../../Graphviz/bin/";
+	const std::string dotName = "graph.dot";
+	const std::string imageName = "../../graph.png";
+
+	std::ofstream dotFile(dotName);
+
+	dotFile << nodes.str();
+}
+
+void AddChild() {
+
+}
+
+
+
 int main(int argc, char** argv)
 {
 	if (argc != 3)
@@ -38,27 +64,16 @@ int main(int argc, char** argv)
 	std::ifstream sequenceFile("in\\" + std::string(argv[2]));
 	AnalyzerTable table = ReadTable(input);
 
-	//if (sequence.size() == 0)
-	//{
-	//	std::cout << "Input sequence shoud not be empty\n";
-	//	return 1;
-	//}
 	std::string buffer = ReadFileToBuffer("in\\" + std::string(argv[2]));
 	Lexer lex(buffer);
 	
-
-	//AddEndSequence(sequence);
-
-	//auto grammar = CreateGrammar(input);
-	//std::cout << "Result grammar\n";
-	//PrintGrammar(grammar, std::cout);
-
-	//auto table = CreateSLRTable(grammar);
-	//PrintTable(table, std::cout);
-	//PrintTableForAnalyze(table);
 	try
 	{
-		AnalyzeTable(table, lex);
+		AST astTree;
+		AnalyzeTable(table, lex, astTree);
+		PrintTree(astTree);
+		system("print_graph.cmd");
+
 	}
 	catch (const std::exception& e)
 	{

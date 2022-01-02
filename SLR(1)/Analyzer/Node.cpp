@@ -3,6 +3,71 @@
 #include "../../Lexer/Lexer/Common.h"
 #include "../Generator/Generator.h"
 #include "Actions.h"
+#include <fstream>
+#include <sstream>
+
+std::string MakeNode(const std::string& label1, const std::string& label2)
+{
+	return label1 + " ["
+		+ "shape=\"" + "circle" + "\""
+		+ "label=\"" + label2 + "\"];\n";
+}
+
+std::string MakeRelation(const std::string& from, const std::string& to, const std::string& label)
+{
+	return  from + "->" + to + " [label=\"" + label + " \"];\n";
+}
+
+void NumberExprAST::writeGraphRepresentation(std::stringstream& ss) {
+	std::string node = MakeNode(std::to_string(Val), std::to_string(Val));
+	ss << node;
+}
+
+std::string NumberExprAST::getRelationName()
+{
+	return std::to_string(Val);
+}
+
+std::string getOperatorString(char op) {
+	if (op == '=') {
+		return "Assign";
+	}
+	if (op == '*') {
+		return "Mul";
+	}
+	if (op == '+') {
+		return "Plus";
+	}
+}
+
+void BinaryExprAST::writeGraphRepresentation(std::stringstream& ss) {
+	LHS->writeGraphRepresentation(ss);
+	RHS->writeGraphRepresentation(ss);
+
+	std::string leftRelation = LHS->getRelationName();
+	std::string rightRelation = RHS->getRelationName();
+
+	ss << MakeNode(getRelationName(), getRelationName());
+
+	ss << MakeRelation(getRelationName(), leftRelation, "1");
+	ss << MakeRelation(getRelationName(), rightRelation, "1");
+}
+
+std::string BinaryExprAST::getRelationName()
+{
+	return getOperatorString(Op);
+}
+
+
+void VariableExprAST::writeGraphRepresentation(std::stringstream& ss) {
+	std::string node = MakeNode(Name, Name);
+	ss << node;
+}
+
+std::string VariableExprAST::getRelationName()
+{
+	return Name;
+}
 
 bool IsLiteral(TokenKind kind)
 {
@@ -15,6 +80,8 @@ bool IsLiteral(TokenKind kind)
 		|| kind == TokenKind::TOKEN_NOT
 		|| kind == TokenKind::TOKEN_SUB;
 }
+
+
 
 std::shared_ptr<StructInfo> GetStructInfoWithName(const SymbolTable& symbolTable, const std::string& name)
 {

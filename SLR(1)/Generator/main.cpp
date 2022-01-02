@@ -2,6 +2,8 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include "Windows.h"
+#include "winuser.h"
 
 
 
@@ -24,6 +26,8 @@ int main(int argc, char** argv)
 		//PrintTable(table, std::cout);
 		//PrintGrammar(grammar, std::cout);
 		PrintTableForAnalyze(table, output);
+		//CreateProcess("e:\\print_graph.cmd", cmd, NULL, NULL, TRUE, 0, NULL, NULL, &info, &processInfo);
+		//system("e:\\print_graph.cmd");
 	}
 	catch (const std::invalid_argument& e)
 	{

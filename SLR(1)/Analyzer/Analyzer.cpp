@@ -25,7 +25,6 @@ std::vector<std::string> ReadSymbols(std::istream& input)
 }
 
 
-
 AnalyzerReduction ParseReduction(std::string& value) 
 {
 	AnalyzerReduction reduction;
@@ -131,7 +130,7 @@ AnalyzerTable ReadTable(std::istream& input)
 }
 
 
-void AnalyzeTable(AnalyzerTable const& table, Lexer& lexer)
+void AnalyzeTable(AnalyzerTable const& table, Lexer& lexer, AST& astTree)
 {
 	std::vector<Token> prevTokens;
 	std::ofstream output("in\\symbolTable.txt");
@@ -140,7 +139,6 @@ void AnalyzeTable(AnalyzerTable const& table, Lexer& lexer)
 	SyntaxTree tree;
 	auto node = std::make_unique<Node>();
 	tree.push_back(std::move(node));
-	AST astTree;
 
 	std::stack<AnalyzerRow> stateStack;
 	std::stack<std::string> reductionStack;

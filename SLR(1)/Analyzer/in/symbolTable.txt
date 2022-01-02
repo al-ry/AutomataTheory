@@ -1,4 +1,10 @@
 Global block started
-    Variable: a with type int
-    Variable: b with type int
-    Variable: c with type int
+    Variable: main with type int
+    {
+      Variable: c with type int
+      Variable: b with type int
+      Variable: f with type int
+      Variable: a with type int
+    }
+
+Global block ended up

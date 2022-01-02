@@ -2,6 +2,7 @@
 #include "../Generator/Generator.h"
 #include "../../Lexer/Lexer/lex.h"
 #include <memory>
+#include "Node.h"
 
 
 struct AnalyzerReduction 
@@ -29,4 +30,4 @@ typedef std::vector<AnalyzerRow> AnalyzerTable;
 
 
 AnalyzerTable ReadTable(std::istream& input);
-void AnalyzeTable(AnalyzerTable const& table, Lexer& lexer);
+void AnalyzeTable(AnalyzerTable const& table, Lexer& lexer, AST& astTree);

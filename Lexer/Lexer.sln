@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.30523.141
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lexer", "Lexer\Lexer.vcxproj", "{380C2121-F3F7-4146-9E07-A65D031E567F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LexerTests", "LexerTests\LexerTests.vcxproj", "{0DD045A4-AA50-47F1-8C08-F154049F7DFD}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -23,14 +21,6 @@ Global
 		{380C2121-F3F7-4146-9E07-A65D031E567F}.Release|x64.Build.0 = Release|x64
 		{380C2121-F3F7-4146-9E07-A65D031E567F}.Release|x86.ActiveCfg = Release|Win32
 		{380C2121-F3F7-4146-9E07-A65D031E567F}.Release|x86.Build.0 = Release|Win32
-		{0DD045A4-AA50-47F1-8C08-F154049F7DFD}.Debug|x64.ActiveCfg = Debug|x64
-		{0DD045A4-AA50-47F1-8C08-F154049F7DFD}.Debug|x64.Build.0 = Debug|x64
-		{0DD045A4-AA50-47F1-8C08-F154049F7DFD}.Debug|x86.ActiveCfg = Debug|Win32
-		{0DD045A4-AA50-47F1-8C08-F154049F7DFD}.Debug|x86.Build.0 = Debug|Win32
-		{0DD045A4-AA50-47F1-8C08-F154049F7DFD}.Release|x64.ActiveCfg = Release|x64
-		{0DD045A4-AA50-47F1-8C08-F154049F7DFD}.Release|x64.Build.0 = Release|x64
-		{0DD045A4-AA50-47F1-8C08-F154049F7DFD}.Release|x86.ActiveCfg = Release|Win32
-		{0DD045A4-AA50-47F1-8C08-F154049F7DFD}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
