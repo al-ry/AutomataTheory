@@ -32,7 +32,12 @@ void PrintTree(const AST& tree) {
 	std::stringstream nodes;
 	std::stringstream relations;
 	nodes << "digraph G{\n";
-	tree.begin()->get()->writeGraphRepresentation(nodes);
+	for (auto &ast : tree)
+	{
+		ast.get()->writeGraphRepresentation(nodes);
+	}
+
+	//tree.begin()->get()->writeGraphRepresentation(nodes);
 
 	nodes << relations.str();
 	nodes << "}\n";

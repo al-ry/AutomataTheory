@@ -11,7 +11,6 @@ std::string GetTokenTypeMapping(const Token& token) {
 	{
 	case TokenKind::TOKEN_INT:
 		return "int";
-		return "int";
 	case TokenKind::TOKEN_INT_KEYWORD:
 		return "int";
 	case TokenKind::TOKEN_FLOAT:

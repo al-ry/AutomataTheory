@@ -5,6 +5,36 @@ Global block started
       Variable: b with type int
       Variable: f with type int
       Variable: a with type int
+      Variable: test1 with type bool
+      Variable: test with type bool
+      {
+      }
+
+      {
+      }
+
+      {
+        {
+        }
+
+      }
+
+      {
+        {
+        }
+
+      }
+
+      Variable: z with type int
+      {
+        {
+        }
+
+        {
+        }
+
+      }
+
     }
 
 Global block ended up

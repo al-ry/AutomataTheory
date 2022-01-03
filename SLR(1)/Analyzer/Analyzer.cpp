@@ -207,6 +207,17 @@ void AnalyzeTable(AnalyzerTable const& table, Lexer& lexer, AST& astTree)
 						for (size_t i = 0; i < reductionSize; i++)
 						{
 							stateStack.pop();
+
+							//auto astNode = CreateASTNode(tree, reductionSize, reduction.reductionNonterminal, i);
+							//if (astNode != nullptr)
+							//{
+							//	if (reduction.reductionNonterminal == "<Assign>" && i == 0 && reductionSize != 2)
+							//	{
+							//		astTree.push_back(std::move(astNode));
+							//	}else
+							//	node->attribute = std::move(tree.back()->attribute);
+							//}
+
 							if (reduction.reductionNonterminal == "<Assign>" && i == 0 && reductionSize != 2)
 							{
 								node->attribute =
@@ -221,8 +232,36 @@ void AnalyzeTable(AnalyzerTable const& table, Lexer& lexer, AST& astTree)
 							{
 								node->attribute =
 									std::make_unique<BinaryExprAST>(
-										OperationTokenToChar(tree.at(tree.size() -2)->kind),
+										OperationTokenToChar(tree.at(tree.size() - 2)->kind),
 										std::move(tree.at(tree.size() - 3)->attribute),
+										std::move(tree.back()->attribute));
+							}
+							else if (i == 0 && reduction.reductionNonterminal == "<F>" && reductionSize == 3)
+							{
+								node->attribute = std::move(tree.at(tree.size() - 2)->attribute);
+							}
+							else if ((i == 0 && reductionSize == 3)
+								&& (reduction.reductionNonterminal == "<OrExpr>"
+								|| reduction.reductionNonterminal == "<AndExpr>"
+								|| reduction.reductionNonterminal == "<CmpExpr>"))
+							{
+								TokenKind kind;
+								if (reduction.reductionNonterminal == "<CmpExpr>")
+								{
+									kind = tree.at(tree.size() - 2)->nodes.back()->kind;
+								}
+								else kind = tree.at(tree.size() - 2)->kind;
+								node->attribute =
+									std::make_unique<BinaryExprAST>(
+										OperationTokenToChar(kind),
+										std::move(tree.at(tree.size() - 3)->attribute),
+										std::move(tree.back()->attribute));
+							}
+							else if (i == 0 && reduction.reductionNonterminal == "<F>" && reductionSize == 2)
+							{
+								node->attribute =
+									std::make_unique<UnaryExprAST>(
+										OperationTokenToChar(tree.at(tree.size() - 2)->kind),
 										std::move(tree.back()->attribute));
 							}
 							else if (i == 0)

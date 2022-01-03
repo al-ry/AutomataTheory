@@ -6,6 +6,7 @@
 #include <fstream>
 #include <sstream>
 
+
 std::string MakeNode(const std::string& label1, const std::string& label2)
 {
 	return label1 + " ["
@@ -15,28 +16,79 @@ std::string MakeNode(const std::string& label1, const std::string& label2)
 
 std::string MakeRelation(const std::string& from, const std::string& to, const std::string& label)
 {
-	return  from + "->" + to + " [label=\"" + label + " \"];\n";
+	return  from + "->" + to + " [label=\"" + " \"];\n";
 }
 
-void NumberExprAST::writeGraphRepresentation(std::stringstream& ss) {
-	std::string node = MakeNode(std::to_string(Val), std::to_string(Val));
+void ValueExprAST::writeGraphRepresentation(std::stringstream& ss) {
+	std::string node = MakeNode(getUuidAsString(), Val);
 	ss << node;
 }
 
-std::string NumberExprAST::getRelationName()
+std::string ValueExprAST::getRelationName()
 {
-	return std::to_string(Val);
+	return Val;
 }
 
-std::string getOperatorString(char op) {
-	if (op == '=') {
-		return "Assign";
+std::string getOperatorString(const std::string& op) {
+	if (op == "=")
+	{
+		return "<&#61;>";
 	}
-	if (op == '*') {
-		return "Mul";
+	if (op == "*")
+	{
+		return "<&#1645;>";
 	}
-	if (op == '+') {
-		return "Plus";
+	if (op == "+") 
+	{
+		return "<&#43;>";		
+	}
+	if (op == "-")
+	{
+		return "<&#727;>";
+	}
+	if (op == "/")
+	{
+		return "<&#8260;>";
+	}
+	if (op == "%")
+	{
+		return "<&#37;>";
+	}
+	if (op == "!")
+	{
+		return "<&#33;>";
+	}
+	if (op == "||")
+	{
+		return "<&#124;&#124;>";
+	}
+	if (op == "&&")
+	{
+		return "<&#38;&#38;>";
+	}
+	if (op == "==")
+	{
+		return "<&#61;&#61;>";
+	}
+	if (op == "!=")
+	{
+		return "<&#33;&#61;>";
+	}
+	if (op == "<")
+	{
+		return "<&#60;>";
+	}
+	if (op == "<=")
+	{
+		return "<&#60;&#61;>";
+	}
+	if (op == ">")
+	{
+		return "<&#62;>";
+	}
+	if (op == ">=")
+	{
+		return "<&#62;&#61;>";
 	}
 }
 
@@ -44,13 +96,13 @@ void BinaryExprAST::writeGraphRepresentation(std::stringstream& ss) {
 	LHS->writeGraphRepresentation(ss);
 	RHS->writeGraphRepresentation(ss);
 
-	std::string leftRelation = LHS->getRelationName();
-	std::string rightRelation = RHS->getRelationName();
+	std::string leftRelation = LHS->getUuidAsString();
+	std::string rightRelation = RHS->getUuidAsString();
 
-	ss << MakeNode(getRelationName(), getRelationName());
+	ss << MakeNode(getUuidAsString(), getRelationName());
 
-	ss << MakeRelation(getRelationName(), leftRelation, "1");
-	ss << MakeRelation(getRelationName(), rightRelation, "1");
+	ss << MakeRelation(getUuidAsString(), leftRelation, "1");
+	ss << MakeRelation(getUuidAsString(), rightRelation, "1");
 }
 
 std::string BinaryExprAST::getRelationName()
@@ -60,7 +112,7 @@ std::string BinaryExprAST::getRelationName()
 
 
 void VariableExprAST::writeGraphRepresentation(std::stringstream& ss) {
-	std::string node = MakeNode(Name, Name);
+	std::string node = MakeNode(getUuidAsString(), Name);
 	ss << node;
 }
 
@@ -78,7 +130,15 @@ bool IsLiteral(TokenKind kind)
 		|| kind == TokenKind::TOKEN_AND
 		|| kind == TokenKind::TOKEN_OR
 		|| kind == TokenKind::TOKEN_NOT
-		|| kind == TokenKind::TOKEN_SUB;
+		|| kind == TokenKind::TOKEN_SUB
+		|| kind == TokenKind::TOKEN_TRUE_KEYWORD
+		|| kind == TokenKind::TOKEN_FALSE_KEYWORD
+		|| kind == TokenKind::TOKEN_LT
+		|| kind == TokenKind::TOKEN_LTEQ
+		|| kind == TokenKind::TOKEN_GTEQ
+		|| kind == TokenKind::TOKEN_GT
+		|| kind == TokenKind::TOKEN_NOTEQ
+		|| kind == TokenKind::TOKEN_EQ;
 }
 
 
@@ -97,32 +157,56 @@ std::shared_ptr<StructInfo> GetStructInfoWithName(const SymbolTable& symbolTable
 	return info;
 }
 
-char OperationTokenToChar(TokenKind kind)
+std::string OperationTokenToChar(TokenKind kind)
 {
 	if (kind == TokenKind::TOKEN_ADD)
 	{
-		return '+';
+		return "+";
+	}
+	else if (kind == TokenKind::TOKEN_NOT)
+	{
+		return "!";
 	}
 	else if (kind == TokenKind::TOKEN_SUB)
 	{
-		return '-';
+		return "-";
 	}
 	else if (kind == TokenKind::TOKEN_MUL)
 	{
-		return '*';
+		return "*";
 	}
 	else if (kind == TokenKind::TOKEN_MOD)
 	{
-		return '%';
+		return "%";
 	}
 	else if (kind == TokenKind::TOKEN_DIV)
 	{
-		return '/';
+		return "/";
 	}
 	else if (kind == TokenKind::TOKEN_ASSIGN)
 	{
-		return '=';
+		return "=";
 	}
+	else if (kind == TokenKind::TOKEN_OR_OR)
+	{
+		return "||";
+	}
+	else if (kind == TokenKind::TOKEN_AND_AND)
+	{
+		return "&&";
+	}
+	else if (kind == TokenKind::TOKEN_LT)
+		return "<";
+	else if (kind == TokenKind::TOKEN_LTEQ)
+		return "<=";
+	else if (kind == TokenKind::TOKEN_GTEQ)
+		return ">=";
+	else if (kind == TokenKind::TOKEN_GT)
+		return ">";
+	else if (kind == TokenKind::TOKEN_NOTEQ)
+		return "!=";
+	else if (kind == TokenKind::TOKEN_EQ)
+		return "==";
 }
 
 
@@ -148,8 +232,26 @@ void CreateNewNode(SyntaxTree& tree, const SymbolTable& table, const Token& toke
 	else if (IsLiteral(token.kind))
 	{
 		node->name = TOKEN_ADAPTATION.find(token.kind)->second;
-
-		node->attribute = std::move(std::make_unique<NumberExprAST>(token.int_number));
+		if (token.kind == TokenKind::TOKEN_INT)
+		{
+			node->attribute = std::move(std::make_unique<ValueExprAST>(std::to_string(token.int_number)));
+		}
+		else if (token.kind == TokenKind::TOKEN_FLOAT)
+		{
+			node->attribute = std::move(std::make_unique<ValueExprAST>(std::to_string(token.real_number)));
+		}
+		else if (token.kind == TokenKind::TOKEN_STR)
+		{
+			node->attribute = std::move(std::make_unique<ValueExprAST>(token.string));
+		}
+		else if (token.kind == TokenKind::TOKEN_CHAR)
+		{
+			node->attribute = std::move(std::make_unique<ValueExprAST>((std::to_string(token.int_number))));
+		}
+		else if (token.kind == TokenKind::TOKEN_TRUE_KEYWORD || token.kind == TokenKind::TOKEN_FALSE_KEYWORD)
+		{
+			node->attribute = std::move(std::make_unique<ValueExprAST>((token.name)));
+		}
 	}
 	tree.push_back(std::move(node));
 }
@@ -402,9 +504,66 @@ void CheckTypes(SyntaxTree& tree)
 	}
 }
 
+ExprAST::ExprAST()
+{
+	boost::uuids::random_generator generator;
+	uuid = generator();
+}
+
 VariableExprAST::VariableExprAST(const std::string& name) : Name(name) {}
 
-NumberExprAST::NumberExprAST(double val) : Val(val) {}
+ValueExprAST::ValueExprAST(std::string val) : Val(val) {}
 
-BinaryExprAST::BinaryExprAST(char op, std::unique_ptr<ExprAST> lhs, std::unique_ptr<ExprAST> rhs) : Op(op), LHS(std::move(lhs)), RHS(std::move(rhs)) {}
+BinaryExprAST::BinaryExprAST(const std::string& op, std::unique_ptr<ExprAST> lhs, std::unique_ptr<ExprAST> rhs) : Op(op), LHS(std::move(lhs)), RHS(std::move(rhs)) {}
 
+std::string ExprAST::getUuidAsString()
+{
+	return  "<" + boost::uuids::to_string(uuid) + ">";
+}
+
+std::unique_ptr<ExprAST> CreateASTNode(const SyntaxTree& tree, int size, const std::string &nonterminal, int i)
+{
+	if (nonterminal == "<Assign>" && i == 0 && size != 2)
+	{
+		return
+			std::make_unique<BinaryExprAST>(
+				OperationTokenToChar(tree.at(tree.size() - 2)->kind),
+				std::move(tree.at(tree.size() - 3)->attribute),
+				std::move(tree.back()->attribute));
+		//astTree.push_back(std::move(node->attribute));
+	}
+	else
+	if ((nonterminal == "<E>" || nonterminal == "<T>") && size == 3 && i == 0)
+	{
+		return
+			std::make_unique<BinaryExprAST>(
+				OperationTokenToChar(tree.at(tree.size() - 2)->kind),
+				std::move(tree.at(tree.size() - 3)->attribute),
+				std::move(tree.back()->attribute));
+	}
+	else if (i == 0)
+	{
+		return std::move(tree.back()->attribute);
+	}
+	return nullptr;
+}
+
+UnaryExprAST::UnaryExprAST(const std::string& op, std::unique_ptr<ExprAST> rhs): Op(op), RHS(std::move(rhs))
+{
+}
+
+void UnaryExprAST::writeGraphRepresentation(std::stringstream& ss)
+{
+	RHS->writeGraphRepresentation(ss);
+
+	std::string rightRelation = RHS->getUuidAsString();
+
+	ss << MakeNode(getUuidAsString(), getRelationName());
+
+	ss << MakeRelation(getUuidAsString(), rightRelation, "1");
+}
+
+std::string UnaryExprAST::getRelationName()
+{
+	return getOperatorString(Op);
+}
