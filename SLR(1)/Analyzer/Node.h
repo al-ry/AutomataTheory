@@ -19,25 +19,29 @@ public:
 	virtual ~ExprAST() {}
 	virtual void writeGraphRepresentation(std::stringstream& ss) = 0;
 	virtual std::string getRelationName() = 0;
+	virtual std::string getType() = 0;
 	std::string getUuidAsString();
 };
 
 class VariableExprAST : public ExprAST {
 	std::string Name;
+	std::string Type;
 public:
-	VariableExprAST(const std::string& name);
+	VariableExprAST(const std::string& name, const std::string& type);
 
-	void writeGraphRepresentation(std::stringstream& ss);
-	std::string getRelationName();
+	void writeGraphRepresentation(std::stringstream& ss) override;
+	std::string getRelationName() override;
+	std::string getType() override;
 };
 
 class ValueExprAST : public ExprAST {
 	std::string Val;
+	std::string Type;
 public:
-	ValueExprAST(std::string val);
-
-	void writeGraphRepresentation(std::stringstream& ss);
-	std::string getRelationName();
+	ValueExprAST(const std::string& val, const std::string& type);
+	void writeGraphRepresentation(std::stringstream& ss) override;
+	std::string getRelationName() override;
+	std::string getType() override;
 };
 
 class BinaryExprAST : public ExprAST {
@@ -46,8 +50,9 @@ class BinaryExprAST : public ExprAST {
 public:
 	BinaryExprAST(const std::string& op, std::unique_ptr<ExprAST> lhs, std::unique_ptr<ExprAST> rhs);
 
-	void writeGraphRepresentation(std::stringstream& ss);
-	std::string getRelationName();
+	void writeGraphRepresentation(std::stringstream& ss) override;
+	std::string getRelationName() override;
+	std::string getType() override;
 };
 
 class UnaryExprAST : public ExprAST
@@ -56,8 +61,9 @@ class UnaryExprAST : public ExprAST
 	std::unique_ptr<ExprAST> RHS;
 public:
 	UnaryExprAST(const std::string& op, std::unique_ptr<ExprAST> rhs);
-	void writeGraphRepresentation(std::stringstream& ss);
-	std::string getRelationName();
+	void writeGraphRepresentation(std::stringstream& ss) override;
+	std::string getRelationName() override;
+	std::string getType() override;
 };
 
 typedef std::vector<std::unique_ptr<ExprAST>> AST;

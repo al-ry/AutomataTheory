@@ -6,6 +6,10 @@ Global block started
       Variable: f with type int
       Variable: a with type int
       Variable: test1 with type bool
+      Variable: fl with type float
+      {
+      }
+
       Variable: test with type bool
       {
       }

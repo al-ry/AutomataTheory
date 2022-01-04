@@ -3,6 +3,7 @@ int b;
 int c;
 bool q;
 
+//change size
 
 bool test() 
 {
@@ -15,6 +16,7 @@ bool test()
 }
 
 //
+
 
 string str;
 
@@ -46,7 +48,6 @@ struct People {
 }
 
 
-
 bool isBad(bool z, int p, People people)
 {
 	{
@@ -57,21 +58,23 @@ bool isBad(bool z, int p, People people)
 	for (;;) {
 
 	}
-
+	
 	bool qwe;
 	for (int i = a + b; i > 5;i = 1) {
 		int test = 0;
 	}
+	
 	if (z == true) {
 		char a;
 		string hello = "hello world";
 	}
+	
 	int test;
 
 	for (int i = 0; i > 0; i = i + 1) {
 
 	}
-
+	
 	int qwerty = 5;
 	//string str = "stro4ka";
 	while (y < 10)
@@ -80,13 +83,19 @@ bool isBad(bool z, int p, People people)
 		int q = 5;
 		//y = y + xAB;
 	}
-	bool res = isBad(a,b,c);
+	
+	//bool res = isBad(a,b,c);
 	//y = y +1;		
 	char ch = 'c';
 	char c;
 	return p != 2 + 2;
+
 }
 
+
+
+
+/*
 
 People people;
 int next = 5;
@@ -144,7 +153,7 @@ int main(string c, int a)
 	
 }
 
-
+*/
 //
 
 

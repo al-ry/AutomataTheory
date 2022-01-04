@@ -250,7 +250,10 @@ void AnalyzeTable(AnalyzerTable const& table, Lexer& lexer, AST& astTree)
 								{
 									kind = tree.at(tree.size() - 2)->nodes.back()->kind;
 								}
-								else kind = tree.at(tree.size() - 2)->kind;
+								else
+								{
+									kind = tree.at(tree.size() - 2)->kind;
+								}
 								node->attribute =
 									std::make_unique<BinaryExprAST>(
 										OperationTokenToChar(kind),
